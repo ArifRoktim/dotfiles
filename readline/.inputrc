@@ -1,0 +1,34 @@
+$include /etc/inputrc
+set bell-style none
+
+# Tab complete immediately
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+# Length of common prefix for possible tab completions
+set completion-prefix-display-length 2
+
+set editing-mode vi
+
+$if mode=vi
+
+# Make prompt cyan in insert mode;
+# magenta in command mode
+set show-mode-in-prompt on
+set keymap vi
+set vi-cmd-mode-string "\1\e[01;35m\2"
+set vi-ins-mode-string "\1\e[01;36m\2"
+
+set keymap vi-insert
+Control-l: clear-screen
+# incremental history searching
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+set keymap vi-command
+"k": history-search-backward
+"j": history-search-forward
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+$endif
+

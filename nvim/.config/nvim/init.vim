@@ -74,9 +74,10 @@ autocmd! BufWritePost * Neomake
 " Easily edit this file
 command E edit ~/.config/nvim/init.vim
 
-set gdefault                    " Use g flag for :s by default
-set history=500                 " Sets how many lines of history VIM has to remember
-set autoread                    " Set to auto read when a file is changed from the outside
+set gdefault                                    " Use g flag for :s by default
+set history=500                                 " Sets how many lines of history VIM has to remember
+set autoread                                    " Set to auto read when a file is changed from the outside
+au FocusGained,BufEnter * :silent! checktime    " Autoread is bugged. Force it to update buffer
 let mapleader = ","
 
 " :W sudo saves the file 
@@ -219,6 +220,9 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 
 " Make x go to blackhole buffer
 nnoremap x "_x
+
+" Unhighlight
+nnoremap <leader><cr> :noh<cr>
 
 " Easy escape
 inoremap kj <Esc>

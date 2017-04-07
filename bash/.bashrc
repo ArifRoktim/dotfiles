@@ -45,10 +45,15 @@ _prompt_command() {
 
     PS1+="\[\e[01;31m\]$( [ $EXIT -ne 0 ] && echo {$EXIT} )"    # Exit code of last run command
     PS1+="\[\e[01;32m\]\u@\h"                                   # User and hostname
-    PS1+="\[\e[01;34m\]:\w\n"                                   # Current working directory
+    PS1+="\[\e[01;34m\]:\w"                                     # Current working directory
+    local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/')"
+    PS1+="\[\e[01;35m\]$branch"                                 # Show current git branch
+    PS1+="\n"
     PS1+="\D{%m/%d|%I:%M}"                                      # Date and time
     PS1+="\$\[\e[00m\] "                                        # Prompt
 }
+
+
 
 PS2=">\[\e[0m\] "
 

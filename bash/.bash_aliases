@@ -27,22 +27,8 @@ alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# ls after cd
-alias cd='cl'
-
-# Run git pull on all repos below current directory
-alias gpa='echo Pulling all git repos...; find . -maxdepth 2 -name .git -execdir echo -en "==============================================================================\nPulling: "  \; -execdir pwd \; -execdir git pull \;'
-
 # More detailed jobs
 alias jobs='jobs -l'
-
-# Change default boot OS
-alias bootTo='sudo bootTo.sh'
-
-alias brightness='sudo brightness.sh'
-
-# Start socks tunnel
-alias SOCKS='ssh -fTND 4711 home'
 
 #==================================== FUNCTIONS ====================================
 
@@ -61,13 +47,8 @@ function news {
     echo -en "\e[0m"
 }
 
-# Poor man's vpn
-function schrome {
-    chromium --proxy-server="socks://localhost:4711" &
-}
-
 # ls after cd
-function cl {
+function cd {
     if [ -z "$1" ]; then
         builtin cd
     else

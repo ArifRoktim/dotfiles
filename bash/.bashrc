@@ -58,12 +58,13 @@ _prompt_command() {
 PS2=">\[\e[0m\] "
 
 # Load aliases
-[ -f ~/.bash_aliases ] && . ~/.bash_aliases
+[[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 
 # Use bash completion
-[[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-[[ -f /etc/bash/bashrc.d/bash_completion.sh ]] && . /etc/bash_completion
+[[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion || true
 
 # Searches official repositories when entering an unrecognized command
-. /usr/share/doc/pkgfile/command-not-found.bash
+[[ -f /usr/share/doc/pkgfile/command-not-found.bash ]] && . /usr/share/doc/pkgfile/command-not-found.bash || true
 
+# Source host specific config file
+[[ -f ~/.bash_local ]] && . ~/.bash_local || true

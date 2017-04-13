@@ -4,8 +4,10 @@ set bell-style none
 # Tab complete immediately
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
-# Length of common prefix for possible tab completions
-set completion-prefix-display-length 2
+# Colored autocompletion
+set colored-stats on
+# Color common prefix
+set colored-completion-prefix on
 
 set editing-mode vi
 

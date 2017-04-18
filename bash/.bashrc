@@ -9,8 +9,8 @@
 set -o vi
 
 # Easy escaping
-bind '"jk":"\e"'
-bind '"kj":"\e"'
+bind '"jk":"\e\e"'
+bind '"kj":"\e\e"'
 
 # C-k to view jobs
 bind -x '"\C-k":"jobs"'

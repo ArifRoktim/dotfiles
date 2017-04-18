@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Source host specific config file
+[[ -f ~/.bash_local ]] && . ~/.bash_local || true
+
 # Set vi bindings
 set -o vi
 
@@ -66,5 +69,3 @@ PS2=">\[\e[0m\] "
 # Searches official repositories when entering an unrecognized command
 [[ -f /usr/share/doc/pkgfile/command-not-found.bash ]] && . /usr/share/doc/pkgfile/command-not-found.bash || true
 
-# Source host specific config file
-[[ -f ~/.bash_local ]] && . ~/.bash_local || true

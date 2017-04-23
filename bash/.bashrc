@@ -42,18 +42,41 @@ _prompt_command() {
     local EXIT="$?"                                             # Save exit code of last run command; this must be first
     PS1=''                                                      # Reset prompt
 
+    # ANSI escape sequences
+    # Attributes
+    local reset="\[\e[0m\]"
+    local bold="\[\e[1m\]"
+    # FG Colors
+    local black="\[\e[30m\]"
+    local red="\[\e[31m\]"
+    local green="\[\e[32m\]"
+    local yellow="\[\e[33m\]"
+    local blue="\[\e[34m\]"
+    local magenta="\[\e[35m\]"
+    local cyan="\[\e[36m\]"
+    local white="\[\e[37m\]"
+    # BG Colors
+    local bgBlack="\[\e[40m\]"
+    local bgRed="\[\e[41m\]"
+    local bgGreen="\[\e[42m\]"
+    local bgYellow="\[\e[43m\]"
+    local bgBlue="\[\e[44m\]"
+    local bgMagenta="\[\e[45m\]"
+    local bgCyan="\[\e[46m\]"
+    local bgWhite="\[\e[47m\]"
+
     # Number of jobs
     local JOBS=$( jobs -p | wc -l )
-    PS1+="\[\e[01;36m\]$( [ $JOBS -gt 0 ] && echo [$JOBS] )"
+    PS1+="${bold}${cyan}$( [ $JOBS -gt 0 ] && echo [$JOBS] )"
 
-    PS1+="\[\e[01;31m\]$( [ $EXIT -ne 0 ] && echo {$EXIT} )"    # Exit code of last run command
-    PS1+="\[\e[01;32m\]\u@\h"                                   # User and hostname
-    PS1+="\[\e[01;34m\]:\w"                                     # Current working directory
+    PS1+="${red}$( [ $EXIT -ne 0 ] && echo {$EXIT} )"    # Exit code of last run command
+    PS1+="${green}\u@\h"                                   # User and hostname
+    PS1+="${blue}:\w"                                     # Current working directory
     local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/')"
-    PS1+="\[\e[01;35m\]$branch"                                 # Show current git branch
+    PS1+="${magenta}${branch}"                                 # Show current git branch
     PS1+="\n"
     PS1+="\D{%m/%d|%I:%M}"                                      # Date and time
-    PS1+="\$\[\e[00m\] "                                        # Prompt
+    PS1+="\$${reset} "                                        # Prompt
 }
 
 

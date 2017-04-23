@@ -32,11 +32,11 @@ alias jobs='jobs -l'
 
 #==================================== FUNCTIONS ====================================
 
-function pacaur {
+function update {
     news 3
     read -p "$( echo -e "\e[1;37mProceed? [Y/n]\e[0m " )" input
     [ $input != "Y" ] && [ $input != "y" ] && return 1
-    /usr/bin/pacaur "$@"
+    /usr/bin/pacaur -Syu --needed --devel
 }
 
 # print arch news

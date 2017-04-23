@@ -69,19 +69,22 @@ _prompt_command() {
     local JOBS=$( jobs -p | wc -l )
     PS1+="${bold}${cyan}$( [ $JOBS -gt 0 ] && echo [$JOBS] )"
 
-    PS1+="${red}$( [ $EXIT -ne 0 ] && echo {$EXIT} )"    # Exit code of last run command
-    PS1+="${green}\u@\h"                                   # User and hostname
-    PS1+="${blue}:\w"                                     # Current working directory
+    PS1+="${red}$( [ $EXIT -ne 0 ] && echo {$EXIT} )"       # Exit code of last run command
+    # User and hostname
+    PS1+="${green}\u"
+    PS1+="$hostcolor@"                                      # $hostcolor defined in ~/.bash_local
+    PS1+="\h${reset}"
+
+    PS1+="${bold}${blue}: \w"                               # Current working directory
     local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/')"
-    PS1+="${magenta}${branch}"                                 # Show current git branch
+    PS1+="${magenta}${branch}"                              # Show current git branch
     PS1+="\n"
-    PS1+="\D{%m/%d|%I:%M}"                                      # Date and time
-    PS1+="\$${reset} "                                        # Prompt
+    PS1+="\D{%m/%d|%I:%M}"                                  # Date and time
+    PS1+="\$${reset} "                                      # Prompt
+
+    # Set prompt 2
+    PS2=">${reset} "
 }
-
-
-
-PS2=">\[\e[0m\] "
 
 # Load aliases
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases

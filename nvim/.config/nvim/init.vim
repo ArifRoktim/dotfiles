@@ -160,25 +160,25 @@ tmap <C-h> <C-\><C-n><C-W>h
 tmap <C-l> <C-\><C-n><C-W>l
 
 " Close the current buffer but not the current window
-map <leader>bd :bp \| bd #<cr>
+noremap <leader>bd :bp \| bd #<cr>
 
-map <leader>l :bnext<cr>
-map <leader>h :bprevious<cr>
+noremap <leader>l :bnext<cr>
+noremap <leader>h :bprevious<cr>
 
-" Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :+tabmove<cr>
-map <leader>tM :-tabmove<cr>
-map <leader>e :tabnext<cr>
-map <leader>q :tabprev<cr>
+" Useful noremappings for managing tabs
+noremap <leader>tn :tabnew<cr>
+noremap <leader>to :tabonly<cr>
+noremap <leader>tc :tabclose<cr>
+noremap <leader>tm :+tabmove<cr>
+noremap <leader>tM :-tabmove<cr>
+noremap <leader>e :tabnext<cr>
+noremap <leader>q :tabprev<cr>
 
 " Opens a new split with the current buffer's path
-map <leader>vs :vsplit <c-r>=expand("%:p:h")<cr>/<cr>
+noremap <leader>vs :vsplit <c-r>=expand("%:p:h")<cr>/<cr>
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 set switchbuf=useopen,usetab,newtab
@@ -207,10 +207,10 @@ tnoremap KJ <C-\><C-n>
 map 0 ^
 
 " Move line(s) of text using ALT+[jk]
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nnoremap <M-j> mz:m+<cr>`z
+nnoremap <M-k> mz:m-2<cr>`z
+vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Center when searching
 map N Nzz
@@ -218,6 +218,7 @@ map n nzz
 
 " Dont have to hold shift for commands
 nore ; :
+nore : ;
 
 " Switch searching
 nnoremap # *

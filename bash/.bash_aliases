@@ -4,9 +4,6 @@
 
 # ========== ALIASES ==========
 
-# Use native steam
-alias steam='steam-native'
-
 # Use neovim
 alias vim='nvim'
 
@@ -36,7 +33,8 @@ function update {
     news 3
     read -p "$( echo -e "\e[1;37mProceed? [Y/n]\e[0m " )" input
     [ $input != "Y" ] && [ $input != "y" ] && return 1
-    /usr/bin/pacaur -Syu --needed --devel
+    pacaur -Sc --noconfirm
+    pacaur -Syyu --needed --devel
 }
 
 # print arch news

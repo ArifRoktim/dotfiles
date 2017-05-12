@@ -27,6 +27,8 @@ alias l='ls -CF'
 # More detailed jobs
 alias jobs='jobs -l'
 
+alias clyde='ssh -t clyde "ssh local"'
+
 #==================================== FUNCTIONS ====================================
 
 function update {

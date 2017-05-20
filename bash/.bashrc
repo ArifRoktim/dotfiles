@@ -95,3 +95,22 @@ _prompt_command() {
 # Searches official repositories when entering an unrecognized command
 [[ -f /usr/share/doc/pkgfile/command-not-found.bash ]] && . /usr/share/doc/pkgfile/command-not-found.bash || true
 
+# Change tty colors
+if [ "$TERM" = "linux" ]; then
+    # black
+    echo -en "\e]P0073642" # make background blue
+    # red
+    echo -en "\e]P9FF0000" 
+    # green
+    # yellow
+    echo -en "\e]P3FFFF00"
+    # blue
+    echo -en "\e]P43465a4"
+    echo -en "\e]PC4d79ff"
+    # magenta
+    # cyan
+    # white
+    echo -en "\e]P7FFFFFF"
+    clear
+fi
+

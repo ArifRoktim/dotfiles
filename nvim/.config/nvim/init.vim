@@ -51,7 +51,7 @@ autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
 " ===== Neomake =====
 " Lint files on write
-autocmd! BufWritePost * Neomake
+autocmd BufWritePost * Neomake
 
 " ========== General ==========
 
@@ -74,7 +74,6 @@ set clipboard^=unnamedplus      " Set default register to system clipboard
 " ========== User Interface ==========
 
 colorscheme desert
-set t_Co=256                " Enable 256 colors
 highlight clear SignColumn
 
 " Toggle highlighting current line
@@ -96,8 +95,10 @@ set showmatch               " Show matching brackets
 set matchtime=2             " Blink matching parens .2 s for every second
 set timeoutlen=500          " Wait 500 ms for key combinations to complete
 set number                  " Show line number
+set relativenumber
 
-" Todo: Make autocmd for terminal buffers to do :setlocal nonumber
+" make sure terminal buffers don't have line numbers
+autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
 
 " No annoying bells on errors
 set noerrorbells

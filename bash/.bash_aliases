@@ -33,6 +33,7 @@ alias clyde='ssh -t clyde "ssh local"'
 
 function update {
     news 3
+    local input;
     read -p "$( echo -e "\e[1;37mProceed? [Y/n]\e[0m " )" input
     [ $input != "Y" ] && [ $input != "y" ] && return 1
     pacaur -Sc --noconfirm

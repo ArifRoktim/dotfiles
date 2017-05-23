@@ -25,6 +25,7 @@ if dein#load_state('/home/arif/.config/nvim/dein/')
   call dein#add('neomake/neomake')
   call dein#add('Shougo/deoplete.nvim')
   call dein#add('artur-shaik/vim-javacomplete2')
+  call dein#add('sophacles/vim-processing')
 
   call dein#end()
   call dein#save_state()

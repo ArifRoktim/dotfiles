@@ -2,6 +2,8 @@
 # ~/.bashrc
 #
 
+[[ -f /etc/profile ]] && . /etc/profile
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 

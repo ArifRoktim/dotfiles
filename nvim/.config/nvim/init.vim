@@ -1,68 +1,30 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sections:
-"    => dein Scripts
-"    => Plugin Settings
 "    => General
-"    => User Interface
+"    => Colorscheme
 "    => Status line
-"    => Tabs and spaces
 "    => Tabs,windows,buffers
 "    => Mappings
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" ========== dein Scripts ==========
+" ========== General ==========
+
 set nocompatible
-
-set runtimepath+=/home/arif/.config/nvim/dein//repos/github.com/Shougo/dein.vim
-
-if dein#load_state('/home/arif/.config/nvim/dein/')
-  call dein#begin('/home/arif/.config/nvim/dein/')
-
-  call dein#add('/home/arif/.config/nvim/dein//repos/github.com/Shougo/dein.vim')
-
-  " Add or remove plugins here:
-  call dein#add('neomake/neomake')
-  call dein#add('Shougo/deoplete.nvim')
-  call dein#add('artur-shaik/vim-javacomplete2')
-  call dein#add('sophacles/vim-processing')
-
-  call dein#end()
-  call dein#save_state()
-endif
-
 filetype plugin indent on
 syntax enable
-
-if dein#check_install()
-  call dein#install()
-  call dein#update()
-endif
-
-" ========== Plugin Settings ==========
-
-" ===== Deoplete =====
-" Enable autocomplete
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_start_length = 2
-
-" ===== vim-javacomplete2 =====
-" Set omnifunc
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-" ===== Neomake =====
-" Lint files on write
-autocmd BufWritePost * Neomake
-
-" ========== General ==========
 
 " Easily edit this file
 command E edit ~/.config/nvim/init.vim
 
-set history=500                                 " Sets how many lines of history VIM has to remember
-set autoread                                    " Set to auto read when a file is changed from the outside
-au FocusGained,BufEnter * :silent! checktime    " Autoread is bugged. Force it to update buffer
 let mapleader = ","
+
+" Sets how many lines of history VIM has to remember
+set history=500
+" Set to auto read when a file is changed from the outside
+set autoread
+" Autoread is bugged. Force it to update buffer
+au FocusGained,BufEnter * :silent! checktime
 
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
@@ -71,8 +33,45 @@ set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use correct EOL format
 set nobackup                    " No backup files
 set clipboard^=unnamedplus      " Set default register to system clipboard
+set scrolloff=7                 " Keep 7 lines above and below cursor
+set wrap                        " Wrap lines
+set wildmenu                    " Enable wildmenu
+" Ignore some files
+set wildignore=*.o,*~,*.pyc,*.class
+set cmdheight=2
+set incsearch                   " incremental searching
+set hlsearch                    " Highlight matched queries
+set lazyredraw                  " Don't redraw when not needed
+set showmatch                   " Show matching brackets
+set matchtime=2                 " Blink matching parens .2 s for every second
+set timeoutlen=500              " Wait 500 ms for key combinations to complete
+set number
+set relativenumber
+" Sometimes ignore case when searching
+set ignorecase
+set smartcase
 
-" ========== User Interface ==========
+" make sure terminal buffers don't have line numbers
+autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
+
+" No annoying bells on errors
+set noerrorbells
+set vb t_vb=
+
+" Use spaces instead of tabs
+set expandtab
+set smarttab
+" 1 tab == 4 spaces
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+
+set autoindent
+
+" Return to last edit position when opening files
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+" ========== Colorscheme ==========
 
 colorscheme desert
 highlight clear SignColumn
@@ -84,33 +83,6 @@ nnoremap <Leader>c :set cursorline!<cr>
 " Change color of popup menu
 hi Pmenu    ctermbg=darkcyan ctermfg=black
 hi PmenuSel ctermbg=blue ctermfg=white
-
-set scrolloff=7             " Keep 7 lines above and below cursor
-set wrap                    " Wrap lines
-set wildmenu
-set cmdheight=2
-set incsearch               " incremental searching
-set hlsearch                " Highlight matched queries
-set lazyredraw              " Don't redraw when not needed
-set showmatch               " Show matching brackets
-set matchtime=2             " Blink matching parens .2 s for every second
-set timeoutlen=500          " Wait 500 ms for key combinations to complete
-set number                  " Show line number
-set relativenumber
-
-" make sure terminal buffers don't have line numbers
-autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
-
-" No annoying bells on errors
-set noerrorbells
-set vb t_vb=
-
-" Ignore some files
-set wildignore=*.o,*~,*.pyc,*.class
-
-" Sometimes ignore case when searching
-set ignorecase
-set smartcase
 
 " ========== Status line ==========
 
@@ -125,20 +97,6 @@ set statusline+=%w                          " preview flag
 set statusline+=\ \ CWD:%{getcwd()}         " current working directory
 set statusline+=\ [%l,%02.c]                " line and column number
 set statusline+=[%02.p%%]                   " percent through file
-set statusline+=%=%{dein#get_progress()}    " plugin update progress
-
-" ========== Tabs and spaces ==========
-
-" Use spaces instead of tabs
-set expandtab
-set smarttab
-
-" 1 tab == 4 spaces
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
-
-set autoindent
 
 " ========== Tabs,windows,buffers ==========
 
@@ -186,9 +144,6 @@ noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 set switchbuf=useopen,usetab,newtab
 set stal=2
 
-" Return to last edit position when opening files
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
 " ========== Mappings ==========
 
 " Make x go to blackhole buffer
@@ -217,12 +172,4 @@ vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 " Center when searching
 map N Nzz
 map n nzz
-
-" Dont have to hold shift for commands
-nore ; :
-nore : ;
-
-" Switch searching
-nnoremap # *
-nnoremap * #
 

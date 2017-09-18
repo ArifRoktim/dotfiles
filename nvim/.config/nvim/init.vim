@@ -1,6 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sections:
 "    => General
+"    => Plugin Settings
 "    => Colorscheme
 "    => Status line
 "    => Tabs,windows,buffers
@@ -8,14 +9,47 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" ========== General ==========
+" ========== dein Scripts ==========
 
-set nocompatible
+" Required:
+set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
+
+" Required:
+if dein#load_state('$HOME/.config/nvim/deind')
+  call dein#begin('$HOME/.config/nvim/deind')
+
+  " Let dein manage dein
+  " Required:
+  call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
+
+  " Add or remove your plugins here:
+  call dein#add('w0rp/ale')
+
+  " You can specify revision/branch/tag.
+  "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+  " Required:
+  call dein#end()
+  call dein#save_state()
+endif
+
+" Required:
 filetype plugin indent on
-syntax enable
+if !exists("g:syntax_on")
+    syntax enable
+endif
 
-" Easily edit this file
-command E edit ~/.config/nvim/init.vim
+" If you want to install not installed plugins on startup.
+"if dein#check_install()
+"  call dein#install()
+"endif
+
+" ==========Plugin Settings ==========
+
+" Lint only when files are saved
+let g:ale_lint_on_text_changed = 'never'
+
+" ========== General ==========
 
 let mapleader = ","
 
@@ -23,36 +57,33 @@ let mapleader = ","
 set history=500
 " Set to auto read when a file is changed from the outside
 set autoread
-" Autoread is bugged. Force it to update buffer
-au FocusGained,BufEnter * :silent! checktime
+
+" Easily edit this file
+command E edit ~/.config/nvim/init.vim
 
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
 
-set encoding=utf8               " Set utf8 as standard encoding
-set ffs=unix,dos,mac            " Use correct EOL format
-set nobackup                    " No backup files
-set clipboard^=unnamedplus      " Set default register to system clipboard
-set scrolloff=7                 " Keep 7 lines above and below cursor
-set wrap                        " Wrap lines
-set wildmenu                    " Enable wildmenu
-" Ignore some files
-set wildignore=*.o,*~,*.pyc,*.class
-set cmdheight=2
-set incsearch                   " incremental searching
-set hlsearch                    " Highlight matched queries
-set lazyredraw                  " Don't redraw when not needed
-set showmatch                   " Show matching brackets
-set matchtime=2                 " Blink matching parens .2 s for every second
-set timeoutlen=500              " Wait 500 ms for key combinations to complete
+set encoding=utf8                   " Set utf8 as standard encoding
+set ffs=unix,dos,mac                " Use correct EOL format
+set nobackup                        " No backup files
+set clipboard^=unnamedplus          " Set default register to system clipboard
+set scrolloff=7                     " Keep 7 lines above and below cursor
+set wrap                            " Wrap lines
+set wildmenu                        " Enable wildmenu
+set wildignore=*.o,*.pyc,*.class    " Ignore some files
+set cmdheight=2                     " Leave space at the bottom
+set incsearch                       " incremental searching
+set hlsearch                        " Highlight matched queries
+set lazyredraw                      " Don't redraw when not needed
+set showmatch                       " Show matching brackets
+set matchtime=2                     " Blink matching parens .2 s for every second
+set timeoutlen=500                  " Wait 500 ms for key combinations to complete
 set number
 set relativenumber
 " Sometimes ignore case when searching
 set ignorecase
 set smartcase
-
-" make sure terminal buffers don't have line numbers
-autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
 
 " No annoying bells on errors
 set noerrorbells
@@ -64,25 +95,33 @@ set smarttab
 " 1 tab == 4 spaces
 set shiftwidth=4
 set softtabstop=4
-set tabstop=4
 
 set autoindent
+augroup Autocmds
+    " clear all autocmds
+    autocmd!
 
-" Return to last edit position when opening files
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    " make sure terminal buffers don't have line numbers
+    autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
 
+    " Return to last edit position when opening files
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+    " Autoread is bugged. Force it to update buffer
+    autocmd FocusGained,BufEnter * :silent! checktime
+augroup END
 " ========== Colorscheme ==========
 
+
+augroup colorschm
+    autocmd!
+    autocmd ColorScheme * highlight clear SignColumn | highlight CursorLine cterm=NONE ctermbg=darkblue | highlight Pmenu ctermbg=darkcyan ctermfg=black | highlight PmenuSel ctermbg=blue ctermfg=white | highlight ALEErrorSign ctermbg=darkcyan ctermfg=black | highlight ALEWarningSign ctermbg=blue ctermfg=black
+augroup END
+
 colorscheme desert
-highlight clear SignColumn
 
 " Toggle highlighting current line
-hi CursorLine cterm=NONE ctermbg=darkblue
 nnoremap <Leader>c :set cursorline!<cr>
-
-" Change color of popup menu
-hi Pmenu    ctermbg=darkcyan ctermfg=black
-hi PmenuSel ctermbg=blue ctermfg=white
 
 " ========== Status line ==========
 
@@ -114,10 +153,10 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 " Terminal movement
-tmap <C-j> <C-\><C-n><C-W>j
-tmap <C-k> <C-\><C-n><C-W>k
-tmap <C-h> <C-\><C-n><C-W>h
-tmap <C-l> <C-\><C-n><C-W>l
+tnoremap <C-j> <C-\><C-n><C-W>j
+tnoremap <C-k> <C-\><C-n><C-W>k
+tnoremap <C-h> <C-\><C-n><C-W>h
+tnoremap <C-l> <C-\><C-n><C-W>l
 
 " Close the current buffer but not the current window
 noremap <leader>bd :bp \| bd #<cr>
@@ -161,7 +200,7 @@ tnoremap JK <C-\><C-n>
 tnoremap KJ <C-\><C-n>
 
 " Remap VIM 0 to first non-blank character
-map 0 ^
+noremap 0 ^
 
 " Move line(s) of text using ALT+[jk]
 nnoremap <M-j> mz:m+<cr>`z
@@ -170,6 +209,6 @@ vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Center when searching
-map N Nzz
-map n nzz
+noremap N Nzz
+noremap n nzz
 

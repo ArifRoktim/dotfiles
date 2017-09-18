@@ -6,6 +6,8 @@
 
 # Use neovim
 alias vim='nvim'
+# Start neovim-remote server
+alias nv='nvr -s -cc term'
 
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

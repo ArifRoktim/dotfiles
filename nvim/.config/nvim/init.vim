@@ -49,6 +49,9 @@ endif
 " Lint only when files are saved
 let g:ale_lint_on_text_changed = 'never'
 
+" Lint python2 instead of python3
+let g:ale_python_pylint_executable = 'pylint2'
+
 " ========== General ==========
 
 let mapleader = ","

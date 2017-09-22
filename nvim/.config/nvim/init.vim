@@ -24,6 +24,11 @@ if dein#load_state('$HOME/.config/nvim/deind')
 
   " Add or remove your plugins here:
   call dein#add('w0rp/ale')
+  call dein#add('jiangmiao/auto-pairs')
+
+  call dein#add('Shougo/deoplete.nvim')
+  call dein#add('Rip-Rip/clang_complete')
+  call dein#add('zchee/deoplete-jedi')
 
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
@@ -51,6 +56,14 @@ let g:ale_lint_on_text_changed = 'never'
 
 " Lint python2 instead of python3
 let g:ale_python_pylint_executable = 'pylint2'
+
+" Enable deoplete
+let g:deoplete#enable_at_startup = 1
+
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+let g:clang_omnicppcomplete_compliance = 0
+let g:clang_make_default_keymappings = 0
 
 " ========== General ==========
 
@@ -112,6 +125,9 @@ augroup Autocmds
 
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
+
+    " Close preview windows after autocomplete
+    "autocmd CompleteDone * silent! pclose!
 augroup END
 " ========== Colorscheme ==========
 

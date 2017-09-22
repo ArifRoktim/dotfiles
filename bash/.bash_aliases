@@ -33,6 +33,13 @@ alias clyde='ssh -t clyde "ssh local"'
 
 #==================================== FUNCTIONS ====================================
 
+# Start nvim server in a detachable session
+function ac {
+    acID=$RANDOM
+    export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket$acID"
+    abduco -c $acID nvim -c term
+}
+
 function update {
     news 3
     local input;

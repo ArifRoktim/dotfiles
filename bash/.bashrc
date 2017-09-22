@@ -24,7 +24,7 @@ bind -x '"\C-k":"jobs"'
 export EDITOR=nvim
 export VISUAL=nvim
 
-export ABDUCO_CMD=bash
+export ABDUCO_CMD="nvr -s -cc term"
 
 # Add some directories to PATH
 export PATH=$HOME/.local/bin:$PATH:/usr/bin/core_perl

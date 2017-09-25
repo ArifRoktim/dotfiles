@@ -21,8 +21,8 @@ bind '"kj":"\e\e"'
 bind -x '"\C-k":"jobs"'
 
 # Use nvim for sudoedit
-export EDITOR=nvim
-export VISUAL=nvim
+export EDITOR="nvr --server-name $NVIM_LISTEN_ADDRESS --remote-wait-silent"
+export VISUAL="nvr --server-name $NVIM_LISTEN_ADDRESS --remote-wait-silent"
 
 export ABDUCO_CMD="nvr -s -cc term"
 

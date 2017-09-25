@@ -100,6 +100,7 @@ set matchtime=2                     " Blink matching parens .2 s for every secon
 set timeoutlen=500                  " Wait 500 ms for key combinations to complete
 set number
 set relativenumber
+set autowrite                       " Write the contents of the file, if it has been modified on certain commands
 " Sometimes ignore case when searching
 set ignorecase
 set smartcase

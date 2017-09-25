@@ -10,6 +10,9 @@
 # Source host specific config file
 [[ -f ~/.bash_local ]] && . ~/.bash_local || true
 
+# Load aliases
+[[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
+
 # Set vi bindings
 set -o vi
 
@@ -90,9 +93,6 @@ _prompt_command() {
     PS2=">${reset} "
 }
 
-# Load aliases
-[[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
-
 # Use bash completion
 [[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion || true
 
@@ -116,5 +116,12 @@ if [ "$TERM" = "linux" ]; then
     # white
     echo -en "\e]P7FFFFFF"
     clear
+fi
+
+
+# Load abduco with neovim-remote if not already done so
+if type nvr > /dev/null && type abduco > /dev/null && type ac > /dev/null && [[ -z $NVIM_LISTEN_ADDRESS ]]; then
+    export -f ac
+    exec bash -c 'ac'
 fi
 

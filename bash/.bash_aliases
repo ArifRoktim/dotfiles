@@ -29,7 +29,7 @@ alias l='ls -CF'
 # More detailed jobs
 alias jobs='jobs -l'
 
-alias clyde='ssh -t clyde "ssh local"'
+alias bart='ssh -t clyde "ssh bart"'
 
 #==================================== FUNCTIONS ====================================
 

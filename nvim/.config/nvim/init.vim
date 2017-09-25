@@ -9,6 +9,9 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Set hostname for host-dependent options
+let hostname = substitute(system('hostname'), '\n', '', '')
+
 " ========== dein Scripts ==========
 
 " Required:
@@ -55,7 +58,11 @@ endif
 let g:ale_lint_on_text_changed = 'never'
 
 " Lint python2 instead of python3
-let g:ale_python_pylint_executable = 'pylint2'
+if hostname == "iroh" || hostname == "zuko"
+    let g:ale_python_pylint_executable = 'pylint2'
+else
+    let g:ale_python_pylint_executable = 'pylint'
+endif
 
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1

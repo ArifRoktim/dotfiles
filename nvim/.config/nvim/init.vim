@@ -86,7 +86,6 @@ command W w !sudo tee % > /dev/null
 
 set encoding=utf8                   " Set utf8 as standard encoding
 set ffs=unix,dos,mac                " Use correct EOL format
-set nobackup                        " No backup files
 set clipboard^=unnamedplus          " Set default register to system clipboard
 set scrolloff=7                     " Keep 7 lines above and below cursor
 set wrap                            " Wrap lines
@@ -115,6 +114,15 @@ set smarttab
 " 1 tab == 4 spaces
 set shiftwidth=4
 set softtabstop=4
+
+" Persistent undo
+if has("persistent_undo")
+    set undodir=~/.config/nvim/_undo
+    set undofile
+    set backup
+    set backupdir=~/.config/nvim/_tmp
+    set dir=~/.config/nvim/_swap
+endif
 
 set autoindent
 augroup Autocmds

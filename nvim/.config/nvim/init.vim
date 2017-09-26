@@ -59,6 +59,7 @@ let g:ale_lint_on_text_changed = 'never'
 " Lint python2 instead of python3
 if hostname() == "iroh" || hostname() == "zuko"
     let g:ale_python_pylint_executable = 'pylint2'
+    let g:deoplete#sources#jedi#python_path = '/usr/bin/python2'
 else
     let g:ale_python_pylint_executable = 'pylint'
 endif

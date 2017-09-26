@@ -27,6 +27,8 @@ if dein#load_state('$HOME/.config/nvim/deind')
   call dein#add('jiangmiao/auto-pairs')
 
   call dein#add('Shougo/deoplete.nvim')
+  call dein#add('Shougo/neoinclude.vim')
+
   call dein#add('zchee/deoplete-clang')
   call dein#add('zchee/deoplete-jedi')
 
@@ -66,7 +68,8 @@ let g:deoplete#enable_at_startup = 1
 
 " deoplete-clang settings
 if hostname() == "iroh" || hostname() == "zuko"
-    echo "blah"
+    let g:deoplete#sources#clang#libclang_path = "/lib/libclang.so"
+    let g:deoplete#sources#clang#clang_header = "/lib/clang"
 else
     let g:deoplete#sources#clang#libclang_path = "/home/students/2018/arif.roktim/.local/builds/libclang/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04/lib/libclang.so"
     let g:deoplete#sources#clang#clang_header = "/home/students/2018/arif.roktim/.local/builds/libclang/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04/lib/clang"

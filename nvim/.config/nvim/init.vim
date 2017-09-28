@@ -67,13 +67,16 @@ endif
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
 
-" deoplete-clang settings
+" clang_complete settings
 if hostname() == "iroh" || hostname() == "zuko"
     let g:clang_library_path = "/lib"
 else
     let g:clang_library_path = "/home/students/2018/arif.roktim/.local/builds/libclang/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04/lib/"
-
 endif
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+let g:clang_omnicppcomplete_compliance = 0
+let g:clang_make_default_keymappings = 0
 
 " ========== General ==========
 

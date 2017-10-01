@@ -33,8 +33,18 @@ alias bart='ssh -t clyde "ssh bart"'
 
 #==================================== FUNCTIONS ====================================
 
-# Start nvim server in a detachable session
+# Start nvim server in a detachable session or join an already existing session
 function ac {
+    export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
+    if [[ -a $NVIM_LISTEN_ADDRESS ]]; then
+        abduco -a arif
+    else
+        abduco -c arif nvim -c term
+    fi
+}
+
+# Start nvim server in a detachable session
+function an {
     acID=$RANDOM
     export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket$acID"
     abduco -c $acID nvim -c term

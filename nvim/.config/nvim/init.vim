@@ -153,10 +153,21 @@ augroup Autocmds
 augroup END
 " ========== Colorscheme ==========
 
+if has('termguicolors')
+    set termguicolors
+endif
 
 augroup colorschm
     autocmd!
-    autocmd ColorScheme * highlight clear SignColumn | highlight CursorLine cterm=NONE ctermbg=darkblue | highlight Pmenu ctermbg=darkcyan ctermfg=black | highlight PmenuSel ctermbg=blue ctermfg=white | highlight ALEErrorSign ctermbg=darkcyan ctermfg=black | highlight ALEWarningSign ctermbg=blue ctermfg=black
+    autocmd ColorScheme * highlight clear SignColumn
+    autocmd ColorScheme * highlight CursorLine gui=NONE guibg='#04252d'
+    autocmd ColorScheme * highlight Pmenu guibg=cyan guifg=black
+    autocmd ColorScheme * highlight PmenuSel guibg=blue guifg=white
+    autocmd ColorScheme * highlight ALEErrorSign guibg=darkcyan guifg=black
+    autocmd ColorScheme * highlight ALEWarningSign guibg=blue guifg=black
+    autocmd ColorScheme * highlight Normal guibg=none
+    autocmd ColorScheme * highlight NonText guibg=none
+    autocmd Colorscheme * highlight StatusLine guibg=white
 augroup END
 
 colorscheme desert

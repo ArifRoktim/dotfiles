@@ -93,9 +93,11 @@ command E edit ~/.config/nvim/init.vim
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
 
+if has('clipboard')
+    set clipboard^=unnamedplus      " Set default register to system clipboard
+endif
 set encoding=utf8                   " Set utf8 as standard encoding
 set ffs=unix,dos,mac                " Use correct EOL format
-set clipboard^=unnamedplus          " Set default register to system clipboard
 set scrolloff=7                     " Keep 7 lines above and below cursor
 set wrap                            " Wrap lines
 set wildmenu                        " Enable wildmenu
@@ -113,6 +115,7 @@ set autowrite                       " Write the contents of the file, if it has 
 " Sometimes ignore case when searching
 set ignorecase
 set smartcase
+set cursorline
 
 " No annoying bells on errors
 set noerrorbells
@@ -163,8 +166,8 @@ augroup colorschm
     autocmd ColorScheme * highlight CursorLine gui=NONE guibg='#04252d'
     autocmd ColorScheme * highlight Pmenu guibg=cyan guifg=black
     autocmd ColorScheme * highlight PmenuSel guibg=blue guifg=white
-    autocmd ColorScheme * highlight ALEErrorSign guibg=darkcyan guifg=black
-    autocmd ColorScheme * highlight ALEWarningSign guibg=blue guifg=black
+    autocmd ColorScheme * highlight ALEErrorSign guibg=cyan guifg=black
+    autocmd ColorScheme * highlight ALEWarningSign guibg=lightblue guifg=black
     autocmd ColorScheme * highlight Normal guibg=none
     autocmd ColorScheme * highlight NonText guibg=none
     autocmd Colorscheme * highlight StatusLine guibg=white

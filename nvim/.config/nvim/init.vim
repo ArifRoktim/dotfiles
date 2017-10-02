@@ -24,14 +24,16 @@ if dein#load_state('$HOME/.config/nvim/deind')
 
   " Add or remove your plugins here:
   call dein#add('w0rp/ale')
+  call dein#add('Shougo/deoplete.nvim')
+
   call dein#add('jiangmiao/auto-pairs')
 
-  call dein#add('Shougo/deoplete.nvim')
-  call dein#add('Shougo/neoinclude.vim')
-
   call dein#add('zchee/deoplete-jedi')
+  call dein#add('Shougo/neoinclude.vim')
   call dein#add('Rip-Rip/clang_complete')
 
+  call dein#add('tpope/vim-surround')
+  call dein#add('tpope/vim-repeat')
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 

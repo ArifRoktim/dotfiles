@@ -11,35 +11,38 @@
 
 " ========== dein Scripts ==========
 
-" Required:
-set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
-
-" Required:
-if dein#load_state('$HOME/.config/nvim/deind')
-  call dein#begin('$HOME/.config/nvim/deind')
-
-  " Let dein manage dein
+if has('nvim')
   " Required:
-  call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
-
-  " Add or remove your plugins here:
-  call dein#add('w0rp/ale')
-  call dein#add('Shougo/deoplete.nvim')
-
-  call dein#add('jiangmiao/auto-pairs')
-
-  call dein#add('zchee/deoplete-jedi')
-  call dein#add('Shougo/neoinclude.vim')
-  call dein#add('Rip-Rip/clang_complete')
-
-  call dein#add('tpope/vim-surround')
-  call dein#add('tpope/vim-repeat')
-  " You can specify revision/branch/tag.
-  "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+  set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
 
   " Required:
-  call dein#end()
-  call dein#save_state()
+  if dein#load_state('$HOME/.config/nvim/deind')
+      call dein#begin('$HOME/.config/nvim/deind')
+
+      " Let dein manage dein
+      " Required:
+      call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
+
+      " Add or remove your plugins here:
+      call dein#add('w0rp/ale')
+      call dein#add('Shougo/deoplete.nvim')
+
+      call dein#add('jiangmiao/auto-pairs')
+
+      call dein#add('zchee/deoplete-jedi')
+      call dein#add('Shougo/neoinclude.vim')
+      call dein#add('Rip-Rip/clang_complete')
+
+      call dein#add('tpope/vim-surround')
+      call dein#add('tpope/vim-repeat')
+      " You can specify revision/branch/tag.
+      "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+      " Required:
+      call dein#end()
+      call dein#save_state()
+  endif
+
 endif
 
 " Required:

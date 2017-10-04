@@ -35,7 +35,7 @@ alias bart='ssh -t clyde "ssh bart"'
 
 # Start nvim server in a detachable session or join an already existing session
 function ac {
-    export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket"
+    export NVIM_LISTEN_ADDRESS="/tmp/nvimsocketarif"
     if [[ -a $NVIM_LISTEN_ADDRESS ]]; then
         abduco -a arif
     else

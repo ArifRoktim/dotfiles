@@ -93,10 +93,10 @@ set history=500
 set autoread
 
 " Easily edit this file
-command E edit ~/.config/nvim/init.vim
+command! E edit ~/.config/nvim/init.vim
 
 " :W sudo saves the file
-command W w !sudo tee % > /dev/null
+command! W w !sudo tee % > /dev/null
 
 if has('clipboard')
     set clipboard^=unnamedplus      " Set default register to system clipboard
@@ -175,7 +175,8 @@ augroup colorschm
     autocmd ColorScheme * highlight ALEWarningSign guibg=lightblue guifg=black
     autocmd ColorScheme * highlight Normal guibg=none
     autocmd ColorScheme * highlight NonText guibg=none
-    autocmd Colorscheme * highlight StatusLine guibg=white
+    autocmd Colorscheme * highlight StatusLine guibg='#a6a6a6'
+    autocmd Colorscheme * highlight User1 guibg=white guifg=black
 augroup END
 
 colorscheme desert
@@ -187,8 +188,39 @@ nnoremap <Leader>c :set cursorline!<cr>
 
 set laststatus=2                    " Always show the status line
 
+" Modes
+let g:currentmode={
+    \ 'n'  : 'Normal',
+    \ 'no' : 'Normal',
+    \ 'v'  : 'Visual',
+    \ 'V'  : 'Visual',
+    \ '' : 'Visual',
+    \ 'c'  : 'Command',
+    \ 'i'  : 'Insert',
+    \ 'R'  : 'Replace',
+    \ 't'  : 'Terminal'
+    \}
+
+" Change color of statusline depending on mode
+function! ChangeStatuslineColor()
+  if (g:currentmode[mode()] =~# 'Normal')
+    exe 'highlight! StatusLine guibg=#a6a6a6'
+  elseif (g:currentmode[mode()] =~# 'Visual')
+    exe 'highlight! StatusLine guibg=#ff66ff'
+  elseif (mode() ==# 'i')
+    exe 'highlight! StatusLine guibg=#7fbfff'
+  elseif (mode() ==# 't')
+    exe 'highlight! StatusLine guibg=#7fff7f'
+  endif
+  return ''
+endfunction
+
 " Format the status line
-set statusline=%f                           " relative file location
+set statusline=
+set statusline+=%{ChangeStatuslineColor()}  " change color of statusline depending on mode
+set statusline+=\ %{currentmode[mode()]}    " current mode
+set statusline+=\ %1*                       " set highlight group to user1
+set statusline+=\ %f                        " relative file location
 set statusline+=%m                          " modified flag
 set statusline+=%r                          " ro flag
 set statusline+=%h                          " help file flag
@@ -252,10 +284,10 @@ nnoremap x "_x
 nnoremap <leader><cr> :noh<cr>
 
 " Easy escape
-inoremap kj <Esc>
-inoremap jk <Esc>
-inoremap KJ <Esc>
-inoremap JK <Esc>
+inoremap kj <Esc>jk
+inoremap jk <Esc>jk
+inoremap KJ <Esc>jk
+inoremap JK <Esc>jk
 tnoremap JK <C-\><C-n>
 tnoremap KJ <C-\><C-n>
 

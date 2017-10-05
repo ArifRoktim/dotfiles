@@ -120,8 +120,8 @@ fi
 
 
 # Load abduco with neovim-remote if not already done so
-if type nvr > /dev/null && type abduco > /dev/null && type ac > /dev/null && [[ -z $SSH_CLIENT ]] && [[ -z $NVIM_LISTEN_ADDRESS ]]; then
-    export -f ac
-    bash -c 'ac'
-fi
+#if type nvr > /dev/null && type abduco > /dev/null && type ac > /dev/null && [[ -z $SSH_CLIENT ]] && [[ -z $NVIM_LISTEN_ADDRESS ]]; then
+#    export -f ac
+#    bash -c 'ac'
+#fi
 

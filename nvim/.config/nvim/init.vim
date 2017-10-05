@@ -173,8 +173,8 @@ augroup colorschm
     autocmd ColorScheme * highlight PmenuSel guibg=blue guifg=white
     autocmd ColorScheme * highlight ALEErrorSign guibg=cyan guifg=black
     autocmd ColorScheme * highlight ALEWarningSign guibg=lightblue guifg=black
-    autocmd ColorScheme * highlight Normal guibg=none
-    autocmd ColorScheme * highlight NonText guibg=none
+    autocmd ColorScheme * highlight Normal guibg='#073642'
+    autocmd ColorScheme * highlight NonText guibg='#073642'
     autocmd Colorscheme * highlight StatusLine guibg='#a6a6a6'
     autocmd Colorscheme * highlight User1 guibg=white guifg=black
 augroup END

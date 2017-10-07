@@ -161,7 +161,7 @@ augroup Autocmds
 augroup END
 " ========== Colorscheme ==========
 
-if has('termguicolors')
+if has('termguicolors') && $TERM == "st-256color"
     set termguicolors
 endif
 

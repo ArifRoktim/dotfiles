@@ -24,7 +24,7 @@ bind '"kj":"\e\e"'
 bind -x '"\C-k":"jobs"'
 
 # Use nvim for sudoedit
-if type nvr > /dev/null; then
+if type nvr &> /dev/null; then
     export EDITOR="nvr --remote-wait-silent"
     export VISUAL="nvr --remote-wait-silent"
 else

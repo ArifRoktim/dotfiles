@@ -11,7 +11,7 @@
 
 " ========== dein Scripts ==========
 
-if has('nvim')
+if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
   " Required:
   set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
 

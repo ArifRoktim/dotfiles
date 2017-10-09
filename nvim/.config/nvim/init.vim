@@ -168,15 +168,15 @@ endif
 augroup colorschm
     autocmd!
     autocmd ColorScheme * highlight clear SignColumn
-    autocmd ColorScheme * highlight CursorLine gui=NONE guibg='#04252d'
-    autocmd ColorScheme * highlight Pmenu guibg=cyan guifg=black
-    autocmd ColorScheme * highlight PmenuSel guibg=blue guifg=white
-    autocmd ColorScheme * highlight ALEErrorSign guibg=cyan guifg=black
-    autocmd ColorScheme * highlight ALEWarningSign guibg=lightblue guifg=black
+    autocmd ColorScheme * highlight CursorLine gui=NONE guibg='#04252d' cterm=NONE ctermbg=darkblue
+    autocmd ColorScheme * highlight Pmenu guibg=cyan guifg=black ctermbg=cyan
+    autocmd ColorScheme * highlight PmenuSel guibg=blue guifg=white ctermbg=blue
+    autocmd ColorScheme * highlight ALEErrorSign guibg=cyan guifg=black ctermbg=cyan
+    autocmd ColorScheme * highlight ALEWarningSign guibg=lightblue guifg=black ctermbg=lightblue
     autocmd ColorScheme * highlight Normal guibg='#073642'
     autocmd ColorScheme * highlight NonText guibg='#073642'
-    autocmd Colorscheme * highlight StatusLine guibg='#a6a6a6'
-    autocmd Colorscheme * highlight User1 guibg=white guifg=black
+    autocmd Colorscheme * highlight StatusLine guibg='#a6a6a6'ctermfg=gray ctermbg=black
+    autocmd Colorscheme * highlight User1 guibg=white guifg=black ctermbg=white ctermfg=black
 augroup END
 
 colorscheme desert
@@ -204,13 +204,13 @@ let g:currentmode={
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor()
   if (g:currentmode[mode()] =~# 'Normal')
-    exe 'highlight! StatusLine guibg=#a6a6a6'
+    exe 'highlight! StatusLine guibg=#a6a6a6 ctermfg=gray'
   elseif (g:currentmode[mode()] =~# 'Visual')
-    exe 'highlight! StatusLine guibg=#ff66ff'
+    exe 'highlight! StatusLine guibg=#ff66ff ctermfg=magenta'
   elseif (mode() ==# 'i')
-    exe 'highlight! StatusLine guibg=#7fbfff'
+    exe 'highlight! StatusLine guibg=#7fbfff ctermfg=lightblue'
   elseif (mode() ==# 't')
-    exe 'highlight! StatusLine guibg=#7fff7f'
+    exe 'highlight! StatusLine guibg=#7fff7f ctermfg=lightgreen'
   endif
   return ''
 endfunction

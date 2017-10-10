@@ -284,6 +284,7 @@ nnoremap x "_x
 nnoremap <leader><cr> :noh<cr>
 
 " Easy escape
+" Added jk to end of <Esc> to make statusline update the mode immediately
 inoremap kj <Esc>jk
 inoremap jk <Esc>jk
 inoremap KJ <Esc>jk

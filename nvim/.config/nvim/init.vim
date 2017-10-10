@@ -1,7 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sections:
-"    => General
 "    => Plugin Settings
+"    => General
 "    => Colorscheme
 "    => Status line
 "    => Tabs,windows,buffers

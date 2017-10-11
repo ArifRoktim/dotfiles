@@ -142,7 +142,6 @@ if has("persistent_undo")
     set dir=~/.config/nvim/_swap
 endif
 
-set autoindent
 augroup Autocmds
     " clear all autocmds
     autocmd!

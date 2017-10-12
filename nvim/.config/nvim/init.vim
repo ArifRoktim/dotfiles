@@ -201,7 +201,7 @@ let g:currentmode={
     \}
 
 " Change color of statusline depending on mode
-function! ChangeStatuslineColor()
+function! ChangeStatuslineColor() abort
   if (g:currentmode[mode()] =~# 'Normal')
     exe 'highlight! StatusLine guibg=#a6a6a6 ctermfg=gray'
   elseif (g:currentmode[mode()] =~# 'Visual')

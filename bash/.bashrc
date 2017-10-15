@@ -23,6 +23,9 @@ bind '"kj":"\e\e"'
 # C-k to view jobs
 bind -x '"\C-k":"jobs"'
 
+# Add some directories to PATH
+export PATH=$HOME/.local/bin:$PATH:/usr/bin/core_perl
+
 # Use nvim for sudoedit
 if type nvr &> /dev/null; then
     export EDITOR="nvr --remote-wait-silent"
@@ -33,9 +36,6 @@ else
 fi
 
 export ABDUCO_CMD="nvr -s -cc term"
-
-# Add some directories to PATH
-export PATH=$HOME/.local/bin:$PATH:/usr/bin/core_perl
 
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file

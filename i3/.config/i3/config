@@ -152,5 +152,6 @@ exec --no-startup-id feh --bg-scale ~/dotfiles/Zorin.png # set bg
 exec --no-startup-id xset m 0 0 # no mouse accel
 
 # lock screen stuff
-exec --no-startup-id xss-lock -- i3lock -k -n -i ~/dotfiles/ZorinSmall.png --insidevercolor=00000000 --insidewrongcolor=00000000 --insidecolor=00000000 --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
-bindsym $altmod+l exec --no-startup-id i3lock -k -n -i ~/dotfiles/ZorinSmall.png --insidevercolor=00000000 --insidewrongcolor=00000000 --insidecolor=00000000 --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
+set $locker i3lock -k -n -i ~/dotfiles/ZorinSmall.png --insidevercolor=00000000 --insidewrongcolor=00000000 --insidecolor=00000000 --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
+exec --no-startup-id xss-lock -- $locker
+bindsym $altmod+l exec --no-startup-id $locker

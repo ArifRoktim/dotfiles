@@ -10,6 +10,7 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
+set $altmod Mod1
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -138,13 +139,18 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+    colors {
+        background #073642
+    }
         status_command i3status
 }
 
-exec --no-startup-id xss-lock -- i3lock -n -i $HOME/Pictures/ZorinSmall.png
-exec --no-startup-id xautolock -time 5 -locker "i3lock -i '~/dotfiles/ZorinSmall.png'"
-
 new_window none # no title bar
-exec --no-startup-id feh --bg-scale ~/dotfiles/Zorin.png
 
-exec --no-startup-id xset m 0 0
+exec --no-startup-id feh --bg-scale ~/dotfiles/Zorin.png # set bg
+
+exec --no-startup-id xset m 0 0 # no mouse accel
+
+# lock screen stuff
+exec --no-startup-id xss-lock -- i3lock -k -n -i ~/dotfiles/ZorinSmall.png --insidevercolor=00000000 --insidewrongcolor=00000000 --insidecolor=00000000 --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
+bindsym $altmod+l exec --no-startup-id i3lock -k -n -i ~/dotfiles/ZorinSmall.png --insidevercolor=00000000 --insidewrongcolor=00000000 --insidecolor=00000000 --timestr="%I:%M:%S" --datestr="%m/%d/%Y"

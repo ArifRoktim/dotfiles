@@ -224,6 +224,7 @@ set statusline+=%m                          " modified flag
 set statusline+=%r                          " ro flag
 set statusline+=%h                          " help file flag
 set statusline+=%w                          " preview flag
+set statusline+=\ %<
 set statusline+=\ \ CWD:%{getcwd()}         " current working directory
 set statusline+=\ [%l,%02.c]                " line and column number
 set statusline+=[%02.p%%]                   " percent through file

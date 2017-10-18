@@ -155,3 +155,10 @@ exec --no-startup-id xset m 0 0 # no mouse accel
 set $locker i3lock -k -u -n -i ~/dotfiles/Zorin.png -t --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
 exec --no-startup-id xss-lock -- $locker
 bindsym $altmod+l exec --no-startup-id $locker
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +1% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -1% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym F8 exec --no-startup-id pactl set-sink-volume 0 +1% #increase sound volume
+bindsym F7 exec --no-startup-id pactl set-sink-volume 0 -1% #decrease sound volume

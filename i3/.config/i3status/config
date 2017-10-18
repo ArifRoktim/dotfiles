@@ -14,7 +14,16 @@ general {
 order += "wireless _first_"
 order += "battery all"
 order += "load"
+order += "volume master"
 order += "tztime local"
+
+volume master {
+        format = "♪: %volume"
+        format_muted = "♪: muted (%volume)"
+        device = "pulse:0"
+        mixer = "Master"
+        mixer_idx = 0
+}
 
 wireless _first_ {
         format_up = "W: (%quality at %essid) %ip"
@@ -38,4 +47,3 @@ tztime local {
 load {
         format = "%1min"
 }
-

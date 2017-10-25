@@ -280,6 +280,9 @@ set stal=2
 " Make x go to blackhole buffer
 nnoremap x "_x
 
+" More consistent with d
+noremap Y y$
+
 " Unhighlight
 nnoremap <leader><cr> :noh<cr>
 

@@ -16,22 +16,21 @@
 # Set vi bindings
 set -o vi
 
+# Easy escaping
+bind '"jk":"\e\e"'
+bind '"kj":"\e\e"'
+
 # C-k to view jobs
 bind -x '"\C-k":"jobs"'
 
-# Add some directories to PATH
-export PATH=$PATH:$HOME/.local/bin:/usr/bin/core_perl
-
 # Use nvim for sudoedit
-if type nvr &> /dev/null; then
-    export EDITOR="nvr --remote-wait-silent"
-    export VISUAL="nvr --remote-wait-silent"
-else
-    export EDITOR="nvim"
-    export VISUAL="nvim"
-fi
+export EDITOR="nvr --server-name $NVIM_LISTEN_ADDRESS --remote-wait-silent"
+export VISUAL="nvr --server-name $NVIM_LISTEN_ADDRESS --remote-wait-silent"
 
 export ABDUCO_CMD="nvr -s -cc term"
+
+# Add some directories to PATH
+export PATH=$HOME/.local/bin:$PATH:/usr/bin/core_perl
 
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file
@@ -125,4 +124,7 @@ fi
 #    export -f ac
 #    bash -c 'ac'
 #fi
+
+
+lol(){
 

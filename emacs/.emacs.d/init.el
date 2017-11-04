@@ -24,6 +24,7 @@
 (require 'dracula-theme)
 (require 'key-chord)
 (require 'linum-relative)
+(require 'autopair)
 
 ;; ======== General setting ========
 
@@ -31,6 +32,11 @@
 (global-evil-leader-mode)
 (evil-mode 1)
 (key-chord-mode 1)
+(server-mode)
+(autopair-mode)
+
+;; Make Y = y$
+(setq-default evil-want-Y-yank-to-eol t)
 
 ;; Remove bloat
 (tool-bar-mode -1)
@@ -40,6 +46,9 @@
 
 ;; Highlight current line
 (global-hl-line-mode)
+
+;; Set leader
+(evil-leader/set-leader ",")
 
 ;; Relative line numbers
 (global-linum-mode)
@@ -81,12 +90,38 @@
     (save-place-mode 1)
   ((require 'saveplace)
    (setq-default save-place t)))
+(setq save-place-forget-unreadable-files nil)
 
+;; Center after search
+(defun my-center-line (&rest _)
+  (evil-scroll-line-to-center nil))
+
+(advice-add 'evil-search-next :after #'my-center-line)
 ;; ======== Mappings ========
 
 ;; Normal mode on jk
 (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+
+;; Insert indentations on tab press
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+
+;; Resizing mappings
+(evil-leader/set-key
+  "h" 'evil-window-decrease-width
+  "l" 'evil-window-increase-width
+  "j" 'evil-window-increase-height 
+  "k" 'evil-window-decrease-height)
+
+;; Move quickly
+(evil-leader/set-key
+  "w" 'evil-window-up
+  "a" 'evil-window-left
+  "s" 'evil-window-down
+  "d" 'evil-window-right)
+
+;; Delete buffer
+(evil-leader/set-key "bd" 'kill-buffer)
+
 
 ;; ======== Custom set variables ========
 (custom-set-variables
@@ -96,7 +131,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-leader linum-relative ## key-chord dracula-theme evil))))
+    (autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

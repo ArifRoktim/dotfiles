@@ -2,6 +2,7 @@
 ;;  => Package stuff
 ;;  => General setting
 ;;  => Mappings
+;;  => Eshell
 ;;  => Custom set variables
 
 ;; ======== Package stuff ========
@@ -26,6 +27,10 @@
 (require 'autopair)
 
 ;; ======== General setting ========
+
+;; Store additional config in a 'lisp' subfolder and add it to the load path so
+;; that `require' can find the files.
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Set modes
 (global-evil-leader-mode)
@@ -121,7 +126,7 @@
 
   ;; Resizing mappings
   (define-key leader (kbd "h") 'evil-window-decrease-width)
-  (define-key leader (kbd "j") 'evil-window-increase-height )
+  (define-key leader (kbd "j") 'evil-window-increase-height)
   (define-key leader (kbd "k") 'evil-window-decrease-height)
   (define-key leader (kbd "l") 'evil-window-increase-width)
   )
@@ -133,6 +138,12 @@
 ;; Delete buffer
 (evil-leader/set-key "bd" 'kill-buffer)
 
+
+;; ======== Eshell ========
+
+(nconc package-selected-packages '(pcomplete-extension pcmpl-args pcmpl-git))
+(with-eval-after-load 'eshell (require 'init-eshell))
+(autoload 'eshell-or-new-session "eshell")
 
 ;; ======== Custom set variables ========
 (custom-set-variables

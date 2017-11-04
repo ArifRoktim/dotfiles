@@ -25,7 +25,6 @@ Control-l: clear-screen
 # incremental history searching
 "\e[A": history-search-backward
 "\e[B": history-search-forward
-"jk": vi-movement-mode
 "kj": vi-movement-mode
 
 set keymap vi-command

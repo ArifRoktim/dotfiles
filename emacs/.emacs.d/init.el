@@ -20,7 +20,6 @@
 (package-initialize) ;; You might already have this line
 
 (require 'evil)
-(require 'evil-leader)
 (require 'dracula-theme)
 (require 'key-chord)
 (require 'linum-relative)
@@ -35,6 +34,13 @@
 (server-mode)
 (autopair-mode)
 
+;; Add evil to many places
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/repos/evil-special-modes" user-emacs-directory))
+(when (require 'evil-special-modes nil t) (evil-special-modes-init))
+;; Add evil to minibuffer
+(require 'evil-minibuffer)
+(evil-minibuffer-init)
+
 ;; Make Y = y$
 (setq-default evil-want-Y-yank-to-eol t)
 
@@ -46,9 +52,6 @@
 
 ;; Highlight current line
 (global-hl-line-mode)
-
-;; Set leader
-(evil-leader/set-leader ",")
 
 ;; Relative line numbers
 (global-linum-mode)
@@ -63,6 +66,7 @@
 ;; if our source file uses tabs, we use tabs, if spaces spaces, and if        
 ;; neither, we use the current indent-tabs-mode                               
 (defun infer-indentation-style ()
+  (interactive)
   (let ((space-count (how-many "^  " (point-min) (point-max)))
         (tab-count (how-many "^\t" (point-min) (point-max))))
     (if (> space-count tab-count) (setq indent-tabs-mode nil))
@@ -88,8 +92,8 @@
 ;; Save cursor position
 (if (> emacs-major-version 24)
     (save-place-mode 1)
-  ((require 'saveplace)
-   (setq-default save-place t)))
+  (progn (require 'saveplace)
+         (setq-default save-place t)))
 (setq save-place-forget-unreadable-files nil)
 
 ;; Center after search
@@ -105,19 +109,26 @@
 ;; Insert indentations on tab press
 (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 
-;; Resizing mappings
-(evil-leader/set-key
-  "h" 'evil-window-decrease-width
-  "l" 'evil-window-increase-width
-  "j" 'evil-window-increase-height 
-  "k" 'evil-window-decrease-height)
+;; define a prefix keymap
+(progn
+  (define-prefix-command 'leader)
 
-;; Move quickly
-(evil-leader/set-key
-  "w" 'evil-window-up
-  "a" 'evil-window-left
-  "s" 'evil-window-down
-  "d" 'evil-window-right)
+  ;; Move quickly
+  (define-key leader (kbd "w") 'evil-window-up)
+  (define-key leader (kbd "a") 'evil-window-left)
+  (define-key leader (kbd "s") 'evil-window-down)
+  (define-key leader (kbd "d") 'evil-window-right)
+
+  ;; Resizing mappings
+  (define-key leader (kbd "h") 'evil-window-decrease-width)
+  (define-key leader (kbd "j") 'evil-window-increase-height )
+  (define-key leader (kbd "k") 'evil-window-decrease-height)
+  (define-key leader (kbd "l") 'evil-window-increase-width)
+  )
+
+(eval-after-load 'evil-maps
+  '(progn
+    (define-key evil-motion-state-map (kbd ",") 'leader)))
 
 ;; Delete buffer
 (evil-leader/set-key "bd" 'kill-buffer)

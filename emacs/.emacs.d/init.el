@@ -20,6 +20,17 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
+; list the packages you want
+(setq package-list '(package1 package2))
+
+; fetch the list of packages available 
+(or (file-exists-p package-user-dir) (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
 ;; Make Y = y$
 (setq-default evil-want-Y-yank-to-eol t)
 
@@ -153,7 +164,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
+    (evil-magit magit autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

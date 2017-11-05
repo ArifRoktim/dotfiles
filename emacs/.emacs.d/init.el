@@ -20,6 +20,9 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
+;; Make Y = y$
+(setq-default evil-want-Y-yank-to-eol t)
+
 (require 'evil)
 (require 'dracula-theme)
 (require 'key-chord)
@@ -47,9 +50,6 @@
       (require 'evil-minibuffer)
       (evil-minibuffer-init))
   nil)
-
-;; Make Y = y$
-(setq-default evil-want-Y-yank-to-eol t)
 
 ;; Remove bloat
 (tool-bar-mode -1)
@@ -141,8 +141,9 @@
 
 ;; ======== Eshell ========
 
-(eval-after-load 'eshell (require 'init-eshell))
-;;(autoload 'eshell-or-new-session "eshell")
+(if (> emacs-major-version 24)
+    (with-eval-after-load 'eshell (require 'init-eshell))
+  nil)
 
 ;; ======== Custom set variables ========
 (custom-set-variables
@@ -152,7 +153,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
+    (magit autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -3,7 +3,9 @@
 
 ;;; REVIEW: ANSI coloring goes wrong sometimes.  Quite often with emerge/eix.
 ;;; Fixed in #27407.
-(require 'patch-eshell)
+(if (> emacs-major-version 24)
+    (require 'patch-eshell)
+  nil)
 
 ;;; Use native 'sudo', system sudo asks for password every time.
 ;;(require 'em-tramp)

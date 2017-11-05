@@ -33,18 +33,20 @@
 (add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Set modes
-(global-evil-leader-mode)
 (evil-mode 1)
 (key-chord-mode 1)
 (server-mode)
 (autopair-mode)
 
 ;; Add evil to many places
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/repos/evil-special-modes" user-emacs-directory))
-(when (require 'evil-special-modes nil t) (evil-special-modes-init))
-;; Add evil to minibuffer
-(require 'evil-minibuffer)
-(evil-minibuffer-init)
+(if (> emacs-major-version 24)
+    (progn
+      (add-to-list 'load-path (expand-file-name "~/.emacs.d/repos/evil-special-modes" user-emacs-directory))
+      (when (require 'evil-special-modes nil t) (evil-special-modes-init))
+      ;; Add evil to minibuffer
+      (require 'evil-minibuffer)
+      (evil-minibuffer-init))
+  nil)
 
 ;; Make Y = y$
 (setq-default evil-want-Y-yank-to-eol t)
@@ -105,7 +107,9 @@
 (defun my-center-line (&rest _)
   (evil-scroll-line-to-center nil))
 
-(advice-add 'evil-search-next :after #'my-center-line)
+(if (> emacs-major-version 24)
+    (advice-add 'evil-search-next :after #'my-center-line)
+  nil)
 ;; ======== Mappings ========
 
 ;; Normal mode on jk
@@ -135,13 +139,9 @@
   '(progn
     (define-key evil-motion-state-map (kbd ",") 'leader)))
 
-;; Delete buffer
-(evil-leader/set-key "bd" 'kill-buffer)
-
-
 ;; ======== Eshell ========
 
-(with-eval-after-load 'eshell (require 'init-eshell))
+(eval-after-load 'eshell (require 'init-eshell))
 ;;(autoload 'eshell-or-new-session "eshell")
 
 ;; ======== Custom set variables ========

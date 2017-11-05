@@ -17,8 +17,7 @@
  eshell-ls-use-colors t
  ;; ffap-shell-prompt-regexp changes the behaviour of `helm-find-files' when
  ;; point is on prompt. I find this disturbing.
- ffap-shell-prompt-regexp nil
- eshell-history-size 1024
+ eshell-history-size 999
  eshell-hist-ignoredups t
  eshell-destroy-buffer-when-process-dies t)
 
@@ -50,24 +49,6 @@
   (setq eshell-history-ring eshell-history-global-ring))
 (add-hook 'eshell-mode-hook 'eshell-hist-use-global-history)
 
-;;; Spawning
-;;(defun eshell-or-new-session (&optional arg)
-;;  "Create an interactive Eshell buffer.
-;;Switch to last Eshell session if any.
-;;Otherwise create a new one and switch to it.
-;;See `eshell' for the numeric prefix ARG."
-;;  (interactive "P")
-;;  (if (or arg (eq major-mode 'eshell-mode))
-;;      (eshell (or arg t))
-;;    (let ((last (buffer-list)))
-;;      (while (and last
-;;                  (not (with-current-buffer (car last)
-;;                         (eq major-mode 'eshell-mode))))
-;;        (setq last (cdr last)))
-;;      (if last
-;;          (switch-to-buffer (car last))
-;;        (eshell (or arg t))))))
-
 ;;; Completion
 (when (require 'bash-completion nil t)
   (defun eshell-bash-completion ()
@@ -77,25 +58,12 @@
   ;; <TAB>" shows .c files.
   (setq eshell-default-completion-function 'eshell-bash-completion))
 
-;;; Extra execution information
-(defvar eshell-status-p t
-  "If non-nil, display status before prompt.")
-(defvar eshell-status--last-command-time nil)
-(make-variable-buffer-local 'eshell-status--last-command-time)
-(defvar eshell-status-min-duration-before-display 1
-  "If a command takes more time than this, display its duration.")
-
-(defun eshell-status-display ()
-  (when eshell-status--last-command-time
-    (let ((duration (time-subtract (current-time) eshell-status--last-command-time)))
-      (when (> (time-to-seconds duration) eshell-status-min-duration-before-display)
-        (format "#[STATUS] End time %s, duration %.3fs\n"
-                (format-time-string "%F %T" (current-time))
-                (time-to-seconds duration))))))
-
-(defun eshell-status-record ()
-  (setq eshell-status--last-command-time (current-time)))
-
-(add-hook 'eshell-pre-command-hook 'eshell-status-record)
-
 (provide 'init-eshell)
+
+;; ls after cd
+(defun eshell/cl (&rest args)
+  (condition-case nil 
+      (progn 
+        (eshell/cd (pop args) )
+        (eshell/ls)
+        )))

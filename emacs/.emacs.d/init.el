@@ -21,7 +21,7 @@
 (package-initialize) ;; You might already have this line
 
 ; list the packages you want
-(setq package-list '(package1 package2))
+(setq package-list '(evil magit evil-magit autopair linum-relative key-chord dracula-theme))
 
 ; fetch the list of packages available 
 (or (file-exists-p package-user-dir) (package-refresh-contents))
@@ -41,10 +41,6 @@
 (require 'autopair)
 
 ;; ======== General setting ========
-
-;; Store additional config in a 'lisp' subfolder and add it to the load path so
-;; that `require' can find the files.
-(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
 
 ;; Set modes
 (evil-mode 1)
@@ -152,9 +148,53 @@
 
 ;; ======== Eshell ========
 
-(if (> emacs-major-version 24)
-    (with-eval-after-load 'eshell (require 'init-eshell))
-  nil)
+(setq
+ eshell-ls-use-colors t
+ eshell-history-size 1000
+ eshell-hist-ignoredups t
+ eshell-destroy-buffer-when-process-dies t)
+
+(add-hook 'eshell-mode-hook 'eshell-cmpl-initialize)
+
+;;; History
+;;; Filter out space-beginning commands from history.
+;;; TODO: history: do not store duplicates.  Push unique command to front of the list.
+(setq eshell-input-filter
+      (lambda (str)
+        (not (or (string= "" str)
+                 (string-prefix-p " " str)))))
+
+;;; Shared history.
+(defvar eshell-history-global-ring nil
+  "The history ring shared across Eshell sessions.")
+
+(defun eshell-hist-use-global-history ()
+  "Make Eshell history shared across different sessions."
+  (unless eshell-history-global-ring
+    (let (eshell-history-ring)
+      (when eshell-history-file-name
+        (eshell-read-history nil t))
+      (setq eshell-history-global-ring eshell-history-ring))
+    (unless eshell-history-ring (setq eshell-history-global-ring (make-ring eshell-history-size))))
+  (setq eshell-history-ring eshell-history-global-ring))
+(add-hook 'eshell-mode-hook 'eshell-hist-use-global-history)
+
+;;; Completion
+(when (require 'bash-completion nil t)
+  (defun eshell-bash-completion ()
+    (while (pcomplete-here
+            (nth 2 (bash-completion-dynamic-complete-nocomint (save-excursion (eshell-bol) (point)) (point))))))
+  ;; Sometimes `eshell-default-completion-function' does better, e.g. "gcc
+  ;; <TAB>" shows .c files.
+  (setq eshell-default-completion-function 'eshell-bash-completion))
+
+;; ls after cd
+(defun eshell/cl (&rest args)
+  (condition-case nil 
+      (progn 
+        (eshell/cd (pop args) )
+        (eshell/ls)
+        )))
 
 ;; ======== Custom set variables ========
 (custom-set-variables
@@ -164,7 +204,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-magit magit autopair evil-leader linum-relative ## key-chord dracula-theme evil))))
+    (evil-magit magit autopair linum-relative ## key-chord dracula-theme evil))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

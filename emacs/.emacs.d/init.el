@@ -20,13 +20,13 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
-; list the packages you want
+;; list the packages you want
 (setq package-list '(evil magit evil-magit autopair linum-relative key-chord dracula-theme))
 
-; fetch the list of packages available 
+;; fetch the list of packages available 
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 
-; install the missing packages
+;; install the missing packages
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
@@ -45,6 +45,7 @@
 (require 'rainbow-delimiters)
 (require 'magit)
 (require 'evil-magit)
+(require 'cl)
 
 ;; ======== General setting ========
 
@@ -52,8 +53,9 @@
 (evil-mode 1)
 (key-chord-mode 1)
 (server-mode)
-(autopair-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook (lambda ()
+                            (rainbow-delimiters-mode)
+                            (autopair-mode)))
 
 ;; Add evil to many places
 (if (> emacs-major-version 24)
@@ -126,6 +128,57 @@
 (if (> emacs-major-version 24)
     (advice-add 'evil-search-next :after #'my-center-line)
   nil)
+
+(defun shortened-path (path max-len)
+  "Return a potentially trimmed-down version of the directory PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (reduce '+ components :key 'length)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+
+(defun mode-line-buffer-file-parent-directory ()
+  (when buffer-file-name
+    (shortened-path default-directory 40)))
+(setq-default mode-line-buffer-identification
+              (cons
+               '((:eval (mode-line-buffer-file-parent-directory)))
+               mode-line-buffer-identification
+               ))
+
+(setq-default mode-line-format
+              '("%e"
+                mode-line-front-space
+                mode-line-client
+                mode-line-modified
+                mode-line-remote
+                " "
+                mode-line-buffer-identification
+                mode-line-position
+                evil-mode-line-tag
+                " "
+                mode-line-modes
+                mode-line-misc-info
+                mode-line-end-spaces)
+              )
+
+
 ;; ======== Mappings ========
 
 ;; Normal mode on jk

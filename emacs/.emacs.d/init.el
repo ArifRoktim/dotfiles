@@ -34,11 +34,17 @@
 ;; Make Y = y$
 (setq-default evil-want-Y-yank-to-eol t)
 
+(add-to-list 'load-path "~/.emacs.d/repos/evil-special-modes" )
+(add-to-list 'load-path "~/.emacs.d/repos/rainbow-delimiters" )
+
 (require 'evil)
 (require 'dracula-theme)
 (require 'key-chord)
 (require 'linum-relative)
 (require 'autopair)
+(require 'rainbow-delimiters)
+(require 'magit)
+(require 'evil-magit)
 
 ;; ======== General setting ========
 
@@ -47,11 +53,11 @@
 (key-chord-mode 1)
 (server-mode)
 (autopair-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;; Add evil to many places
 (if (> emacs-major-version 24)
     (progn
-      (add-to-list 'load-path (expand-file-name "~/.emacs.d/repos/evil-special-modes" user-emacs-directory))
       (when (require 'evil-special-modes nil t) (evil-special-modes-init))
       ;; Add evil to minibuffer
       (require 'evil-minibuffer)
@@ -76,6 +82,9 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq tab-stop-list (number-sequence 4 120 4))
+
+;; Follow symbolic links
+(setq vc-follow-symlinks t)
 
 ;; if our source file uses tabs, we use tabs, if spaces spaces, and if        
 ;; neither, we use the current indent-tabs-mode                               
@@ -122,9 +131,6 @@
 ;; Normal mode on jk
 (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
 
-;; Insert indentations on tab press
-(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-
 ;; define a prefix keymap
 (progn
   (define-prefix-command 'leader)
@@ -144,7 +150,9 @@
 
 (eval-after-load 'evil-maps
   '(progn
-    (define-key evil-motion-state-map (kbd ",") 'leader)))
+     (define-key evil-motion-state-map (kbd ",") 'leader)
+     (define-key evil-motion-state-map (kbd "0") 'evil-first-non-blank)
+     ))
 
 ;; ======== Eshell ========
 
@@ -195,6 +203,29 @@
         (eshell/cd (pop args) )
         (eshell/ls)
         )))
+
+(defmacro with-face (str &rest properties)
+  `(propertize ,str 'face (list ,@properties)))
+
+(defun shk-eshell-prompt ()
+  (let ((header-bg "#282a36"))
+    (concat
+     (with-face (concat user-login-name "@" (system-name) " ") :foreground "green")
+     (with-face (concat (format-time-string "%m/%d|%I:%M" (current-time)) " ") :foreground "cyan")
+     (with-face (concat (eshell/pwd) " ") :foreground "lightblue")
+     (if (magit-get-current-branch)
+         (with-face (concat "(" (magit-get-current-branch) ")") :foreground "magenta")
+       nil
+       )
+     "\n"
+     (if (= (user-uid) 0)
+         (with-face "#" :foreground "red")
+       "$")
+     " ")))
+(setq eshell-prompt-function 'shk-eshell-prompt)
+(setq eshell-highlight-prompt nil)
+(setq eshell-prompt-regexp "\$ ")
+(setq eshell-prompt-string "\$ ")
 
 ;; ======== Custom set variables ========
 (custom-set-variables

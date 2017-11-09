@@ -20,42 +20,53 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
-;; list the packages you want
-(setq package-list '(evil magit evil-magit autopair linum-relative key-chord dracula-theme))
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
 
-;; fetch the list of packages available 
-(or (file-exists-p package-user-dir) (package-refresh-contents))
-
-;; install the missing packages
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
-
-;; Make Y = y$
-(setq-default evil-want-Y-yank-to-eol t)
-
-(add-to-list 'load-path "~/.emacs.d/repos/evil-special-modes" )
-(add-to-list 'load-path "~/.emacs.d/repos/rainbow-delimiters" )
-
-(require 'evil)
-(require 'dracula-theme)
-(require 'key-chord)
-(require 'linum-relative)
-(require 'autopair)
-(require 'rainbow-delimiters)
-(require 'magit)
-(require 'evil-magit)
-(require 'cl)
+(setq use-package-always-ensure t)
+(use-package evil
+  :init
+  (setq-default evil-want-Y-yank-to-eol t)
+  :config
+  (evil-mode 1))
+(use-package dracula-theme)
+(use-package key-chord
+  :config
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+(use-package linum-relative
+  :config
+  (global-linum-mode)
+  (linum-relative-global-mode)
+  (setq linum-relative-current-symbol ""))
+(use-package autopair
+  :config
+  (add-hook 'prog-mode-hook (lambda ()
+                              (autopair-mode))))
+(use-package rainbow-delimiters
+  :load-path "repos/rainbow-delimiters"
+  :pin manual
+  :ensure f
+  :config
+  (add-hook 'prog-mode-hook (lambda ()
+                              (rainbow-delimiters-mode))))
+(use-package evil-special-modes
+  :load-path "repos/evil-special-modes"
+  :pin manual
+  :ensure f)
+(use-package magit)
+(use-package evil-magit)
+(use-package flycheck
+  :init (global-flycheck-mode))
 
 ;; ======== General setting ========
 
 ;; Set modes
-(evil-mode 1)
-(key-chord-mode 1)
-(server-mode)
-(add-hook 'prog-mode-hook (lambda ()
-                            (rainbow-delimiters-mode)
-                            (autopair-mode)))
+(unless (server-running-p)
+  (server-start))
 
 ;; Add evil to many places
 (if (> emacs-major-version 24)
@@ -74,11 +85,6 @@
 
 ;; Highlight current line
 (global-hl-line-mode)
-
-;; Relative line numbers
-(global-linum-mode)
-(linum-relative-global-mode)
-(setq linum-relative-current-symbol "")
 
 ;; Use 4 spaces instead of tabs
 (setq-default indent-tabs-mode nil)
@@ -180,9 +186,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 
 ;; ======== Mappings ========
-
-;; Normal mode on jk
-(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
 
 ;; define a prefix keymap
 (progn
@@ -288,7 +291,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-magit magit autopair linum-relative ## key-chord dracula-theme evil))))
+    (evil-special-modes use-package rainbow-delimiters linum-relative key-chord evil-magit dracula-theme autopair))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

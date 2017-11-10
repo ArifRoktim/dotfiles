@@ -239,6 +239,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
   ;; Magit shortcut
   (define-key leader (kbd "g") 'magit-status)
+
+  ;; Flycheck shortcut
+  (define-key leader (kbd "z") 'flycheck-previous-error)
+  (define-key leader (kbd "c") 'flycheck-next-error)
   
   )
 

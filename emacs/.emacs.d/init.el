@@ -61,6 +61,17 @@
 (use-package evil-magit)
 (use-package flycheck
   :init (global-flycheck-mode))
+(use-package auto-complete
+  :config
+  (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+  (ac-config-default))
+(use-package auto-complete-clang
+  :config
+  (setq ac-sources (append '(ac-source-clang) ac-sources)))
+(use-package eyebrowse
+  :config
+  (eyebrowse-mode t)
+  )
 
 ;; ======== General setting ========
 
@@ -202,6 +213,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (define-key leader (kbd "j") 'evil-window-increase-height)
   (define-key leader (kbd "k") 'evil-window-decrease-height)
   (define-key leader (kbd "l") 'evil-window-increase-width)
+
+  ;; Eyebrowse key-bindings
+  (define-key leader (kbd "0") 'eyebrowse-switch-to-window-config-0)
+  (define-key leader (kbd "1") 'eyebrowse-switch-to-window-config-1)
+  (define-key leader (kbd "2") 'eyebrowse-switch-to-window-config-2)
+  (define-key leader (kbd "3") 'eyebrowse-switch-to-window-config-3)
+  (define-key leader (kbd "4") 'eyebrowse-switch-to-window-config-4)
+  (define-key leader (kbd "5") 'eyebrowse-switch-to-window-config-5)
+  (define-key leader (kbd "6") 'eyebrowse-switch-to-window-config-6)
+  (define-key leader (kbd "7") 'eyebrowse-switch-to-window-config-7)
+  (define-key leader (kbd "8") 'eyebrowse-switch-to-window-config-8)
+  (define-key leader (kbd "9") 'eyebrowse-switch-to-window-config-9)
+  (define-key leader (kbd "q") 'eyebrowse-prev-window-config)
+  (define-key leader (kbd "e") 'eyebrowse-next-window-config)
+
+  ;; Magit shortcut
+  (define-key leader (kbd "g") 'magit-status)
+  
   )
 
 (eval-after-load 'evil-maps
@@ -291,7 +320,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-special-modes use-package rainbow-delimiters linum-relative key-chord evil-magit dracula-theme autopair))))
+    (auto-complete aut-complete evil-special-modes use-package rainbow-delimiters linum-relative key-chord evil-magit dracula-theme autopair))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -25,23 +25,34 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
-
 (setq use-package-always-ensure t)
+
 (use-package evil
   :init
   (setq-default evil-want-Y-yank-to-eol t)
   :config
   (evil-mode 1))
+(use-package evil-special-modes
+  :load-path "repos/evil-special-modes"
+  :pin manual
+  :ensure f)
+
 (use-package dracula-theme)
+
 (use-package key-chord
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+(use-package eyebrowse
+  :config
+  (eyebrowse-mode t)
+  )
 (use-package linum-relative
   :config
   (global-linum-mode)
   (linum-relative-global-mode)
   (setq linum-relative-current-symbol ""))
+
 (use-package autopair
   :config
   (add-hook 'prog-mode-hook (lambda ()
@@ -53,28 +64,23 @@
   :config
   (add-hook 'prog-mode-hook (lambda ()
                               (rainbow-delimiters-mode))))
-(use-package evil-special-modes
-  :load-path "repos/evil-special-modes"
-  :pin manual
-  :ensure f)
+
 (use-package magit)
 (use-package evil-magit)
+
 (use-package flycheck
   :init (global-flycheck-mode))
-(use-package eyebrowse
-  :config
-  (eyebrowse-mode t)
-  )
+
 (use-package company
   :init
   (bind-key "C-c c" 'company-complete)
   :config
   (company-mode t)
-  (add-hook 'after-init-hook 'global-company-mode))
-(use-package company-irony
-  :config
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-irony)))
+  (add-hook 'after-init-hook 'global-company-mode)
+  (add-to-list 'company-backends 'company-irony)
+  (add-to-list 'company-backends 'company-jedi))
+(use-package company-irony)
+(use-package company-jedi)
 
 ;; ======== General setting ========
 

@@ -61,17 +61,20 @@
 (use-package evil-magit)
 (use-package flycheck
   :init (global-flycheck-mode))
-(use-package auto-complete
-  :config
-  (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-  (ac-config-default))
-(use-package auto-complete-clang
-  :config
-  (setq ac-sources (append '(ac-source-clang) ac-sources)))
 (use-package eyebrowse
   :config
   (eyebrowse-mode t)
   )
+(use-package company
+  :init
+  (bind-key "C-c c" 'company-complete)
+  :config
+  (company-mode t)
+  (add-hook 'after-init-hook 'global-company-mode))
+(use-package company-irony
+  :config
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-irony)))
 
 ;; ======== General setting ========
 
@@ -320,7 +323,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (auto-complete aut-complete evil-special-modes use-package rainbow-delimiters linum-relative key-chord evil-magit dracula-theme autopair))))
+    (company-irony use-package rainbow-delimiters linum-relative key-chord flycheck f eyebrowse evil-magit dracula-theme company autopair auto-complete-clang))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

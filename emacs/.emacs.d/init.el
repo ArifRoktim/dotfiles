@@ -53,16 +53,11 @@
   :config
   (eyebrowse-mode t)
   )
-
-;; Git submodules
 (use-package autopair
   :config
   (add-hook 'prog-mode-hook (lambda ()
                               (autopair-mode))))
 (use-package rainbow-delimiters
-  :load-path "repos/rainbow-delimiters"
-  :pin manual
-  :ensure f
   :config
   (add-hook 'prog-mode-hook (lambda ()
                               (rainbow-delimiters-mode))))
@@ -204,7 +199,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (defun mode-line-buffer-file-parent-directory ()
   (when buffer-file-name
-    (shortened-path default-directory 40)))
+    (shortened-path default-directory 15)))
 (setq-default mode-line-buffer-identification
               (cons
                '((:eval (mode-line-buffer-file-parent-directory)))

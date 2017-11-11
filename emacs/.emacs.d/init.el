@@ -33,10 +33,14 @@
   (setq-default evil-want-Y-yank-to-eol t)
   :config
   (evil-mode 1))
-(use-package evil-special-modes
-  :load-path "repos/evil-special-modes"
+(use-package evil-collection
+  :load-path "repos/evil-collection"
   :pin manual
-  :ensure f)
+  :ensure f
+  :config
+  (evil-collection-init)
+  (require 'evil-minibuffer)
+  (evil-minibuffer-init))
 (use-package linum-relative
   :config
   (global-linum-mode)
@@ -105,15 +109,6 @@
 ;; Set modes
 (unless (server-running-p)
   (server-start))
-
-;; Add evil to many places
-(if (> emacs-major-version 24)
-    (progn
-      (when (require 'evil-special-modes nil t) (evil-special-modes-init))
-      ;; Add evil to minibuffer
-      (require 'evil-minibuffer)
-      (evil-minibuffer-init))
-  nil)
 
 ;; Remove bloat
 (tool-bar-mode -1)

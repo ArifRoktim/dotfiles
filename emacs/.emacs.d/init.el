@@ -94,13 +94,20 @@
   (bind-key "C-c c" 'company-complete)
   :config
   (company-mode t)
-  (add-hook 'after-init-hook 'global-company-mode)
   (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends 'company-jedi)
   (add-to-list 'company-backends 'company-c-headers))
+  (add-hook 'after-init-hook 'global-company-mode))
 
-;; Pytohn autocompletion
-(use-package company-jedi)
+;; Python autocompletion
+(use-package company-jedi
+  :config
+  (setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:complete-on-dot t)
+  (setq jedi:use-shortcuts t)
+  (defun config/enable-company-jedi ()
+    (add-to-list 'company-backends 'company-jedi))
+  (add-hook 'python-mode-hook 'config/enable-company-jedi))
 
 ;; C autocompletion
 (use-package irony

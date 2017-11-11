@@ -1,3 +1,5 @@
+;;; init.el --- Config file
+;;; Commentary:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  => Package stuff
 ;;  => General setting
@@ -6,6 +8,8 @@
 ;;  => Custom set variables
 
 ;; ======== Package stuff ========
+
+;;; Code:
 
 (package-initialize)
 (require 'package)
@@ -137,14 +141,14 @@
 ;; Follow symbolic links
 (setq vc-follow-symlinks t)
 
-;; if our source file uses tabs, we use tabs, if spaces spaces, and if        
-;; neither, we use the current indent-tabs-mode                               
 (defun infer-indentation-style ()
+  "If our source file uses tabs, we use tabs. If spaces spaces, and if neither, we use the current `indent-tabs-mode'"
   (interactive)
   (let ((space-count (how-many "^  " (point-min) (point-max)))
         (tab-count (how-many "^\t" (point-min) (point-max))))
-    (if (> space-count tab-count) (setq indent-tabs-mode nil))
-    (if (> tab-count space-count) (setq indent-tabs-mode t))))
+    (if (> space-count tab-count) (setq-local indent-tabs-mode nil))
+    (if (> tab-count space-count) (setq-local indent-tabs-mode t))))
+(add-hook 'prog-mode-hook 'infer-indentation-style)
 
 ;; Keep 7 lines above and below cursor
 (setq scroll-margin 7)
@@ -204,7 +208,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (defun mode-line-buffer-file-parent-directory ()
   (when buffer-file-name
-    (shortened-path default-directory 40)))
+    (shortened-path default-directory 15)))
 (setq-default mode-line-buffer-identification
               (cons
                '((:eval (mode-line-buffer-file-parent-directory)))

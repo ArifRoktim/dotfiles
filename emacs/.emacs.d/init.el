@@ -69,7 +69,12 @@
 (use-package evil-magit)
 
 (use-package flycheck
-  :init (global-flycheck-mode))
+  :init
+  (global-flycheck-mode)
+  (setq-default flycheck-python-pycompile-executable "python2")
+  (setq-default flycheck-python-flake8-executable "flake8-python2")
+  (setq-default flycheck-python-pylint-executable "pylint2"))
+
 
 (use-package company
   :init

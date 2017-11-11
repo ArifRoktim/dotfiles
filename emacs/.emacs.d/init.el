@@ -27,6 +27,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; Vim emulation packages
 (use-package evil
   :init
   (setq-default evil-want-Y-yank-to-eol t)
@@ -36,9 +37,14 @@
   :load-path "repos/evil-special-modes"
   :pin manual
   :ensure f)
+(use-package linum-relative
+  :config
+  (global-linum-mode)
+  (linum-relative-global-mode)
+  (setq linum-relative-current-symbol ""))
 
+;; Misc
 (use-package dracula-theme)
-
 (use-package key-chord
   :config
   (key-chord-mode 1)
@@ -47,12 +53,8 @@
   :config
   (eyebrowse-mode t)
   )
-(use-package linum-relative
-  :config
-  (global-linum-mode)
-  (linum-relative-global-mode)
-  (setq linum-relative-current-symbol ""))
 
+;; Git submodules
 (use-package autopair
   :config
   (add-hook 'prog-mode-hook (lambda ()
@@ -65,17 +67,24 @@
   (add-hook 'prog-mode-hook (lambda ()
                               (rainbow-delimiters-mode))))
 
+;; Magit
 (use-package magit)
 (use-package evil-magit)
 
+;; Linting
 (use-package flycheck
   :init
   (global-flycheck-mode)
   (setq-default flycheck-python-pycompile-executable "python2")
   (setq-default flycheck-python-flake8-executable "flake8-python2")
   (setq-default flycheck-python-pylint-executable "pylint2"))
+  
+(use-package flycheck-irony
+  :config
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
-
+;; Autocompletion stuff
 (use-package company
   :init
   (bind-key "C-c c" 'company-complete)
@@ -83,9 +92,18 @@
   (company-mode t)
   (add-hook 'after-init-hook 'global-company-mode)
   (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends 'company-jedi))
-(use-package company-irony)
+  (add-to-list 'company-backends 'company-jedi)
+  (add-to-list 'company-backends 'company-c-headers))
+
+;; Pytohn autocompletion
 (use-package company-jedi)
+
+;; C autocompletion
+(use-package irony
+  :config
+  (add-hook 'c-mode-hook 'irony-mode))
+(use-package company-irony)
+(use-package company-c-headers)
 
 ;; ======== General setting ========
 

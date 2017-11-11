@@ -1,6 +1,3 @@
-[submodule "emacs/.emacs.d/repos/evil-special-modes"]
-	path = emacs/.emacs.d/repos/evil-special-modes
-	url = https://github.com/Ambrevar/evil-special-modes.git
-[submodule "emacs/.emacs.d/repos/rainbow-delimiters"]
-	path = emacs/.emacs.d/repos/rainbow-delimiters
-	url = https://github.com/Fanael/rainbow-delimiters.git
+[submodule "emacs/.emacs.d/repos/evil-collection"]
+	path = emacs/.emacs.d/repos/evil-collection
+	url = git@github.com:jojojames/evil-collection.git

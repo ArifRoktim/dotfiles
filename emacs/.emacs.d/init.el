@@ -94,8 +94,6 @@
   (bind-key "C-c c" 'company-complete)
   :config
   (company-mode t)
-  (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends 'company-c-headers))
   (add-hook 'after-init-hook 'global-company-mode))
 
 ;; Python autocompletion
@@ -113,7 +111,13 @@
 (use-package irony
   :config
   (add-hook 'c-mode-hook 'irony-mode))
-(use-package company-irony)
+(use-package company-irony
+  :config
+  (add-hook 'c-mode-hook (lambda ()
+                           (add-to-list 'company-backends 'company-irony)
+                           (add-to-list 'company-backends 'company-c-headers)
+                           )))
+
 (use-package company-c-headers)
 
 ;; ======== General setting ========

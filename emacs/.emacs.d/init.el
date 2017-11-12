@@ -211,11 +211,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun mode-line-buffer-file-parent-directory ()
   (when buffer-file-name
     (shortened-path default-directory 15)))
-(setq-default mode-line-buffer-identification
-              (cons
-               '((:eval (mode-line-buffer-file-parent-directory)))
-               mode-line-buffer-identification
-               ))
+
+(unless (boundp 'added-buffer-id)
+  (setq-default mode-line-buffer-identification
+                (cons
+                 '((:eval (mode-line-buffer-file-parent-directory)))
+                 mode-line-buffer-identification
+                 ))
+  (defvar added-buffer-id t)
+  )
 
 (setq-default mode-line-format
               '("%e"

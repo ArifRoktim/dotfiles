@@ -63,6 +63,7 @@
   )
 (use-package autopair
   :config
+  (setq autopair-skip-whitespace 'chomp)
   (add-hook 'prog-mode-hook (lambda ()
                               (autopair-mode))))
 (use-package rainbow-delimiters

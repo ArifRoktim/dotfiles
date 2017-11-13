@@ -99,7 +99,11 @@
 ;; Python autocompletion
 (use-package company-jedi
   :config
-  (setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
+  (if (or (string= (system-name) "iroh") (string= (system-name) "zuko"))
+      (setq jedi:environment-virtualenv '("virtualenv2"))
+    (setq jedi:environment-virtualenv '("virtualenv")))
+  (setq jedi:environment-root "python2")
+  ;;(setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
   (add-hook 'python-mode-hook 'jedi:setup)
   (setq jedi:complete-on-dot t)
   (setq jedi:use-shortcuts t)

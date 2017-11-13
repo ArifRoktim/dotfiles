@@ -31,6 +31,9 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; Declutter modeline
+(use-package delight)
+
 ;; Vim emulation packages
 (use-package evil
   :init
@@ -46,6 +49,7 @@
   (require 'evil-minibuffer)
   (evil-minibuffer-init))
 (use-package linum-relative
+  :delight
   :config
   (global-linum-mode)
   (linum-relative-global-mode)
@@ -62,6 +66,7 @@
   (eyebrowse-mode t)
   )
 (use-package autopair
+  :delight
   :config
   (setq autopair-skip-whitespace 'chomp)
   (add-hook 'prog-mode-hook (lambda ()
@@ -90,11 +95,22 @@
 
 ;; Autocompletion stuff
 (use-package company
+  :delight
   :init
   (bind-key "C-c c" 'company-complete)
   :config
   (company-mode t)
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  (setq company-minimum-prefix-length 2
+        company-show-numbers t
+        company-tooltip-align-annotations t
+        company-require-match nil
+        company-dabbrev-downcase nil
+        company-selection-wrap-around t))
+(use-package company-quickhelp
+  :config
+  (setq company-quickhelp-delay 1)
+  (company-quickhelp-mode 1))
 
 ;; Python autocompletion
 (use-package company-jedi
@@ -121,8 +137,8 @@
                            (add-to-list 'company-backends 'company-irony)
                            (add-to-list 'company-backends 'company-c-headers)
                            )))
-
 (use-package company-c-headers)
+
 
 ;; ======== General setting ========
 
@@ -136,8 +152,10 @@
 (scroll-bar-mode -1)
 (setq inhibit-startup-screen t)
 
+;; Show current function in modeline
+(which-function-mode 1)
 ;; Highlight current line
-(global-hl-line-mode)
+(global-hl-line-mode 1)
 
 ;; Use 4 spaces instead of tabs
 (setq-default indent-tabs-mode nil)
@@ -236,8 +254,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                 mode-line-position
                 evil-mode-line-tag
                 " "
-                mode-line-modes
                 mode-line-misc-info
+                mode-line-modes
                 mode-line-end-spaces)
               )
 

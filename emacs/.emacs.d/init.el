@@ -119,6 +119,7 @@
       (setq jedi:environment-virtualenv '("virtualenv2"))
     (setq jedi:environment-virtualenv '("virtualenv")))
   (setq jedi:environment-root "python2")
+  (setq python-shell-virtualenv-root "~/.emacs.d/.python-environments/python2")
   ;;(setq jedi:environment-virtualenv (list (expand-file-name "~/.emacs.d/.python-environments/")))
   (add-hook 'python-mode-hook 'jedi:setup)
   (setq jedi:complete-on-dot t)

@@ -79,6 +79,8 @@
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
+(use-package markdown-mode)
+(use-package markdown-preview-mode)
 
 ;; Magit
 (use-package magit)
@@ -393,7 +395,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (exec-path-from-shell company-irony use-package rainbow-delimiters linum-relative key-chord flycheck f eyebrowse evil-magit dracula-theme company autopair auto-complete-clang))))
+    (markdown-mode markdown-preview-mode exec-path-from-shell company-irony use-package rainbow-delimiters linum-relative key-chord flycheck f eyebrowse evil-magit dracula-theme company autopair auto-complete-clang))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

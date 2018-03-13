@@ -24,17 +24,10 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
       call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
       " Add or remove your plugins here:
-      call dein#add('w0rp/ale')
       call dein#add('Shougo/deoplete.nvim')
-
       call dein#add('jiangmiao/auto-pairs')
-
-      call dein#add('zchee/deoplete-jedi')
-      call dein#add('Shougo/neoinclude.vim')
-      call dein#add('Rip-Rip/clang_complete')
-
-      call dein#add('tpope/vim-surround')
       call dein#add('tpope/vim-repeat')
+
       " You can specify revision/branch/tag.
       "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 
@@ -58,30 +51,8 @@ endif
 
 " ==========Plugin Settings ==========
 
-" Lint only when files are saved
-let g:ale_lint_on_text_changed = 'never'
-
-" Lint python2 instead of python3
-if hostname() == "iroh" || hostname() == "zuko"
-    let g:ale_python_pylint_executable = 'pylint2'
-    let g:deoplete#sources#jedi#python_path = '/usr/bin/python2'
-else
-    let g:ale_python_pylint_executable = 'pylint'
-endif
-
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
-
-" clang_complete settings
-if hostname() == "iroh" || hostname() == "zuko"
-    let g:clang_library_path = "/lib"
-else
-    let g:clang_library_path = "/home/students/2018/arif.roktim/.local/builds/libclang/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04/lib/"
-endif
-let g:clang_complete_auto = 0
-let g:clang_auto_select = 0
-let g:clang_omnicppcomplete_compliance = 0
-let g:clang_make_default_keymappings = 0
 
 " ========== General ==========
 
@@ -120,7 +91,6 @@ set autowrite                       " Write the contents of the file, if it has 
 " Sometimes ignore case when searching
 set ignorecase
 set smartcase
-set cursorline
 
 " No annoying bells on errors
 set noerrorbells
@@ -140,6 +110,9 @@ if has("persistent_undo")
     set backup
     set backupdir=~/.config/nvim/_tmp
     set dir=~/.config/nvim/_swap
+    if !isdirectory("~/.config/nvim/_tmp")
+        call mkdir( $HOME.'/.config/nvim/_tmp', "p")
+    endif
 endif
 
 augroup Autocmds
@@ -147,7 +120,7 @@ augroup Autocmds
     autocmd!
 
     " make sure terminal buffers don't have line numbers
-    autocmd BufEnter term://* setlocal nonumber | setlocal norelativenumber
+    autocmd TermOpen * setlocal nonumber norelativenumber
 
     " Return to last edit position when opening files
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
@@ -235,20 +208,20 @@ set hidden      " Hide abandoned buffers
 
 " Easy resizing
 nnoremap <leader>A <C-w><
-nnoremap <leader>a <C-w>>
+nnoremap <leader>D <C-w>>
 nnoremap <leader>S <C-w>-
-nnoremap <leader>s <C-w>+
+nnoremap <leader>W <C-w>+
 
-" Smart way to move between windows
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
+" Move between windows
+nnoremap <leader>s <C-W>j
+nnoremap <leader>w <C-W>k
+nnoremap <leader>a <C-W>h
+nnoremap <leader>d <C-W>l
 " Terminal movement
-tnoremap <C-j> <C-\><C-n><C-W>j
-tnoremap <C-k> <C-\><C-n><C-W>k
-tnoremap <C-h> <C-\><C-n><C-W>h
-tnoremap <C-l> <C-\><C-n><C-W>l
+tnoremap <leader>s <C-\><C-n><C-W>j
+tnoremap <leader>w <C-\><C-n><C-W>k
+tnoremap <leader>a <C-\><C-n><C-W>h
+tnoremap <leader>d <C-\><C-n><C-W>l
 
 " Close the current buffer but not the current window
 noremap <leader>bd :bp \| bd #<cr>
@@ -287,11 +260,10 @@ noremap Y y$
 nnoremap <leader><cr> :noh<cr>
 
 " Easy escape
-" Added jk to end of <Esc> to make statusline update the mode immediately
-inoremap kj <Esc>jk
-inoremap jk <Esc>jk
-inoremap KJ <Esc>jk
-inoremap JK <Esc>jk
+inoremap kj <Esc>
+inoremap jk <Esc>
+inoremap KJ <Esc>
+inoremap JK <Esc>
 tnoremap JK <C-\><C-n>
 tnoremap KJ <C-\><C-n>
 

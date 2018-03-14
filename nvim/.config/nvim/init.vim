@@ -28,6 +28,8 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
       call dein#add('jiangmiao/auto-pairs')
       call dein#add('tpope/vim-repeat')
 
+      call dein#add('rust-lang/rust.vim')
+
       " You can specify revision/branch/tag.
       "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 
@@ -217,6 +219,10 @@ nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k
 nnoremap <leader>a <C-W>h
 nnoremap <leader>d <C-W>l
+inoremap <leader>s <Esc><C-W>j
+inoremap <leader>w <Esc><C-W>k
+inoremap <leader>a <Esc><C-W>h
+inoremap <leader>d <Esc><C-W>l
 " Terminal movement
 tnoremap <leader>s <C-\><C-n><C-W>j
 tnoremap <leader>w <C-\><C-n><C-W>k

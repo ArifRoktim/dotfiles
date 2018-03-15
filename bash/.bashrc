@@ -20,7 +20,10 @@ set -o vi
 bind -x '"\C-k":"jobs"'
 
 # Add some directories to PATH
-export PATH=$PATH:$HOME/.local/bin:/usr/bin/core_perl
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:/usr/bin/core_perl:$PATH"
+
+# Required for RACER (Rust Auto-Complete-ER)
+export RUST_SRC_PATH="/home/arif/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src"
 
 # Use nvim for sudoedit
 if type nvr &> /dev/null; then

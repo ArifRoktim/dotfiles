@@ -29,6 +29,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
       call dein#add('tpope/vim-repeat')
 
       call dein#add('rust-lang/rust.vim')
+      call dein#add('racer-rust/vim-racer')
 
       " You can specify revision/branch/tag.
       "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
@@ -55,6 +56,9 @@ endif
 
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
+
+" Configure racer
+let g:racer_cmd = "$HOME/.cargo/bin/racer"
 
 " ========== General ==========
 

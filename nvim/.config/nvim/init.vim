@@ -59,6 +59,7 @@ let g:deoplete#enable_at_startup = 1
 
 " Configure racer
 let g:racer_cmd = "$HOME/.cargo/bin/racer"
+let g:racer_experimental_completer = 1
 
 " ========== General ==========
 

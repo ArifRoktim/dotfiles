@@ -19,12 +19,12 @@ font pango:DejaVu Sans Mono 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec st
+bindsym $mod+Return exec xterm
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
+# start rofi (a program launcher)
 bindsym $mod+d exec rofi -show run
 bindsym $mod+Shift+d exec rofi -show drun
 
@@ -34,23 +34,11 @@ bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
 # move focused window
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
 bindsym $mod+b split h
@@ -122,12 +110,6 @@ mode "resize" {
         bindsym k resize shrink height 5 px or 5 ppt
         bindsym l resize grow width 5 px or 5 ppt
 
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 5 px or 5 ppt
-        bindsym Down resize grow height 5 px or 5 ppt
-        bindsym Up resize shrink height 5 px or 5 ppt
-        bindsym Right resize grow width 5 px or 5 ppt
-
         # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -151,8 +133,7 @@ exec --no-startup-id feh --bg-scale ~/dotfiles/Zorin.png # set bg
 exec --no-startup-id xset m 0 0 # no mouse accel
 
 # lock screen stuff
-set $locker i3lock -k -u -n -i ~/dotfiles/Zorin.png -t --timestr="%I:%M:%S" --datestr="%m/%d/%Y"
-exec --no-startup-id xss-lock -- $locker
+set $locker physlock
 bindsym $altmod+l exec --no-startup-id $locker
 
 # Pulse Audio controls
@@ -161,6 +142,3 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -1% #d
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 bindsym F8 exec --no-startup-id pactl set-sink-volume 0 +1% #increase sound volume
 bindsym F7 exec --no-startup-id pactl set-sink-volume 0 -1% #decrease sound volume
-
-# emacs daemon
-exec --no-startup-id emacs --daemon

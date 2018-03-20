@@ -1,5 +1,0 @@
-alias cd eshell/cl $1
-alias ll ls -lh $*
-alias la ls -lAh $*
-alias l ls -1 $*
-alias emacs find-file $1

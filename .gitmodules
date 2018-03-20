@@ -1,3 +1,0 @@
-[submodule "emacs/.emacs.d/repos/evil-collection"]
-	path = emacs/.emacs.d/repos/evil-collection
-	url = git@github.com:jojojames/evil-collection.git

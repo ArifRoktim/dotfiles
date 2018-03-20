@@ -128,7 +128,7 @@ bar {
 
 new_window none # no title bar
 
-exec --no-startup-id feh --bg-scale ~/dotfiles/Zorin.png # set bg
+exec --no-startup-id feh --bg-scale ~/Pictures/Zorin.png # set bg
 
 exec --no-startup-id xset m 0 0 # no mouse accel
 

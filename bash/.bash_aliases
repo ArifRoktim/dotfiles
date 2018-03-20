@@ -34,6 +34,7 @@ alias jobs='jobs -l'
 
 alias bart='ssh -t clyde "ssh bart"'
 
+alias pac='sudo pacman'
 #==================================== FUNCTIONS ====================================
 
 # Start nvim server in a detachable session or join an already existing session
@@ -57,9 +58,8 @@ function update {
     news 3
     local input;
     read -p "$( echo -e "\e[1;37mProceed? [Y/n]\e[0m " )" input
-    [ $input != "Y" ] && [ $input != "y" ] && return 1
-    pacaur -Sc --noconfirm
-    pacaur -Syyu --needed --devel
+    [[ -z "$input" ]] || [ "${input,,}" == "y" ] || return 1
+    sudo pacman -Syu
 }
 
 # print arch news

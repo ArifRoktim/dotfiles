@@ -170,10 +170,12 @@ set laststatus=2                    " Always show the status line
 " Modes
 let g:currentmode={
     \ 'n'  : 'Normal',
-    \ 'no' : 'Normal',
     \ 'v'  : 'Visual',
     \ 'V'  : 'Visual',
     \ '' : 'Visual',
+    \ 's'  : 'Select',
+    \ 'S'  : 'Select',
+    \ '' : 'Select',
     \ 'c'  : 'Command',
     \ 'i'  : 'Insert',
     \ 'R'  : 'Replace',
@@ -182,14 +184,14 @@ let g:currentmode={
 
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor() abort
-  if (g:currentmode[mode()] =~# 'Normal')
-    exe 'highlight! StatusLine guibg=#a6a6a6 ctermfg=gray'
-  elseif (g:currentmode[mode()] =~# 'Visual')
-    exe 'highlight! StatusLine guibg=#ff66ff ctermfg=magenta'
+  if (mode() ==# 'n')
+    highlight! StatusLine guibg=#a6a6a6 ctermfg=gray
+  elseif (g:currentmode[mode()] ==# 'Visual' || g:currentmode[mode()] ==# 'Select')
+    highlight! StatusLine guibg=#ff66ff ctermfg=magenta
   elseif (mode() ==# 'i')
-    exe 'highlight! StatusLine guibg=#7fbfff ctermfg=lightblue'
+    highlight! StatusLine guibg=#7fbfff ctermfg=lightblue
   elseif (mode() ==# 't')
-    exe 'highlight! StatusLine guibg=#7fff7f ctermfg=lightgreen'
+    highlight! StatusLine guibg=#7fff7f ctermfg=lightgreen
   endif
   return ''
 endfunction

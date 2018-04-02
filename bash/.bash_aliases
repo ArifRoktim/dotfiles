@@ -59,7 +59,7 @@ function update {
     local input;
     read -p "$( echo -e "\e[1;37mProceed? [Y/n]\e[0m " )" input
     [[ -z "$input" ]] || [ "${input,,}" == "y" ] || return 1
-    sudo pacman -Syu
+    sudo pacman -Syuu
 }
 
 # print arch news

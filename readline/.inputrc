@@ -8,6 +8,8 @@ set show-all-if-unmodified on
 set colored-stats on
 # Color common prefix
 set colored-completion-prefix on
+# Enable bracketed paste
+set enable-bracketed-paste on
 
 set editing-mode vi
 

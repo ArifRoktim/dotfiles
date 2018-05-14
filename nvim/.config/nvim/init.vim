@@ -252,6 +252,13 @@ noremap <leader>tm :+tabmove<cr>
 noremap <leader>tM :-tabmove<cr>
 noremap <leader>e :tabnext<cr>
 noremap <leader>q :tabprev<cr>
+tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
+tnoremap <leader>to <C-\><C-n>:tabonly<cr>
+tnoremap <leader>tc <C-\><C-n>:tabclose<cr>
+tnoremap <leader>tm <C-\><C-n>:+tabmove<cr>
+tnoremap <leader>tM <C-\><C-n>:-tabmove<cr>
+tnoremap <leader>e <C-\><C-n>:tabnext<cr>
+tnoremap <leader>q <C-\><C-n>:tabprev<cr>
 
 " Opens a new split with the current buffer's path
 noremap <leader>vs :vsplit <c-r>=expand("%:p:h")<cr>/<cr>
@@ -288,12 +295,6 @@ tnoremap KJ <C-\><C-n>
 
 " Remap VIM 0 to first non-blank character
 noremap 0 ^
-
-" Move line(s) of text using ALT+[jk]
-nnoremap <M-j> mz:m+<cr>`z
-nnoremap <M-k> mz:m-2<cr>`z
-vnoremap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vnoremap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Center when searching
 noremap N Nzz

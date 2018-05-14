@@ -236,6 +236,8 @@ tnoremap <leader>w <C-\><C-n><C-W>k
 tnoremap <leader>a <C-\><C-n><C-W>h
 tnoremap <leader>d <C-\><C-n><C-W>l
 
+"TODO: Make terminal mapping to jump between the prompts
+
 " Close the current buffer but not the current window
 noremap <leader>bd :bp \| bd #<cr>
 
@@ -265,6 +267,10 @@ set stal=2
 
 " Make x go to blackhole buffer
 nnoremap x "_x
+
+" Don't wanna use these keys
+map <C-b> <Nop>
+map <C-n> <Nop>
 
 " More consistent with d
 noremap Y y$

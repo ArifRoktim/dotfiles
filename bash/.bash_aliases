@@ -9,9 +9,7 @@ alias vim='nvim'
 # Start neovim-remote server
 alias nv='nvr -s -cc term'
 
-# Use emacsclient
-alias ec='emacsclient -n'
-
+alias :q='exit'
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"

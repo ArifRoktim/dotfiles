@@ -16,8 +16,8 @@
 # Set vi bindings
 set -o vi
 
-# C-k to view jobs
-bind -x '"\C-k":"jobs"'
+# Run command as root
+bind '",r":"\eIsudo \eA"'
 
 # Add some directories to PATH
 export PATH="$HOME/.cargo/bin:$HOME/.local/bin:/usr/bin/core_perl:$PATH"
@@ -28,13 +28,18 @@ export RUST_SRC_PATH="/home/arif/.rustup/toolchains/stable-x86_64-unknown-linux-
 # Use nvim for sudoedit
 if type nvr &> /dev/null; then
     export EDITOR="nvr --remote-wait-silent"
-    export VISUAL="nvr --remote-wait-silent"
-else
+elif type nvim &> /dev/null; then
     export EDITOR="nvim"
-    export VISUAL="nvim"
+elif type vim &> /dev/null; then
+    export EDITOR="vim"
+elif type vi &> /dev/null; then
+    export EDITOR="vi"
+elif type nano &> /dev/null; then
+    export EDITOR="vi"
+else
+    echo "What's wrong with your machine?"
 fi
-
-export ABDUCO_CMD="nvr -s -cc term"
+export VISUAL="$EDITOR"
 
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file
@@ -97,12 +102,6 @@ _prompt_command() {
     PS2=">${reset} "
 }
 
-# Use bash completion
-[[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion || true
-
-# Searches official repositories when entering an unrecognized command
-[[ -f /usr/share/doc/pkgfile/command-not-found.bash ]] && . /usr/share/doc/pkgfile/command-not-found.bash || true
-
 # Change tty colors
 if [ "$TERM" = "linux" ]; then
     # black
@@ -121,11 +120,4 @@ if [ "$TERM" = "linux" ]; then
     echo -en "\e]P7FFFFFF"
     clear
 fi
-
-
-# Load abduco with neovim-remote if not already done so
-#if type nvr > /dev/null && type abduco > /dev/null && type ac > /dev/null && [[ -z $SSH_CLIENT ]] && [[ -z $NVIM_LISTEN_ADDRESS ]]; then
-#    export -f ac
-#    bash -c 'ac'
-#fi
 

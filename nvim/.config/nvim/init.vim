@@ -118,7 +118,7 @@ if has("persistent_undo")
     set backupdir=~/.config/nvim/_tmp
     set dir=~/.config/nvim/_swap
     if !isdirectory("~/.config/nvim/_tmp")
-        call mkdir( $HOME.'/.config/nvim/_tmp', "p")
+        silent! call mkdir( $HOME.'/.config/nvim/_tmp', "p")
     endif
 endif
 
@@ -126,8 +126,10 @@ augroup Autocmds
     " clear all autocmds
     autocmd!
 
+    if has('nvim')
     " make sure terminal buffers don't have line numbers
     autocmd TermOpen * setlocal nonumber norelativenumber
+    endif
 
     " Return to last edit position when opening files
     autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
@@ -230,11 +232,13 @@ inoremap <leader>s <Esc><C-W>j
 inoremap <leader>w <Esc><C-W>k
 inoremap <leader>a <Esc><C-W>h
 inoremap <leader>d <Esc><C-W>l
+if has('nvim')
 " Terminal movement
 tnoremap <leader>s <C-\><C-n><C-W>j
 tnoremap <leader>w <C-\><C-n><C-W>k
 tnoremap <leader>a <C-\><C-n><C-W>h
 tnoremap <leader>d <C-\><C-n><C-W>l
+endif
 
 "TODO: Make terminal mapping to jump between the prompts
 
@@ -252,6 +256,7 @@ noremap <leader>tm :+tabmove<cr>
 noremap <leader>tM :-tabmove<cr>
 noremap <leader>e :tabnext<cr>
 noremap <leader>q :tabprev<cr>
+if has('nvim')
 tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
 tnoremap <leader>to <C-\><C-n>:tabonly<cr>
 tnoremap <leader>tc <C-\><C-n>:tabclose<cr>
@@ -259,7 +264,7 @@ tnoremap <leader>tm <C-\><C-n>:+tabmove<cr>
 tnoremap <leader>tM <C-\><C-n>:-tabmove<cr>
 tnoremap <leader>e <C-\><C-n>:tabnext<cr>
 tnoremap <leader>q <C-\><C-n>:tabprev<cr>
-
+endif
 " Opens a new split with the current buffer's path
 noremap <leader>vs :vsplit <c-r>=expand("%:p:h")<cr>/<cr>
 
@@ -290,8 +295,10 @@ inoremap kj <Esc>
 inoremap jk <Esc>
 inoremap KJ <Esc>
 inoremap JK <Esc>
+if has('nvim')
 tnoremap JK <C-\><C-n>
 tnoremap KJ <C-\><C-n>
+endif
 
 " Remap VIM 0 to first non-blank character
 noremap 0 ^

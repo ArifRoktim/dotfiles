@@ -4,8 +4,6 @@
 
 # ========== ALIASES ==========
 
-# Use neovim
-alias vim='nvim'
 # Start neovim-remote server
 alias nv='nvr -s -cc term'
 

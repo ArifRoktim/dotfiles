@@ -12,32 +12,32 @@
 " ========== dein Scripts ==========
 
 if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
-  " Required:
-  set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
+    " Required:
+    set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
 
-  " Required:
-  if dein#load_state('$HOME/.config/nvim/deind')
-      call dein#begin('$HOME/.config/nvim/deind')
+    " Required:
+    if dein#load_state('$HOME/.config/nvim/deind')
+        call dein#begin('$HOME/.config/nvim/deind')
 
-      " Let dein manage dein
-      " Required:
-      call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
+        " Let dein manage dein
+        " Required:
+        call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
-      " Add or remove your plugins here:
-      call dein#add('Shougo/deoplete.nvim')
-      call dein#add('jiangmiao/auto-pairs')
-      call dein#add('tpope/vim-repeat')
+        " Add or remove your plugins here:
+        call dein#add('Shougo/deoplete.nvim')
+        call dein#add('jiangmiao/auto-pairs')
+        call dein#add('tpope/vim-repeat')
 
-      call dein#add('rust-lang/rust.vim')
-      call dein#add('racer-rust/vim-racer')
+        call dein#add('rust-lang/rust.vim')
+        call dein#add('racer-rust/vim-racer')
 
-      " You can specify revision/branch/tag.
-      "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+        " You can specify revision/branch/tag.
+        "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 
-      " Required:
-      call dein#end()
-      call dein#save_state()
-  endif
+        " Required:
+        call dein#end()
+        call dein#save_state()
+    endif
 
 endif
 
@@ -127,8 +127,8 @@ augroup Autocmds
     autocmd!
 
     if has('nvim')
-    " make sure terminal buffers don't have line numbers
-    autocmd TermOpen * setlocal nonumber norelativenumber
+        " make sure terminal buffers don't have line numbers
+        autocmd TermOpen * setlocal nonumber norelativenumber
     endif
 
     " Return to last edit position when opening files
@@ -171,31 +171,31 @@ set laststatus=2                    " Always show the status line
 
 " Modes
 let g:currentmode={
-    \ 'n'  : 'Normal',
-    \ 'v'  : 'Visual',
-    \ 'V'  : 'Visual',
-    \ '' : 'Visual',
-    \ 's'  : 'Select',
-    \ 'S'  : 'Select',
-    \ '' : 'Select',
-    \ 'c'  : 'Command',
-    \ 'i'  : 'Insert',
-    \ 'R'  : 'Replace',
-    \ 't'  : 'Terminal'
-    \}
+            \ 'n'  : 'Normal',
+            \ 'v'  : 'Visual',
+            \ 'V'  : 'Visual',
+            \ '' : 'Visual',
+            \ 's'  : 'Select',
+            \ 'S'  : 'Select',
+            \ '' : 'Select',
+            \ 'c'  : 'Command',
+            \ 'i'  : 'Insert',
+            \ 'R'  : 'Replace',
+            \ 't'  : 'Terminal'
+            \}
 
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor() abort
-  if (mode() ==# 'n')
-    highlight! StatusLine guibg=#a6a6a6 ctermfg=gray
-  elseif (g:currentmode[mode()] ==# 'Visual' || g:currentmode[mode()] ==# 'Select')
-    highlight! StatusLine guibg=#ff66ff ctermfg=magenta
-  elseif (mode() ==# 'i')
-    highlight! StatusLine guibg=#7fbfff ctermfg=lightblue
-  elseif (mode() ==# 't')
-    highlight! StatusLine guibg=#7fff7f ctermfg=lightgreen
-  endif
-  return ''
+    if (mode() ==# 'n')
+        highlight! StatusLine guibg=#a6a6a6 ctermfg=gray
+    elseif (g:currentmode[mode()] ==# 'Visual' || g:currentmode[mode()] ==# 'Select')
+        highlight! StatusLine guibg=#ff66ff ctermfg=magenta
+    elseif (mode() ==# 'i')
+        highlight! StatusLine guibg=#7fbfff ctermfg=lightblue
+    elseif (mode() ==# 't')
+        highlight! StatusLine guibg=#7fff7f ctermfg=lightgreen
+    endif
+    return ''
 endfunction
 
 " Format the status line
@@ -233,11 +233,11 @@ inoremap <leader>w <Esc><C-W>k
 inoremap <leader>a <Esc><C-W>h
 inoremap <leader>d <Esc><C-W>l
 if has('nvim')
-" Terminal movement
-tnoremap <leader>s <C-\><C-n><C-W>j
-tnoremap <leader>w <C-\><C-n><C-W>k
-tnoremap <leader>a <C-\><C-n><C-W>h
-tnoremap <leader>d <C-\><C-n><C-W>l
+    " Terminal movement
+    tnoremap <leader>s <C-\><C-n><C-W>j
+    tnoremap <leader>w <C-\><C-n><C-W>k
+    tnoremap <leader>a <C-\><C-n><C-W>h
+    tnoremap <leader>d <C-\><C-n><C-W>l
 endif
 
 "TODO: Make terminal mapping to jump between the prompts
@@ -257,13 +257,13 @@ noremap <leader>tM :-tabmove<cr>
 noremap <leader>e :tabnext<cr>
 noremap <leader>q :tabprev<cr>
 if has('nvim')
-tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
-tnoremap <leader>to <C-\><C-n>:tabonly<cr>
-tnoremap <leader>tc <C-\><C-n>:tabclose<cr>
-tnoremap <leader>tm <C-\><C-n>:+tabmove<cr>
-tnoremap <leader>tM <C-\><C-n>:-tabmove<cr>
-tnoremap <leader>e <C-\><C-n>:tabnext<cr>
-tnoremap <leader>q <C-\><C-n>:tabprev<cr>
+    tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
+    tnoremap <leader>to <C-\><C-n>:tabonly<cr>
+    tnoremap <leader>tc <C-\><C-n>:tabclose<cr>
+    tnoremap <leader>tm <C-\><C-n>:+tabmove<cr>
+    tnoremap <leader>tM <C-\><C-n>:-tabmove<cr>
+    tnoremap <leader>e <C-\><C-n>:tabnext<cr>
+    tnoremap <leader>q <C-\><C-n>:tabprev<cr>
 endif
 " Opens a new split with the current buffer's path
 noremap <leader>vs :vsplit <c-r>=expand("%:p:h")<cr>/<cr>
@@ -296,8 +296,8 @@ inoremap jk <Esc>
 inoremap KJ <Esc>
 inoremap JK <Esc>
 if has('nvim')
-tnoremap JK <C-\><C-n>
-tnoremap KJ <C-\><C-n>
+    tnoremap JK <C-\><C-n>
+    tnoremap KJ <C-\><C-n>
 endif
 
 " Remap VIM 0 to first non-blank character

@@ -180,6 +180,7 @@ let g:currentmode={
             \ '' : 'Select',
             \ 'c'  : 'Command',
             \ 'i'  : 'Insert',
+            \ 'r'  : 'Replace',
             \ 'R'  : 'Replace',
             \ 't'  : 'Terminal'
             \}

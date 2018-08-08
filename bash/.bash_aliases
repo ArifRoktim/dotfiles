@@ -80,6 +80,6 @@ function cd {
 
 # Run in background
 function ns {
-    nohup "$@" 2>&1 > /dev/null &
+    nohup "$@" &> /dev/null &
 }
 

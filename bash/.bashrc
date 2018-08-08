@@ -45,6 +45,7 @@ shopt -s checkwinsize                       # Check the window size after each c
 shopt -s histappend                         # append to the history file
 shopt -s histverify                         # Allow editing of history expansion
 export HISTCONTROL=ignoreboth:erasedups     # Don't add commands that are duplicated or start with a space
+export HISTTIMEFORMAT='%F %T '
 
 # For setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000

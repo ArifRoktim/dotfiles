@@ -26,7 +26,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         " Add or remove your plugins here:
         call dein#add('Shougo/deoplete.nvim')
         call dein#add('jiangmiao/auto-pairs')
-        call dein#add('tpope/vim-repeat')
+        call dein#add('machakann/vim-sandwich')
 
         call dein#add('rust-lang/rust.vim')
         call dein#add('racer-rust/vim-racer')
@@ -48,9 +48,9 @@ if !exists("g:syntax_on")
 endif
 
 " If you want to install not installed plugins on startup.
-"if dein#check_install()
-"  call dein#install()
-"endif
+if dein#check_install()
+  call dein#install()
+endif
 
 " ==========Plugin Settings ==========
 

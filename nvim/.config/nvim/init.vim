@@ -28,8 +28,8 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
 
-        call dein#add('rust-lang/rust.vim')
-        call dein#add('racer-rust/vim-racer')
+        "call dein#add('rust-lang/rust.vim')
+        "call dein#add('racer-rust/vim-racer')
 
         " You can specify revision/branch/tag.
         "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
@@ -39,17 +39,17 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#save_state()
     endif
 
+    " If you want to install not installed plugins on startup.
+    if dein#check_install()
+        call dein#install()
+    endif
+
 endif
 
 " Required:
 filetype plugin indent on
 if !exists("g:syntax_on")
     syntax enable
-endif
-
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
 endif
 
 " ==========Plugin Settings ==========

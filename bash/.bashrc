@@ -22,6 +22,11 @@ bind '",r":"\eIsudo \eA"'
 # Add some directories to PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Activate virtualenv
+if [[ -f "$HOME/.local/venv3/bin/activate" ]]; then
+    source "$HOME/.local/venv3/bin/activate"
+fi
+
 # Dir colors
 if [[ -f "$HOME/dotfiles/misc/.dir_colors" ]]; then
     eval $(dircolors -b "$HOME/dotfiles/misc/.dir_colors")

@@ -56,6 +56,9 @@ endif
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
 
+" Increase comment brightness
+let g:nord_comment_brightness = 20
+
 " ========== General ==========
 
 let mapleader = ","

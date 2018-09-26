@@ -9,6 +9,15 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Set up virtual environment
+if isdirectory(expand('$HOME/.local/venv3/bin'))
+    if empty($VIRTUAL_ENV)
+        echo "Virtual environment exists but isn't activated!"
+    else
+        let g:python3_host_prog = expand('$HOME/.local/venv3/bin/python3')
+    endif
+endif
+
 " ========== dein Scripts ==========
 
 if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
@@ -27,20 +36,16 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('Shougo/deoplete.nvim')
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
-
         call dein#add('arcticicestudio/nord-vim')
 
-        " You can specify revision/branch/tag.
-        "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+        call dein#add('autozimu/LanguageClient-neovim', {
+                    \ 'rev': 'next',
+                    \ 'build': 'bash install.sh',
+                    \ })
 
         " Required:
         call dein#end()
         call dein#save_state()
-    endif
-
-    " If you want to install not installed plugins on startup.
-    if dein#check_install()
-        call dein#install()
     endif
 
 endif
@@ -53,10 +58,16 @@ endif
 
 " ==========Plugin Settings ==========
 
-" Enable deoplete
+let g:dein#enable_notification = 1
+let g:dein#notification_time = 10
+
 let g:deoplete#enable_at_startup = 1
 
-" Increase comment brightness
+let g:LanguageClient_serverCommands = {
+    \ 'python': [systemlist('which pyls')[0]],
+    \ }
+
+" Increase comment brightness by 20%
 let g:nord_comment_brightness = 20
 
 " ========== General ==========
@@ -199,7 +210,8 @@ set statusline+=%<                          " start truncating here when screen 
 set statusline+=\ CWD:%{getcwd()}           " current working directory
 set statusline+=\ %f                        " relative file location
 set statusline+=%r                          " ro flag
-set statusline+=%{&modified?'*':''}\        " modified flag
+set statusline+=%{&modified?'*':''}         " modified flag
+set statusline+=\                           " Add space
 set statusline+=%=                          " seperation point
 set statusline+=[%l,%02.c]                  " line and column number
 set statusline+=[%02.p%%]                   " percent through file
@@ -274,7 +286,7 @@ map <C-n> <Nop>
 noremap Y y$
 
 " Unhighlight
-nnoremap <leader><cr> :let @/=""<cr>
+nnoremap <leader><cr> :nohlsearch<cr>
 
 " Easy escape
 inoremap kj <Esc>

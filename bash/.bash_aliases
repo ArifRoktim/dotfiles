@@ -38,6 +38,18 @@ function cd {
     fi
 }
 
+# Start/attach to tmux session
+function tnew {
+    if [ -z "$1" ]; then
+        tmux ls
+    else
+        (
+        command cd;
+        tmux new-session -As "$1"
+        )
+    fi
+}
+
 # Run in background
 function ns {
     nohup "$@" &> /dev/null &

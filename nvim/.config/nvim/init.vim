@@ -179,6 +179,7 @@ let g:currentmode={
             \ 'S'  : 'Select',
             \ '' : 'Select',
             \ 'c'  : 'Command',
+            \ 'r'  : 'Command',
             \ 'i'  : 'Insert',
             \ 'R'  : 'Replace',
             \ 't'  : 'Terminal'

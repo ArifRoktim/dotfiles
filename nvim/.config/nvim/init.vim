@@ -96,6 +96,7 @@ set relativenumber
 set autowrite
 set ignorecase
 set smartcase
+set mouse=a
 " Always show the tab line
 set showtabline=2
 
@@ -199,6 +200,10 @@ function! ChangeStatuslineColor() abort
     return ''
 endfunction
 
+function! GetRelCWD() abort
+    return substitute(getcwd(), $HOME, '~', '')
+endfunction
+
 " Format the status line
 set statusline=
 set statusline+=%1*                         " set highlight group to user1
@@ -206,7 +211,7 @@ set statusline+=%{ChangeStatuslineColor()}  " change color of statusline dependi
 set statusline+=\ %{currentmode[mode()]}\   " current mode
 set statusline+=%*                          " reset highlight group to default
 set statusline+=%<                          " start truncating here when screen too narrow
-set statusline+=\ CWD:%{getcwd()}           " current working directory
+set statusline+=\ CWD:%{GetRelCWD()}        " current working directory
 set statusline+=\ %f                        " relative file location
 set statusline+=%r                          " ro flag
 set statusline+=%{&modified?'*':''}         " modified flag
@@ -303,4 +308,3 @@ noremap 0 ^
 " Center when searching
 noremap N Nzz
 noremap n nzz
-

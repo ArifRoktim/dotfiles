@@ -58,9 +58,6 @@ endif
 
 " ==========Plugin Settings ==========
 
-let g:dein#enable_notification = 1
-let g:dein#notification_time = 10
-
 let g:deoplete#enable_at_startup = 1
 
 let g:LanguageClient_serverCommands = {

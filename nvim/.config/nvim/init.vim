@@ -37,6 +37,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
         call dein#add('arcticicestudio/nord-vim')
+        call dein#add('tpope/vim-fugitive')
 
         call dein#add('autozimu/LanguageClient-neovim', {
                     \ 'rev': 'next',
@@ -72,7 +73,7 @@ let g:nord_comment_brightness = 20
 let mapleader = ","
 
 " Easily edit this file
-command! E edit ~/.config/nvim/init.vim
+command! E edit ~/.config/nvim/init.vim | tcd %:p:h | normal! zz
 
 set history=500
 set autoread

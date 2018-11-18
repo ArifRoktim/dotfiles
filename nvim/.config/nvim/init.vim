@@ -65,8 +65,11 @@ let g:LanguageClient_serverCommands = {
     \ 'python': [systemlist('which pyls')[0]],
     \ }
 
-" Increase comment brightness by 20%
-let g:nord_comment_brightness = 20
+" Increasing comment contrast only supported with truecolor
+if has('termguicolors') && $COLORTERM ==# 'truecolor'
+    " Increase comment brightness by 20%
+    let g:nord_comment_brightness = 20
+endif
 
 " ========== General ==========
 
@@ -85,6 +88,7 @@ set wildmenu
 set wildignore=*.o,*.pyc,*.class
 set cmdheight=1
 set incsearch
+set inccommand=nosplit
 set hlsearch
 set lazyredraw
 set showmatch
@@ -148,9 +152,6 @@ augroup Autocmds
 
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
-
-    " Close preview windows after autocomplete
-    "autocmd CompleteDone * silent! pclose!
 augroup END
 " ========== Colorscheme ==========
 
@@ -231,6 +232,9 @@ nnoremap <leader>D <C-w>>
 nnoremap <leader>S <C-w>-
 nnoremap <leader>W <C-w>+
 
+" Make current window only window
+nnoremap <leader>o <C-w><C-o>
+
 " Move between windows
 nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k
@@ -281,10 +285,6 @@ noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
 
 " Make x go to blackhole buffer
 nnoremap x "_x
-
-" Don't wanna use these keys
-map <C-b> <Nop>
-map <C-n> <Nop>
 
 " More consistent with d
 noremap Y y$

@@ -130,8 +130,22 @@ exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png # set bg
 
 bindsym Mod1+l --release exec --no-startup-id slock # screen locker
 
-# Pulse Audio controls
-bindsym F8 exec --no-startup-id pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +1% #increase sound volume
-bindsym F7 exec --no-startup-id pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -1% #decrease sound volume
+mode "volume" {
+        # These bindings trigger as soon as you enter the volume mode
+
+        # Pulse Audio controls
+        # Increase volume
+        bindsym F8 exec --no-startup-id pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +1%
+        # Decrease volume
+        bindsym F7 exec --no-startup-id pactl set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -1%
+        # Toggle volume mute
+        bindsym F6 exec --no-startup-id pactl set-sink-mute alsa_output.pci-0000_00_1b.0.analog-stereo toggle
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+F6 mode "volume"
 
 bindsym Print exec --no-startup-id scrot -e 'mv $f ~/Pictures/'

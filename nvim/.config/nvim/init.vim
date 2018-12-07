@@ -17,6 +17,9 @@ if isdirectory(expand('$HOME/.local/venv3/bin'))
         let g:python3_host_prog = expand('$HOME/.local/venv3/bin/python3')
     endif
 endif
+if isdirectory(expand('$HOME/.local/venv2/bin'))
+    let g:python_host_prog = expand('$HOME/.local/venv2/bin/python2')
+endif
 
 " ========== dein Scripts ==========
 

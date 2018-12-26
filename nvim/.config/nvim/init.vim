@@ -36,16 +36,21 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
         " Add or remove your plugins here:
+        " Autocomplete
         call dein#add('Shougo/deoplete.nvim')
-        call dein#add('jiangmiao/auto-pairs')
-        call dein#add('machakann/vim-sandwich')
-        call dein#add('arcticicestudio/nord-vim')
-        call dein#add('tpope/vim-fugitive')
-
         call dein#add('autozimu/LanguageClient-neovim', {
                     \ 'rev': 'next',
                     \ 'build': 'bash install.sh',
                     \ })
+
+        " Pairs
+        call dein#add('jiangmiao/auto-pairs')
+        call dein#add('machakann/vim-sandwich')
+        call dein#add('tpope/vim-unimpaired')
+
+        " Misc
+        call dein#add('arcticicestudio/nord-vim')
+        call dein#add('tpope/vim-fugitive')
 
         " Required:
         call dein#end()

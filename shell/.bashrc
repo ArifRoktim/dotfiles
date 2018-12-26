@@ -27,9 +27,14 @@ if [[ -f "$HOME/.local/venv3/bin/activate" ]]; then
     source "$HOME/.local/venv3/bin/activate"
 fi
 
+## Dir colors
+#if [[ -f "$HOME/dotfiles/misc/.dir_colors" ]]; then
+#    eval $(dircolors -b "$HOME/dotfiles/misc/.dir_colors")
+#fi
+
 # Dir colors
-if [[ -f "$HOME/dotfiles/misc/.dir_colors" ]]; then
-    eval $(dircolors -b "$HOME/dotfiles/misc/.dir_colors")
+if [[ -f "$HOME/.dir_colors" ]]; then
+    eval $(dircolors -b "$HOME/.dir_colors")
 fi
 
 # Use nvim for sudoedit

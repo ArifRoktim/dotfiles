@@ -45,7 +45,7 @@ function tnew {
     else
         (
         command cd;
-        tmux new-session -As "$1"
+        COLORTERM=truecolor tmux new-session -As "$1"
         )
     fi
 }

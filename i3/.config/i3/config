@@ -187,6 +187,12 @@ exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png
 exec --no-startup-id udiskie
 # session locker
 exec --no-startup-id light-locker
-# Fix issues with mic delay if pavucontrol isn't already open
+# Fix issues with mic delay/freeze if pavucontrol isn't already open
 exec --no-startup-id pavucontrol
+# Remove urgency hint from pavucontrol when it starts
+exec --no-startup-id sh -c "sleep 1; wmctrl -xr pavucontrol -b remove,demands_attention"
+# Turn on bluetooth
+exec --no-startup-id bluetoothctl power on
+exec --no-startup-id bluetoothctl scan on
+# Will probably use a browser
 exec chromium

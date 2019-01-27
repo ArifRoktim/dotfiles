@@ -127,6 +127,7 @@ bar {
 default_border none # no title bar
 
 exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png # set bg
+exec --no-startup-id udiskie
 
 bindsym Mod1+l --release exec --no-startup-id slock # screen locker
 

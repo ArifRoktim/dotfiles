@@ -129,6 +129,17 @@ mode "resize" {
         bindsym Shift+k resize shrink height 50 px or 50 ppt
         bindsym Shift+l resize grow width 50 px or 50 ppt
 
+        # Move floating windows around
+        bindsym Up move up 5px
+        bindsym Down move down 5px
+        bindsym Left move left 5px
+        bindsym Right move right 5px
+
+        bindsym Shift+Up move up 50px
+        bindsym Shift+Down move down 50px
+        bindsym Shift+Left move left 50px
+        bindsym Shift+Right move right 50px
+
         # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -162,6 +173,12 @@ for_window [class="^Steam$" title="^Screenshot Uploader$"] floating enable
 for_window [class="^Steam$" title="^Steam Guard - Computer Authorization Required$"] floating enable
 for_window [title="^Steam Keyboard$"] floating enable
 
+# conky
+for_window [class="^Conky$"] floating enable
+
+# workspace assignments
+assign [class="^Pavucontrol$"] 10
+assign [class="^Steam$"] 5
 
 ## Application bindings
 # start a terminal
@@ -175,10 +192,6 @@ bindsym $alt+l --release exec --no-startup-id light-locker-command -l
 bindsym Print exec --no-startup-id scrot -e 'mv $f ~/Pictures/screenshots/'
 # select an area for screenshot
 bindsym --release Shift+Print exec --no-startup-id scrot -se 'mv $f ~/Pictures/screenshots/'
-
-# workspace assignments
-assign [class="^Pavucontrol$"] 10
-assign [class="^Steam$"] 5
 
 ## Startup applications
 # set bg

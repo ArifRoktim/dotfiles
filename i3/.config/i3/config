@@ -1,6 +1,13 @@
-# Modifier keys
+# Easier to remember key names
 set $super Mod4
 set $alt Mod1
+set $scrollup button4
+set $scrolldown button5
+set $scrollclick button2
+set $leftclick button1
+set $rightclick button3
+# For setting volume
+set $sink "alsa_output.pci-0000_25_00.3.analog-stereo"
 
 # multiple monitor setup
 set $output-0 "DP-3"
@@ -93,9 +100,16 @@ bindsym $super+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit short
 # finds out, if available)
 bar {
     colors {
-        background #073642
+        background #1a3553
+        focused_background #073642
     }
-        status_command i3status
+    status_command i3status
+    # change volume with scroll wheel
+    bindsym $scrollup exec --no-startup-id pactl set-sink-volume $sink +1%
+    bindsym $scrolldown exec --no-startup-id pactl set-sink-volume $sink -1%
+    bindsym $scrollclick exec --no-startup-id pactl set-sink-mute $sink toggle
+    # limit tray items to primary monitor
+    tray_output primary
 }
 
 ## Modes
@@ -120,7 +134,6 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 bindsym $super+r mode "resize"
-set $sink "alsa_output.pci-0000_25_00.3.analog-stereo"
 mode "volume" {
         # Pulse Audio controls
         # Increase volume
@@ -163,7 +176,7 @@ bindsym Print exec --no-startup-id scrot -e 'mv $f ~/Pictures/screenshots/'
 # select an area for screenshot
 bindsym --release Shift+Print exec --no-startup-id scrot -se 'mv $f ~/Pictures/screenshots/'
 
-# assign pavucontrol to last workspace
+# workspace assignments
 assign [class="^Pavucontrol$"] 10
 assign [class="^Steam$"] 5
 

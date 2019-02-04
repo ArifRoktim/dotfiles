@@ -112,6 +112,10 @@ set mouse=a
 " Always show the tab line
 set showtabline=2
 
+" When splitting, put new window below/to the right of current window
+set splitright
+set splitbelow
+
 " No annoying bells on errors
 set noerrorbells
 set vb t_vb=

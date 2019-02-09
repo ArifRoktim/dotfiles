@@ -13,6 +13,9 @@
 # Load aliases
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 
+# git info in prompt
+[[ -f ~/dotfiles/git-prompt.sh ]] && . ~/dotfiles/git-prompt.sh
+
 # Set vi bindings
 set -o vi
 
@@ -105,8 +108,16 @@ _prompt_command() {
     PS1+="\h${reset}"
 
     PS1+="${bold}${blue}: \w"                               # Current working directory
-    local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/')"
-    PS1+="${magenta}${branch}"                              # Show current git branch
+
+
+
+
+
+    local git_info="$(GIT_PS1_SHOWDIRTYSTATE='1' GIT_PS1_SHOWSTASHSTATE='1' \
+        GIT_PS1_SHOWUPSTREAM='auto' __git_ps1 ' (%s)')"
+    PS1+="${magenta}${git_info}"
+
+
     PS1+="\n"
     PS1+="\D{%m/%d|%I:%M}"                                  # Date and time
     PS1+="\$${reset} "                                      # Prompt

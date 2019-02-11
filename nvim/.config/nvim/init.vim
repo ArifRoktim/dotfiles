@@ -248,6 +248,10 @@ if has('nvim')
 endif
 
 "TODO: Make terminal mapping to jump between the prompts
+" This works but the highlighted text can't be read.
+"TODO: Make a hl group for this
+nnoremap [g ?^\d\d/\d\d<Bar>\d\d:\d\d\$<cr>
+nnoremap ]g /^\d\d/\d\d<Bar>\d\d:\d\d\$<cr>
 
 " Close the current buffer but not the current window
 nnoremap <leader>bd :bp \| bd #<cr>

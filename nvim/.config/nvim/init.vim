@@ -214,7 +214,7 @@ function! ChangeStatuslineColor() abort
 endfunction
 
 function! GetRelCWD() abort
-    return substitute(getcwd(), $HOME, '~', '')
+    return substitute(getcwd(-1, 0), $HOME, '~', '')
 endfunction
 
 " Format the status line

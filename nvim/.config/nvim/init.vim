@@ -269,17 +269,12 @@ endif
 " Close the current buffer but not the current window
 nnoremap <leader>bd :bp \| bd #<cr>
 
-noremap <leader>l :bnext<cr>
-noremap <leader>h :bprevious<cr>
-
 " Useful noremappings for managing tabs
 nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
 nnoremap <leader>tm :+tabmove<cr>
 nnoremap <leader>tM :-tabmove<cr>
-nnoremap <leader>e :tabnext<cr>
-nnoremap <leader>q :tabprev<cr>
 if has('nvim')
     tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
     tnoremap <leader>to <C-\><C-n>:tabonly<cr>

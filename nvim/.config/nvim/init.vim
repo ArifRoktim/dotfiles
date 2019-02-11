@@ -48,9 +48,16 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('machakann/vim-sandwich')
         call dein#add('tpope/vim-unimpaired')
 
-        " Misc
-        call dein#add('arcticicestudio/nord-vim')
         call dein#add('tpope/vim-fugitive')
+
+        " Misc
+        call dein#add('arcticicestudio/nord-vim', {
+                    \ 'hook_add': "
+                    \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
+                    \     let g:nord_comment_brightness = 20\n
+                    \ endif
+                    \ "
+                    \ })
 
         " Required:
         call dein#end()
@@ -74,12 +81,6 @@ if ! v:shell_error
     let g:LanguageClient_serverCommands = {
         \ 'python': [systemlist('which pyls')[0]],
         \ }
-endif
-
-" Increasing comment contrast only supported with truecolor
-if has('termguicolors') && $COLORTERM ==# 'truecolor'
-    " Increase comment brightness by 20%
-    let g:nord_comment_brightness = 20
 endif
 
 " ========== General ==========

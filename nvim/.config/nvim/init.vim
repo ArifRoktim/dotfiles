@@ -50,6 +50,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('arcticicestudio/nord-vim', {
                     \ 'hook_add': "
                     \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
+                    \     set termguicolors\n
                     \     let g:nord_comment_brightness = 20\n
                     \ endif
                     \ "
@@ -88,11 +89,13 @@ command! E edit ~/.config/nvim/init.vim | tcd %:p:h | normal! zz
 
 set history=500
 set autoread
-set encoding=utf8
-set ffs=unix,dos,mac
+set fileformats=unix,dos,mac
 set scrolloff=7
 set wrap
 set wildmenu
+" complete till longest common string, then list all matches,
+" then complete next full match
+set wildmode=longest,list,full
 set wildignore=*.o,*.pyc,*.class
 set cmdheight=1
 set incsearch
@@ -101,7 +104,7 @@ set hlsearch
 set lazyredraw
 set showmatch
 set matchtime=2
-set timeoutlen=500
+set timeoutlen=1000
 set noshowmode
 set number
 set relativenumber
@@ -167,14 +170,7 @@ augroup Autocmds
 augroup END
 " ========== Colorscheme ==========
 
-" Enable truecolor support if supported
-if has('termguicolors') && $COLORTERM ==# 'truecolor'
-    set termguicolors
-endif
 colorscheme nord
-
-" Toggle highlighting current line
-nnoremap <Leader>c :set cursorline!<cr>
 
 " ========== Status line ==========
 
@@ -238,24 +234,11 @@ set statusline+=[%02.p%%]                   " percent through file
 " Hide abandoned buffers
 set hidden
 
-" Resizing
-nnoremap <leader>A <C-w><
-nnoremap <leader>D <C-w>>
-nnoremap <leader>S <C-w>-
-nnoremap <leader>W <C-w>+
-
-" Make current window only window
-nnoremap <leader>o <C-w><C-o>
-
 " Move between windows
 nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k
 nnoremap <leader>a <C-W>h
 nnoremap <leader>d <C-W>l
-inoremap <leader>s <Esc><C-W>j
-inoremap <leader>w <Esc><C-W>k
-inoremap <leader>a <Esc><C-W>h
-inoremap <leader>d <Esc><C-W>l
 if has('nvim')
     " Terminal movement
     tnoremap <leader>s <C-\><C-n><C-W>j
@@ -292,6 +275,9 @@ noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
 
 " Make x go to blackhole buffer
 nnoremap x "_x
+
+" Toggle highlighting current line
+nnoremap <Leader>c :set cursorline!<cr>
 
 " More consistent with d
 noremap Y y$

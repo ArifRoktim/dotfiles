@@ -69,9 +69,12 @@ endif
 
 let g:deoplete#enable_at_startup = 1
 
-let g:LanguageClient_serverCommands = {
-    \ 'python': [systemlist('which pyls')[0]],
-    \ }
+let s:pyls = system('which pyls')
+if ! v:shell_error
+    let g:LanguageClient_serverCommands = {
+        \ 'python': [systemlist('which pyls')[0]],
+        \ }
+endif
 
 " Increasing comment contrast only supported with truecolor
 if has('termguicolors') && $COLORTERM ==# 'truecolor'

@@ -10,12 +10,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Set up virtual environment
-if isdirectory(expand('$HOME/.local/venv3/bin'))
-    if empty($VIRTUAL_ENV)
-        echo "Virtual environment exists but isn't activated!"
-    else
-        let g:python3_host_prog = expand('$HOME/.local/venv3/bin/python3')
-    endif
+if !empty($VIRTUAL_ENV) && isdirectory(expand('$HOME/.local/venv3/bin'))
+    let g:python3_host_prog = expand('$HOME/.local/venv3/bin/python3')
 endif
 if isdirectory(expand('$HOME/.local/venv2/bin'))
     let g:python_host_prog = expand('$HOME/.local/venv2/bin/python2')
@@ -77,7 +73,7 @@ endif
 let g:deoplete#enable_at_startup = 1
 
 let s:pyls = system('which pyls')
-if ! v:shell_error
+if !v:shell_error
     let g:LanguageClient_serverCommands = {
         \ 'python': [systemlist('which pyls')[0]],
         \ }

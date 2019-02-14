@@ -2,6 +2,7 @@
 " Sections:
 "    => Plugin Settings
 "    => General
+"    => Folding
 "    => Colorscheme
 "    => Status line
 "    => Tabs,windows,buffers
@@ -44,9 +45,11 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('machakann/vim-sandwich')
         call dein#add('tpope/vim-unimpaired')
 
-        call dein#add('tpope/vim-fugitive')
+        " Language specific
+        call dein#add('rust-lang/rust.vim')
 
         " Misc
+        call dein#add('tpope/vim-fugitive')
         call dein#add('arcticicestudio/nord-vim', {
                     \ 'hook_add': "
                     \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
@@ -168,6 +171,11 @@ augroup Autocmds
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
 augroup END
+
+" ========== Folding ==========
+
+set foldmethod=indent
+
 " ========== Colorscheme ==========
 
 colorscheme nord

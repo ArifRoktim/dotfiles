@@ -107,6 +107,7 @@ set cmdheight=1
 set incsearch
 set inccommand=nosplit
 set hlsearch
+set nowrapscan
 set lazyredraw
 set showmatch
 set matchtime=2
@@ -181,7 +182,22 @@ augroup general
 
     if has('nvim')
         " make sure terminal buffers don't have line numbers
-        autocmd TermOpen * setlocal nonumber norelativenumber
+        autocmd TermOpen * setlocal nonumber norelativenumber cursorline
+        " Automatically enter terminal-mode after opening
+        autocmd TermOpen * startinsert
+        " Regexp representing my shell prompt
+        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$ '
+        " Search for the shell prompt and then clear the last search
+        " pattern since text highlighted in a term buffer is illegible
+        " TODO: Instead, make a hl group for searching in term buffers
+        autocmd TermOpen * nnoremap <buffer> <silent> [g 
+                    \ :silent! ?<C-r>=shell_prompt<cr><cr>
+                    \ :let @/=""<cr>
+        autocmd TermOpen * nnoremap <buffer> <silent> ]g
+                    \ :silent! /<C-r>=shell_prompt<cr><cr>
+                    \ :let @/=""<cr>
+        autocmd TermOpen * nmap <buffer> [G 1G]g
+        autocmd TermOpen * nmap <buffer> ]G GG[g
     endif
 
     " Return to last edit position when opening files
@@ -270,12 +286,6 @@ if has('nvim')
     tnoremap <leader>a <C-\><C-n><C-W>h
     tnoremap <leader>d <C-\><C-n><C-W>l
 endif
-
-"TODO: Make terminal mapping to jump between the prompts
-" This works but the highlighted text can't be read.
-"TODO: Make a hl group for this
-nnoremap [g ?^\d\d/\d\d<Bar>\d\d:\d\d\$<cr>
-nnoremap ]g /^\d\d/\d\d<Bar>\d\d:\d\d\$<cr>
 
 " Close the current buffer but not the current window
 nnoremap <leader>bd :bp \| bd #<cr>

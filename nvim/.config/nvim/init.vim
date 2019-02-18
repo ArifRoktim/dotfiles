@@ -156,7 +156,19 @@ if !has('nvim')
     command! W w !sudo tee % > /dev/null
 endif
 
-augroup Autocmds
+" Make a new scratch buffer
+command! -bar Newscratch <mods> new +set\ buftype=nofile
+command! -bar Vnewscratch vertical Newscratch
+
+" Read command into a scratch buffer
+command! -nargs=1 -complete=command IntoScratch <mods> Newscratch | silent put!=execute(\"<args>\")
+command! -nargs=1 -complete=command VintoScratch <mods> vertical IntoScratch <args>
+
+" I look at the messages pretty often
+command! Lookmessages <mods> IntoScratch messages
+command! Vlookmessages <mods> vertical Lookmessages
+
+augroup general
     " clear all autocmds
     autocmd!
 

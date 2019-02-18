@@ -96,9 +96,9 @@ set fileformats=unix,dos,mac
 set scrolloff=7
 set wrap
 set wildmenu
-" complete till longest common string, then list all matches,
+" complete till longest common string and list all matches,
 " then complete next full match
-set wildmode=longest,list,full
+set wildmode=list:longest,full
 set wildignore=*.o,*.pyc,*.class
 set cmdheight=1
 set incsearch

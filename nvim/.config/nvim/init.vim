@@ -43,13 +43,16 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         " Pairs
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
-        call dein#add('tpope/vim-unimpaired')
 
         " Language specific
         call dein#add('rust-lang/rust.vim')
 
-        " Misc
+        " tpope
+        call dein#add('tpope/vim-unimpaired')
         call dein#add('tpope/vim-fugitive')
+        call dein#add('tpope/vim-commentary')
+
+        " Misc
         call dein#add('arcticicestudio/nord-vim', {
                     \ 'hook_add': "
                     \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
@@ -88,9 +91,9 @@ endif
 let mapleader = ","
 
 " Easily edit this file
-command! E edit ~/.config/nvim/init.vim | tcd %:p:h | normal! zz
+command! -bar E edit $MYVIMRC | tcd %:p:h | normal! zz
 
-set history=500
+set history=1000
 set autoread
 set fileformats=unix,dos,mac
 set scrolloff=7
@@ -115,8 +118,12 @@ set autowrite
 set ignorecase
 set smartcase
 set mouse=a
+set nrformats=bin,hex,octal,alpha
 " Always show the tab line
 set showtabline=2
+" Hide abandoned buffers
+set hidden
+
 
 " When splitting, put new window below/to the right of current window
 set splitright
@@ -250,9 +257,6 @@ set statusline+=[%l,%02.c]                  " line and column number
 set statusline+=[%02.p%%]                   " percent through file
 
 " ========== Tabs,windows,buffers ==========
-
-" Hide abandoned buffers
-set hidden
 
 " Move between windows
 nnoremap <leader>s <C-W>j

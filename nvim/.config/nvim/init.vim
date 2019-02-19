@@ -258,17 +258,47 @@ let g:modecolor={
             \ 'Terminal' : 'guifg=#A3BE8C ctermfg=2',
             \}
 
-"}}}2
+" functions used in statusline {{{2
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor() abort
     execute("highlight! User1 ".g:modecolor[g:currentmode[mode()]])
     return ''
 endfunction
 
-function! GetRelCWD() abort
-    return substitute(getcwd(-1, 0), $HOME, '~', '')
+function! GetCwdAndFile() abort
+    " Returns the cwd and/or the buffer number and filename
+    "
+    " Changes cwd by replacing $HOME with ~ and 
+    " stripping the sha from fugitive buffer names.
+    " Replaces $HOME with ~ in % and prepends the buffer number
+
+    function! ReplaceHome(input) abort
+        return substitute(a:input, $HOME, '~', '')
+    endfunction
+    let s:cwd=ReplaceHome(getcwd(-1, 0))
+    let s:file=ReplaceHome(expand('%'))
+    let s:bufnr=bufnr('%') . ":"
+
+    if expand('%') =~# '^fugitive://'
+        " File is a fugitive object so return just the file path
+        " Remove the sha because it's too long.
+        return s:bufnr . substitute(s:file, 
+                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")
+    elseif expand('%') =~# '^$'
+        " No file name
+        return '[No Name]'
+    elseif expand('%') =~# '^/' || expand('%') =~# '\w\+://'
+        " File name is absolute or isn't on the filesystem
+        " Examples: /home/<blah...> or fugitive://~/dotfiles/.git/...
+        " Don't print cwd. Just print buffer number and file path
+        return s:bufnr . s:file
+    else
+        " Print cwd and file
+        return s:cwd . " " . s:bufnr . s:file
+    endif
 endfunction
 
+"}}}2
 " Format the status line
 set statusline=
 set statusline+=%1*                         " set highlight group to user1
@@ -276,8 +306,7 @@ set statusline+=%{ChangeStatuslineColor()}  " change color of statusline dependi
 set statusline+=\ %{currentmode[mode()]}\   " current mode
 set statusline+=%*                          " reset highlight group to default
 set statusline+=%<                          " start truncating here when screen too narrow
-set statusline+=\ CWD:%{GetRelCWD()}        " current working directory
-set statusline+=\ %f                        " relative file location
+set statusline+=\ %{GetCwdAndFile()}        " cwd, and/or the buffer number and filename
 set statusline+=%r                          " ro flag
 set statusline+=%{&modified?'*':''}         " modified flag
 set statusline+=\                           " Add space

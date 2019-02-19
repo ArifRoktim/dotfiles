@@ -177,6 +177,8 @@ endif
 " Easily edit this file
 command! -bar E edit $MYVIMRC | tcd %:p:h | normal! zz
 
+command! Echofilename echo expand('%')
+
 " Make a new scratch buffer
 command! -bar Newscratch <mods> new +set\ buftype=nofile
 command! -bar Vnewscratch vertical Newscratch
@@ -226,7 +228,11 @@ augroup terminal_autocommands
 
 augroup END
 
+augroup fugitive_autocommands
+    autocmd!
 
+    autocmd BufReadPost fugitive://* normal zR
+augroup END
 
 " ========== colorscheme ========== {{{1
 

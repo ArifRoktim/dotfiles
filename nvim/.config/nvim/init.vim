@@ -1,16 +1,16 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sections:
-"    => Plugin Settings
-"    => General
-"    => Folding
-"    => Colorscheme
-"    => Status line
-"    => Tabs,windows,buffers
-"    => Mappings
+"    => virtualenv
+"    => dein scripts
+"    => plugin settings
+"    => general
+"    => colorscheme
+"    => status line
+"    => mappings
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Set up virtual environment
+" ========== virtualenv ========== {{{1
 if !empty($VIRTUAL_ENV) && isdirectory(expand('$HOME/.local/venv3/bin'))
     let g:python3_host_prog = expand('$HOME/.local/venv3/bin/python3')
 endif
@@ -18,7 +18,7 @@ if isdirectory(expand('$HOME/.local/venv2/bin'))
     let g:python_host_prog = expand('$HOME/.local/venv2/bin/python2')
 endif
 
-" ========== dein Scripts ==========
+" ========== dein scripts ========== {{{1
 
 if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
     " Required:
@@ -32,7 +32,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         " Required:
         call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
-        " Add or remove your plugins here:
+        " Add or remove your plugins here:{{{2
         " Autocomplete
         call dein#add('Shougo/deoplete.nvim')
         call dein#add('autozimu/LanguageClient-neovim', {
@@ -61,7 +61,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
                     \ endif
                     \ "
                     \ })
-
+        "}}}2
         " Required:
         call dein#end()
         call dein#save_state()
@@ -75,7 +75,7 @@ if !exists("g:syntax_on")
     syntax enable
 endif
 
-" ==========Plugin Settings ==========
+" ========== plugin settings ========== {{{1
 
 let g:deoplete#enable_at_startup = 1
 
@@ -86,54 +86,63 @@ if !v:shell_error
         \ }
 endif
 
-" ========== General ==========
+" ========== general ========== {{{1
 
 let mapleader = ","
 
-" Easily edit this file
-command! -bar E edit $MYVIMRC | tcd %:p:h | normal! zz
-
+" sets {{{2
+" misc
 set history=1000
-set autoread
 set fileformats=unix,dos,mac
-set scrolloff=7
-set wrap
-set wildmenu
-" complete till longest common string and list all matches,
-" then complete next full match
-set wildmode=list:longest,full
-set wildignore=*.o,*.pyc,*.class
-set cmdheight=1
-set incsearch
-set inccommand=nosplit
-set hlsearch
-set nowrapscan
-set lazyredraw
-set showmatch
-set matchtime=2
-set timeoutlen=1000
-set noshowmode
-set number
-set relativenumber
-set autowrite
-set ignorecase
-set smartcase
-set mouse=a
 set nrformats=bin,hex,octal,alpha
-" Always show the tab line
-set showtabline=2
-" Hide abandoned buffers
+set scrolloff=7
+set cmdheight=1
+set wrap
+set lazyredraw
+set timeoutlen=1000
+set mouse=a
+set foldmethod=indent
 set hidden
 
+set number
+set relativenumber
 
-" When splitting, put new window below/to the right of current window
+set autoread
+set autowrite
+
+" split new window below or to the right of current window
 set splitright
 set splitbelow
+
+" Flash matching parens for 2/10 seconds
+set showmatch
+set matchtime=2
+
+" Always show the tab and status line
+set showtabline=2
+set laststatus=2
+set noshowmode
 
 " No annoying bells on errors
 set noerrorbells
 set vb t_vb=
 
+" wildmenu settings
+set wildmenu
+" complete till longest common string and list all matches,
+" then complete next full match
+set wildmode=list:longest,full
+set wildignore=*.o,*.pyc,*.class
+
+" Search/replace settings
+set incsearch
+set inccommand=nosplit
+set hlsearch
+set nowrapscan
+set ignorecase
+set smartcase
+
+" Space/Tab settings
 " Use spaces instead of tabs
 " 1 tab == 4 spaces
 set expandtab
@@ -158,11 +167,15 @@ if has("persistent_undo")
     endif
 endif
 
+" commands {{{2
 " :W sudo saves the file
 " Bugged in neovim
 if !has('nvim')
     command! W w !sudo tee % > /dev/null
 endif
+
+" Easily edit this file
+command! -bar E edit $MYVIMRC | tcd %:p:h | normal! zz
 
 " Make a new scratch buffer
 command! -bar Newscratch <mods> new +set\ buftype=nofile
@@ -176,10 +189,19 @@ command! -nargs=1 -complete=command VintoScratch <mods> vertical IntoScratch <ar
 command! Lookmessages <mods> IntoScratch messages
 command! Vlookmessages <mods> vertical Lookmessages
 
-augroup general
+" autocmds {{{2
+augroup general_autocommands
     " clear all autocmds
     autocmd!
 
+    " Return to last edit position when opening files
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+    " Autoread is bugged. Force it to update buffer
+    autocmd FocusGained,BufEnter * :silent! checktime
+augroup END
+
+augroup terminal_autocommands
     if has('nvim')
         " make sure terminal buffers don't have line numbers
         autocmd TermOpen * setlocal nonumber norelativenumber cursorline
@@ -200,27 +222,17 @@ augroup general
         autocmd TermOpen * nmap <buffer> ]G GG[g
     endif
 
-    " Return to last edit position when opening files
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
-    " Autoread is bugged. Force it to update buffer
-    autocmd FocusGained,BufEnter * :silent! checktime
 augroup END
 
-" ========== Folding ==========
 
-set foldmethod=indent
 
-" ========== Colorscheme ==========
+" ========== colorscheme ========== {{{1
 
 colorscheme nord
 
-" ========== Status line ==========
+" ========== status line ========== {{{1
 
-" Always show the status line
-set laststatus=2
-
-" Modes
+" Modes dictionary {{{2
 let g:currentmode={
             \ 'n'  : 'Normal',
             \ 'v'  : 'Visual',
@@ -246,9 +258,10 @@ let g:modecolor={
             \ 'Terminal' : 'guifg=#A3BE8C ctermfg=2',
             \}
 
+"}}}2
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor() abort
-    exec("highlight! User1 ".g:modecolor[g:currentmode[mode()]])
+    execute("highlight! User1 ".g:modecolor[g:currentmode[mode()]])
     return ''
 endfunction
 
@@ -272,8 +285,9 @@ set statusline+=%=                          " seperation point
 set statusline+=[%l,%02.c]                  " line and column number
 set statusline+=[%02.p%%]                   " percent through file
 
-" ========== Tabs,windows,buffers ==========
+" ========== mappings ========== {{{1
 
+" Tabs, windows, and buffers {{{2
 " Move between windows
 nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k
@@ -287,42 +301,20 @@ if has('nvim')
     tnoremap <leader>d <C-\><C-n><C-W>l
 endif
 
-" Close the current buffer but not the current window
-nnoremap <leader>bd :bp \| bd #<cr>
-
-" Useful noremappings for managing tabs
+" Make, close, and move tabs
 nnoremap <leader>tn :tabnew<cr>
 nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
 nnoremap <leader>tm :+tabmove<cr>
 nnoremap <leader>tM :-tabmove<cr>
-if has('nvim')
-    tnoremap <leader>tn <C-\><C-n>:tabnew<cr>
-    tnoremap <leader>to <C-\><C-n>:tabonly<cr>
-    tnoremap <leader>tc <C-\><C-n>:tabclose<cr>
-    tnoremap <leader>tm <C-\><C-n>:+tabmove<cr>
-    tnoremap <leader>tM <C-\><C-n>:-tabmove<cr>
-    tnoremap <leader>e <C-\><C-n>:tabnext<cr>
-    tnoremap <leader>q <C-\><C-n>:tabprev<cr>
-endif
+
+" Close the current buffer but not the current window
+nnoremap <leader>bd :bp \| bd #<cr>
 
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
 
-" ========== Mappings ==========
-
-" Make x go to blackhole buffer
-nnoremap x "_x
-
-" Toggle highlighting current line
-nnoremap <Leader>c :set cursorline!<cr>
-
-" More consistent with d
-noremap Y y$
-
-" Unhighlight
-nnoremap <leader><cr> :nohlsearch<cr>
-
+"}}}2
 " Easy escape
 inoremap kj <Esc>
 inoremap jk <Esc>
@@ -333,9 +325,20 @@ if has('nvim')
     tnoremap KJ <C-\><C-n>
 endif
 
-" Remap VIM 0 to first non-blank character
-noremap 0 ^
-
 " Center when searching
 noremap N Nzz
 noremap n nzz
+
+" Unhighlight
+nnoremap <leader><cr> :nohlsearch<cr>
+
+" Make x go to blackhole buffer
+nnoremap x "_x
+
+" More consistent with d
+noremap Y y$
+
+" Remap VIM 0 to first non-blank character
+noremap 0 ^
+"}}}
+" vim:foldmethod=marker

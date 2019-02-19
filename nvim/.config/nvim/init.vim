@@ -202,6 +202,8 @@ augroup general_autocommands
 augroup END
 
 augroup terminal_autocommands
+    autocmd!
+
     if has('nvim')
         " make sure terminal buffers don't have line numbers
         autocmd TermOpen * setlocal nonumber norelativenumber cursorline
@@ -228,6 +230,10 @@ augroup END
 
 " ========== colorscheme ========== {{{1
 
+augroup colorscheme_autocommands
+    autocmd ColorScheme * highlight User1 guifg=#D8DEE9
+    autocmd ColorScheme * highlight User2 guifg=#D8DEE9 guibg=#3B4252
+augroup END
 colorscheme nord
 
 " ========== status line ========== {{{1
@@ -265,6 +271,13 @@ function! ChangeStatuslineColor() abort
     return ''
 endfunction
 
+function! StripGit() abort
+    " Turns [Git(master)] -> (master)
+    " and   [Git:0123456(master)] -> 0123456(master)
+    return substitute(FugitiveStatusline(),
+                \ '\[Git\%[:]\(.*\)(\(.\{-\}\))\]', '\1(\2 ', "")
+endfunction
+
 function! GetCwdAndFile() abort
     " Returns the cwd and/or the buffer number and filename
     "
@@ -282,19 +295,19 @@ function! GetCwdAndFile() abort
     if expand('%') =~# '^fugitive://'
         " File is a fugitive object so return just the file path
         " Remove the sha because it's too long.
-        return s:bufnr . substitute(s:file, 
-                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")
+        return ['', s:bufnr, substitute(s:file, 
+                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")]
     elseif expand('%') =~# '^$'
         " No file name
-        return '[No Name]'
+        return ['', '', 'No Name']
     elseif expand('%') =~# '^/' || expand('%') =~# '\w\+://'
         " File name is absolute or isn't on the filesystem
         " Examples: /home/<blah...> or fugitive://~/dotfiles/.git/...
         " Don't print cwd. Just print buffer number and file path
-        return s:bufnr . s:file
+        return ['', s:bufnr, s:file]
     else
         " Print cwd and file
-        return s:cwd . " " . s:bufnr . s:file
+        return [s:cwd, s:bufnr, s:file]
     endif
 endfunction
 
@@ -304,9 +317,14 @@ set statusline=
 set statusline+=%1*                         " set highlight group to user1
 set statusline+=%{ChangeStatuslineColor()}  " change color of statusline depending on mode
 set statusline+=\ %{currentmode[mode()]}\   " current mode
-set statusline+=%*                          " reset highlight group to default
 set statusline+=%<                          " start truncating here when screen too narrow
-set statusline+=\ %{GetCwdAndFile()}        " cwd, and/or the buffer number and filename
+set statusline+=%2*                         " set highlight group to user2
+" if GetCwdAndFile()[0] is not empty, display a space and then it
+set statusline+=%{len(GetCwdAndFile()[0])?'\ '.GetCwdAndFile()[0]:''}
+set statusline+=\ %{StripGit()}             " Show branch and file's commit
+set statusline+=%*\                         " reset highlight group to default
+set statusline+=%{GetCwdAndFile()[1]}       " buffer number if buffer has name
+set statusline+=%{GetCwdAndFile()[2]}
 set statusline+=%r                          " ro flag
 set statusline+=%{&modified?'*':''}         " modified flag
 set statusline+=\                           " Add space

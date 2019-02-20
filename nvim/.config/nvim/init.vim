@@ -1,12 +1,19 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Sections:
+" Sections: Jump with * or #
 "    => virtualenv
-"    => dein scripts
-"    => plugin settings
+"    => dein_scripts
+"       => dein_plugins
+"    => plugin_settings
 "    => general
+"       => general_settings
+"       => general_commands
+"       => general_autocmds
 "    => colorscheme
-"    => status line
+"    => status_line
+"       => modes_dictionary
+"       => statusline_functions
 "    => mappings
+"       => tabs_windows_buffers
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -18,7 +25,7 @@ if isdirectory(expand('$HOME/.local/venv2/bin'))
     let g:python_host_prog = expand('$HOME/.local/venv2/bin/python2')
 endif
 
-" ========== dein scripts ========== {{{1
+" ========== dein_scripts ========== {{{1
 
 if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
     " Required:
@@ -32,7 +39,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         " Required:
         call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
-        " Add or remove your plugins here:{{{2
+        " dein_plugins:{{{2
         " Autocomplete
         call dein#add('Shougo/deoplete.nvim')
         call dein#add('autozimu/LanguageClient-neovim', {
@@ -75,7 +82,7 @@ if !exists("g:syntax_on")
     syntax enable
 endif
 
-" ========== plugin settings ========== {{{1
+" ========== plugin_settings ========== {{{1
 
 let g:deoplete#enable_at_startup = 1
 
@@ -90,11 +97,11 @@ endif
 
 let mapleader = ","
 
-" sets {{{2
+" general_settings {{{2
 " misc
 set history=1000
 set fileformats=unix,dos,mac
-set nrformats=bin,hex,octal,alpha
+set nrformats=bin,hex,alpha
 set scrolloff=7
 set cmdheight=1
 set wrap
@@ -167,7 +174,7 @@ if has("persistent_undo")
     endif
 endif
 
-" commands {{{2
+" general_commands {{{2
 " :W sudo saves the file
 " Bugged in neovim
 if !has('nvim')
@@ -191,7 +198,7 @@ command! -nargs=1 -complete=command VintoScratch <mods> vertical IntoScratch <ar
 command! Lookmessages <mods> IntoScratch messages
 command! Vlookmessages <mods> vertical Lookmessages
 
-" autocmds {{{2
+" general_autocmds {{{2
 augroup general_autocommands
     " clear all autocmds
     autocmd!
@@ -242,9 +249,9 @@ augroup colorscheme_autocommands
 augroup END
 colorscheme nord
 
-" ========== status line ========== {{{1
+" ========== status_line ========== {{{1
 
-" Modes dictionary {{{2
+" modes_dictionary {{{2
 let g:currentmode={
             \ 'n'  : 'Normal',
             \ 'v'  : 'Visual',
@@ -270,7 +277,7 @@ let g:modecolor={
             \ 'Terminal' : 'guifg=#A3BE8C ctermfg=2',
             \}
 
-" functions used in statusline {{{2
+" statusline_functions {{{2
 " Change color of statusline depending on mode
 function! ChangeStatuslineColor() abort
     execute("highlight! User1 ".g:modecolor[g:currentmode[mode()]])
@@ -340,7 +347,7 @@ set statusline+=[%02.p%%]                   " percent through file
 
 " ========== mappings ========== {{{1
 
-" Tabs, windows, and buffers {{{2
+" tabs_windows_buffers {{{2
 " Move between windows
 nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k

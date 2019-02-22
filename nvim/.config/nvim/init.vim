@@ -9,9 +9,6 @@
 "       => general_commands
 "       => general_autocmds
 "    => colorscheme
-"    => status_line
-"       => modes_dictionary
-"       => statusline_functions
 "    => mappings
 "       => tabs_windows_buffers
 "
@@ -243,107 +240,7 @@ augroup END
 
 " ========== colorscheme ========== {{{1
 
-augroup colorscheme_autocommands
-    autocmd ColorScheme * highlight User1 guifg=#D8DEE9
-    autocmd ColorScheme * highlight User2 guifg=#D8DEE9 guibg=#3B4252
-augroup END
 colorscheme nord
-
-" ========== status_line ========== {{{1
-
-" modes_dictionary {{{2
-let g:currentmode={
-            \ 'n'  : 'Normal',
-            \ 'v'  : 'Visual',
-            \ 'V'  : 'Visual',
-            \ '' : 'Visual',
-            \ 's'  : 'Select',
-            \ 'S'  : 'Select',
-            \ '' : 'Select',
-            \ 'c'  : 'Command',
-            \ 'r'  : 'Command',
-            \ 'i'  : 'Insert',
-            \ 'R'  : 'Replace',
-            \ 't'  : 'Terminal'
-            \}
-" Colors for the modes
-let g:modecolor={
-            \ 'Normal'   : 'guifg=#D8DEE9 ctermfg=NONE',
-            \ 'Command'  : 'guifg=#D8Dee9 ctermfg=NONE',
-            \ 'Visual'   : 'guifg=#B48EAD ctermfg=5',
-            \ 'Select'   : 'guifg=#B48EAD ctermfg=5',
-            \ 'Insert'   : 'guifg=#88C0D0 ctermfg=6',
-            \ 'Replace'  : 'guifg=#88C0D0 ctermfg=6',
-            \ 'Terminal' : 'guifg=#A3BE8C ctermfg=2',
-            \}
-
-" statusline_functions {{{2
-" Change color of statusline depending on mode
-function! ChangeStatuslineColor() abort
-    execute("highlight! User1 ".g:modecolor[g:currentmode[mode()]])
-    return ''
-endfunction
-
-function! StripGit() abort
-    " Turns [Git(master)] -> (master)
-    " and   [Git:0123456(master)] -> 0123456(master)
-    return substitute(FugitiveStatusline(),
-                \ '\[Git\%[:]\(.*\)(\(.\{-\}\))\]', '\1(\2 ', "")
-endfunction
-
-function! GetCwdAndFile() abort
-    " Returns the cwd and/or the buffer number and filename
-    "
-    " Changes cwd by replacing $HOME with ~ and 
-    " stripping the sha from fugitive buffer names.
-    " Replaces $HOME with ~ in % and prepends the buffer number
-
-    function! ReplaceHome(input) abort
-        return substitute(a:input, $HOME, '~', '')
-    endfunction
-    let s:cwd=ReplaceHome(getcwd(-1, 0))
-    let s:file=ReplaceHome(expand('%'))
-    let s:bufnr=bufnr('%') . ":"
-
-    if expand('%') =~# '^fugitive://'
-        " File is a fugitive object so return just the file path
-        " Remove the sha because it's too long.
-        return ['', s:bufnr, substitute(s:file, 
-                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")]
-    elseif expand('%') =~# '^$'
-        " No file name
-        return ['', '', 'No Name']
-    elseif expand('%') =~# '^/' || expand('%') =~# '\w\+://'
-        " File name is absolute or isn't on the filesystem
-        " Examples: /home/<blah...> or fugitive://~/dotfiles/.git/...
-        " Don't print cwd. Just print buffer number and file path
-        return ['', s:bufnr, s:file]
-    else
-        " Print cwd and file
-        return [s:cwd, s:bufnr, s:file]
-    endif
-endfunction
-
-"}}}2
-" Format the status line
-set statusline=
-set statusline+=%1*                         " set highlight group to user1
-set statusline+=%{ChangeStatuslineColor()}  " change color of statusline depending on mode
-set statusline+=\ %{currentmode[mode()]}\   " current mode
-set statusline+=%<                          " start truncating here when screen too narrow
-set statusline+=%2*                         " set highlight group to user2
-" if GetCwdAndFile()[0] is not empty, display a space and then it
-set statusline+=%{len(GetCwdAndFile()[0])?'\ '.GetCwdAndFile()[0]:''}
-set statusline+=\ %{StripGit()}             " Show branch and file's commit
-set statusline+=%*\                         " reset highlight group to default
-set statusline+=%{GetCwdAndFile()[1]}       " buffer number if buffer has name
-set statusline+=%{GetCwdAndFile()[2]}
-set statusline+=%r                          " ro flag
-set statusline+=%{&modified?'*':''}         " modified flag
-set statusline+=\                           " Add space
-set statusline+=%=                          " seperation point
-set statusline+=[%l,%02.c]                  " line and column number
-set statusline+=[%02.p%%]                   " percent through file
 
 " ========== mappings ========== {{{1
 

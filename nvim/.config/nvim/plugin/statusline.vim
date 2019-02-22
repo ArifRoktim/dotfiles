@@ -1,0 +1,188 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Sections:
+"   => Nord_vim
+"   => modes_dictionary
+"   => statusline_functions
+"       => ModeColor
+"       => ModeText
+"       => FugitiveBranch
+"       => StripGit
+"       => ReplaceHome
+"       => GetCwd
+"       => GetFile
+"       => s:UserColors
+"       => MyStatusline
+"       => s:StatusLine
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+if exists("g:loaded_statusline")
+    finish
+endif
+let g:loaded_statusline = 1
+
+" Nord_vim colors (https://github.com/arcticicestudio/nord-vim) {{{1
+let s:nord0_gui = "#2E3440"
+let s:nord1_gui = "#3B4252"
+let s:nord2_gui = "#434C5E"
+let s:nord3_gui = "#4C566A"
+let s:nord4_gui = "#D8DEE9"
+let s:nord5_gui = "#E5E9F0"
+let s:nord6_gui = "#ECEFF4"
+let s:nord7_gui = "#8FBCBB"
+let s:nord8_gui = "#88C0D0"
+let s:nord9_gui = "#81A1C1"
+let s:nord10_gui = "#5E81AC"
+let s:nord11_gui = "#BF616A"
+let s:nord12_gui = "#D08770"
+let s:nord13_gui = "#EBCB8B"
+let s:nord14_gui = "#A3BE8C"
+let s:nord15_gui = "#B48EAD"
+
+let s:nord1_term = "0"
+let s:nord3_term = "8"
+let s:nord5_term = "7"
+let s:nord6_term = "15"
+let s:nord7_term = "14"
+let s:nord8_term = "6"
+let s:nord9_term = "4"
+let s:nord10_term = "12"
+let s:nord11_term = "1"
+let s:nord12_term = "11"
+let s:nord13_term = "3"
+let s:nord14_term = "2"
+let s:nord15_term = "5"
+
+" Extrapolated missing colors from nord.vim
+"let s:nord0_term = ""
+let s:nord2_term = "8"
+let s:nord4_term = "NONE"
+
+" modes_dictionary {{{1
+let s:modes={
+            \ 'n'  : ["%2*", ' Normal '],
+            \ 'c'  : ["%2*", ' Command '],
+            \ 'r'  : ["%2*", ' Command '],
+            \ 'i'  : ["%3*", ' Insert '],
+            \ 'R'  : ["%3*", ' Replace '],
+            \ 't'  : ["%4*", ' Terminal '],
+            \ 'v'  : ["%5*", ' Visual '],
+            \ 'V'  : ["%5*", ' Visual '],
+            \ '' : ["%5*", ' Visual '],
+            \ 's'  : ["%5*", ' Visual '],
+            \ 'S'  : ["%5*", ' Visual '],
+            \ '' : ["%5*", ' Visual '],
+            \ }
+
+" statusline_functions {{{1
+function! ModeColor(mode) abort "{{{2
+    return get(s:modes, a:mode, "%*1")[0]
+endfunction
+
+function! ModeText(mode) abort "{{{2
+    return get(s:modes, a:mode, "%*1")[1]
+endfunction
+
+function! FugitiveBranch() abort "{{{2
+    if !exists("g:loaded_fugitive") || !exists("b:git_dir")
+        return ""
+    endif
+    return StripGit()
+endfunction
+
+function! StripGit() abort "{{{2
+    " Turns [Git(master)] -> (master)
+    " and   [Git:0123456(master)] -> 0123456(master)
+    let l:ret = FugitiveStatusline()
+    if l:ret == ""
+        return ''
+    else
+        return ' ' . substitute(l:ret,
+                    \ '\[Git\%[:]\(.*\)(\(.\{-\}\))\]', '\1(\2 ', "")
+    endif
+endfunction
+
+function! ReplaceHome(input) abort "{{{2
+    return substitute(a:input, $HOME, '~', '')
+endfunction
+
+function! GetCwd() abort "{{{2
+    let l:file = expand('%')
+
+    " Explantion of the conditionals
+    " !~# '^\w\+://'    => File is on filesystem. Ex: Won't match fugitive://...
+    " !~# '^/'          => File name isn't an absolute path
+    " !~# '^$' && != "nofile"   => Buffer doesn't have empty file name
+    if l:file !~# '^\w\+://' &&  l:file !~# '^/'
+                \ && l:file !~# '^$' && &buftype != "nofile"
+        return ReplaceHome(getcwd(-1, 0))
+    endif
+    return ''
+endfunction
+
+function! GetFile() abort "{{{2
+    let l:file = expand('%')
+    let l:shortfile = ReplaceHome(l:file)
+    let l:bufnr = bufnr('%') . ':'
+
+    if exists("g:loaded_fugitive") && expand('%') =~# '^fugitive://'
+        " File is a fugitive object so return just the file path
+        " Remove the sha because it's too long.
+        return l:bufnr . substitute(l:shortfile, 
+                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")]
+    elseif l:file =~# '^$'
+        return 'No Name'
+    else
+        return l:bufnr . l:shortfile
+    endif
+endfunction
+
+function! s:UserColors() abort "{{{2
+    exec "highlight User1 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
+    exec "highlight User2 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
+    exec "highlight User3 guifg=" . s:nord8_gui  . " ctermfg=" . s:nord8_term
+    exec "highlight User4 guifg=" . s:nord14_gui . " ctermfg=" . s:nord14_term
+    exec "highlight User5 guifg=" . s:nord15_gui . " ctermfg=" . s:nord15_term
+    exec "highlight User9 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
+                    \ . " guibg=" . s:nord1_gui  . " ctermbg=" . s:nord1_term
+endfunction
+
+function! MyStatusLine(active) abort "{{{2
+    let l:statusline = ""
+    let l:mode = mode()
+
+    if a:active
+        let l:statusline  = ModeColor(l:mode)
+        let l:statusline .= ModeText(l:mode) 
+    endif
+    let l:statusline .= '%<'
+    let l:statusline .= '%9*'
+    let l:statusline .= '%{len(GetCwd())?" ".GetCwd():""}'
+    let l:statusline .= '%{StripGit()}'
+    let l:statusline .= '%*'
+    let l:statusline .= ' %{GetFile()}'
+    let l:statusline .= '%r%{&modified?"*":""} '
+    let l:statusline .= '%=[%02.l,%02.c][%02.p%%]'
+
+    return l:statusline
+endfunction
+
+function! s:StatusLine(mode) abort "{{{2
+    if a:mode == "not-current"
+        setlocal statusline=%!MyStatusLine(0)
+    else
+        setlocal statusline=%!MyStatusLine(1)
+    endif
+endfunction
+
+augroup MyStatusline "{{{2
+    autocmd!
+
+    autocmd VimEnter,WinEnter,BufWinEnter   * call s:StatusLine("normal")
+    autocmd WinLeave,FilterWritePost        * call s:StatusLine("not-current")
+    autocmd CmdlineEnter                    * call s:StatusLine("command") | redraw
+    autocmd SourcePre                       * call s:UserColors()
+augroup END
+
+call s:UserColors()
+" }}}2
+" vim:foldmethod=marker

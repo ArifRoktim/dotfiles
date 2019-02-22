@@ -10,7 +10,7 @@
 "       => GetCwd
 "       => GetFile
 "       => UserColors
-"       => MyStatusline
+"       => ActiveStatusline
 "       => s:StatusLine
 "       => augroup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -87,7 +87,8 @@ function! StripGit() abort "{{{2
     " and   [Git:0123456(master)]   into    0123456(master
     " Don't show git info if fugitive isn't loaded, if we're not in a git repo
     " or if we're not editing a file
-    if !exists("g:loaded_fugitive") || !exists("b:git_dir") || !len(expand('%'))
+    if !exists("g:loaded_fugitive") || !exists("b:git_dir") || 
+                \ expand('%') == "" || &buftype == "nofile"
         return ""
     endif
     let l:ret = FugitiveStatusline()
@@ -109,12 +110,11 @@ function! GetCwd() abort "{{{2
     " All names have $HOME replaced by ~
     let l:file = expand('%')
 
-    " Explantion of the conditionals
     " !~# '^\w\+://'    => File is on filesystem. Ex: Won't match fugitive://...
     " !~# '^/'          => File name isn't an absolute path
-    " !~# '^$' && != "nofile"   => Buffer has a file
-    if l:file !~# '^\w\+://' && l:file !~# '^/'
-                \ && l:file !~# '^$' && &buftype != "nofile"
+    " != "" && != "nofile"   => Buffer has a file
+    if l:file !~# '^\w\+://' && l:file !~# '^/' &&
+                \ l:file != "" && &buftype != "nofile"
         return pathshorten(ReplaceHome(getcwd(-1, 0)))
     endif
     return ''
@@ -136,7 +136,7 @@ function! GetFile() abort "{{{2
                     \ '^fugitive://\(.\{-\}\).git//\w\{40}', 'fugitive://\1', "")
         let l:short = "f:" . pathshorten(split(l:nohash, 'fugitive:')[0])
         return l:bufnr . l:short
-    elseif l:file =~# '^$'
+    elseif l:file == ""
         return '[No Name]'
     else
         return l:bufnr . pathshorten(l:shortfile)
@@ -154,11 +154,9 @@ function! s:UserColors() abort "{{{2
     exec "highlight User3 guifg=" . s:nord8_gui  . " ctermfg=" . s:nord8_term
     exec "highlight User4 guifg=" . s:nord14_gui . " ctermfg=" . s:nord14_term
     exec "highlight User5 guifg=" . s:nord15_gui . " ctermfg=" . s:nord15_term
-    exec "highlight User9 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
-                    \ . " guibg=" . s:nord1_gui  . " ctermbg=" . s:nord1_term
 endfunction
 
-function! MyStatusLine() abort "{{{2
+function! ActiveStatusLine() abort "{{{2
     " Statusline for active window
     let l:statusline = ''
     let l:mode = mode()
@@ -166,12 +164,12 @@ function! MyStatusLine() abort "{{{2
     let l:statusline .= ModeColor(l:mode)
     let l:statusline .= ModeText(l:mode) 
     let l:statusline .= '%<'
-    let l:statusline .= '%9*'
+    let l:statusline .= '%#StatusLineNC#'
     let l:statusline .= '%{len(GetCwd())?" ".GetCwd():""}'
     let l:statusline .= ' %{StripGit()}'
     let l:statusline .= '%*'
     let l:statusline .= ' %{GetFile()}'
-    let l:statusline .= '%r%{&modified?"*":""} '
+    let l:statusline .= '%{&readonly?"!":""}%{&modified?"*":""} '
     let l:statusline .= '%=[%02.l,%02.c][%02.p%%]'
 
     return l:statusline
@@ -186,7 +184,7 @@ function! s:StatusLine(mode) abort "{{{2
         setl statusline+=%{StripGit()}
         setl statusline+=%*
         setl statusline+=\ %{GetFile()}
-        setl statusline+=%r                     " ro flag
+        setl statusline+=%{&readonly?'!':''}
         setl statusline+=%{&modified?'*':''}
         setl statusline+=\ 
         setl statusline+=%=                     " seperation point
@@ -196,7 +194,7 @@ function! s:StatusLine(mode) abort "{{{2
         " Use default statusline for cmd line window
         return
     else
-        setlocal statusline=%!MyStatusLine()
+        setlocal statusline=%!ActiveStatusLine()
     endif
 endfunction
 

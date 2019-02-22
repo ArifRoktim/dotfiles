@@ -75,28 +75,26 @@ let s:modes={
 
 " statusline_functions {{{1
 function! ModeColor(mode) abort "{{{2
-    return get(s:modes, a:mode, "%*1")[0]
+    return get(s:modes, a:mode, ["%*1"])[0]
 endfunction
 
 function! ModeText(mode) abort "{{{2
-    return get(s:modes, a:mode, "%*1")[1]
-endfunction
-
-function! FugitiveBranch() abort "{{{2
-    if !exists("g:loaded_fugitive") || !exists("b:git_dir")
-        return ""
-    endif
-    return StripGit()
+    return get(s:modes, a:mode, ["", " Normal "])[1]
 endfunction
 
 function! StripGit() abort "{{{2
-    " Turns [Git(master)] -> (master)
-    " and   [Git:0123456(master)] -> 0123456(master)
+    " Turns [Git(master)] -> (master
+    " and   [Git:0123456(master)] -> 0123456(master
+    " Don't show git info if fugitive isn't loaded, if we're not in a git repo
+    " or if we're not editing a file
+    if !exists("g:loaded_fugitive") || !exists("b:git_dir") || !len(expand('%'))
+        return ""
+    endif
     let l:ret = FugitiveStatusline()
     if l:ret == ""
-        return ''
+        return ""
     else
-        return ' ' . substitute(l:ret,
+        return substitute(l:ret,
                     \ '\[Git\%[:]\(.*\)(\(.\{-\}\))\]', '\1(\2 ', "")
     endif
 endfunction
@@ -111,10 +109,10 @@ function! GetCwd() abort "{{{2
     " Explantion of the conditionals
     " !~# '^\w\+://'    => File is on filesystem. Ex: Won't match fugitive://...
     " !~# '^/'          => File name isn't an absolute path
-    " !~# '^$' && != "nofile"   => Buffer doesn't have empty file name
+    " !~# '^$' && != "nofile"   => Not editing a file
     if l:file !~# '^\w\+://' &&  l:file !~# '^/'
                 \ && l:file !~# '^$' && &buftype != "nofile"
-        return ReplaceHome(getcwd(-1, 0))
+        return pathshorten(ReplaceHome(getcwd(-1, 0)))
     endif
     return ''
 endfunction
@@ -124,20 +122,24 @@ function! GetFile() abort "{{{2
     let l:shortfile = ReplaceHome(l:file)
     let l:bufnr = bufnr('%') . ':'
 
-    if exists("g:loaded_fugitive") && expand('%') =~# '^fugitive://'
+    if exists("g:loaded_fugitive") && l:file =~# '^fugitive://'
         " File is a fugitive object so return just the file path
         " Remove the sha because it's too long.
-        return l:bufnr . substitute(l:shortfile, 
-                    \ '^fugitive://\(.\{-\}\).git//.\{40}', 'fugitive://\1', "")]
+        " return l:bufnr . substitute(l:shortfile, 
+        "             \ '^fugitive://\(.\{-\}\).git//\w\{40}', 'fugitive://\1', "")
+        let l:nohash = substitute(l:shortfile, 
+                    \ '^fugitive://\(.\{-\}\).git//\w\{40}', 'fugitive://\1', "")
+        let l:short = "f:" . pathshorten(split(l:nohash, 'fugitive:')[0])
+        return l:bufnr . l:short
     elseif l:file =~# '^$'
-        return 'No Name'
+        return '[No Name]'
     else
-        return l:bufnr . l:shortfile
+        return l:bufnr . pathshorten(l:shortfile)
     endif
+    "echo pathshorten(split(GetFile(), '\d\+:')[0])
 endfunction
 
 function! s:UserColors() abort "{{{2
-    exec "highlight User1 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
     exec "highlight User2 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
     exec "highlight User3 guifg=" . s:nord8_gui  . " ctermfg=" . s:nord8_term
     exec "highlight User4 guifg=" . s:nord14_gui . " ctermfg=" . s:nord14_term
@@ -146,18 +148,17 @@ function! s:UserColors() abort "{{{2
                     \ . " guibg=" . s:nord1_gui  . " ctermbg=" . s:nord1_term
 endfunction
 
-function! MyStatusLine(active) abort "{{{2
-    let l:statusline = ""
+function! MyStatusLine() abort "{{{2
+    let l:statusline = ''
     let l:mode = mode()
 
-    if a:active
-        let l:statusline  = ModeColor(l:mode)
-        let l:statusline .= ModeText(l:mode) 
-    endif
+    let l:statusline .= ModeColor(l:mode)
+    let l:statusline .= ModeText(l:mode) 
     let l:statusline .= '%<'
     let l:statusline .= '%9*'
+    " let l:statusline .= '%{GetCwd()}'
     let l:statusline .= '%{len(GetCwd())?" ".GetCwd():""}'
-    let l:statusline .= '%{StripGit()}'
+    let l:statusline .= ' %{StripGit()}'
     let l:statusline .= '%*'
     let l:statusline .= ' %{GetFile()}'
     let l:statusline .= '%r%{&modified?"*":""} '
@@ -168,9 +169,25 @@ endfunction
 
 function! s:StatusLine(mode) abort "{{{2
     if a:mode == "not-current"
-        setlocal statusline=%!MyStatusLine(0)
+        setlocal statusline=
+        setl statusline+=%2*
+        setl statusline+=\ 
+        " setl statusline+=%{GetCwd()}
+        setl statusline+=%{len(GetCwd())?GetCwd().'\ ':''}
+        setl statusline+=%{StripGit()}
+        setl statusline+=%*
+        setl statusline+=\ %{GetFile()}
+        setl statusline+=%r
+        setl statusline+=%{&modified?'*':''}    " modified flag
+        setl statusline+=\                      " Add space
+        setl statusline+=%=                     " seperation point
+        setl statusline+=[%l,%02.c]             " line and column number
+        setl statusline+=[%02.p%%]              " percent through file
+        "setl statusline+=%{len(GetCwd())?'\ \ '.GetCwd():''}
+    elseif a:mode == "command"
+        return
     else
-        setlocal statusline=%!MyStatusLine(1)
+        setlocal statusline=%!MyStatusLine()
     endif
 endfunction
 
@@ -179,7 +196,7 @@ augroup MyStatusline "{{{2
 
     autocmd VimEnter,WinEnter,BufWinEnter   * call s:StatusLine("normal")
     autocmd WinLeave,FilterWritePost        * call s:StatusLine("not-current")
-    autocmd CmdlineEnter                    * call s:StatusLine("command") | redraw
+    autocmd CmdwinEnter,CmdlineEnter        * call s:StatusLine("command") | redraw
     autocmd SourcePre                       * call s:UserColors()
 augroup END
 

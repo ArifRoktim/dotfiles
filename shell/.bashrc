@@ -2,38 +2,11 @@
 # ~/.bashrc
 #
 
-[[ -f /etc/profile ]] && . /etc/profile
-
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
-
-# Source host specific config file
-[[ -f ~/.bash_local ]] && . ~/.bash_local || true
-
-# Load aliases
-[[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
-
-# git info in prompt
-[[ -f ~/dotfiles/git-prompt.sh ]] && . ~/dotfiles/git-prompt.sh
-
-# Set vi bindings
-set -o vi
-
-# Run command as root
-bind '",r":"\eIsudo \eA"'
+# First export some env vars
 
 # Add some directories to PATH
 export PATH="$HOME/.local/bin:$PATH"
-
-## Dir colors
-#if [[ -f "$HOME/dotfiles/misc/.dir_colors" ]]; then
-#    eval $(dircolors -b "$HOME/dotfiles/misc/.dir_colors")
-#fi
-
-# Dir colors
-if [[ -f "$HOME/.dir_colors" ]]; then
-    eval $(dircolors -b "$HOME/.dir_colors")
-fi
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # Use nvim for sudoedit
 if type nvr &> /dev/null; then
@@ -46,10 +19,38 @@ elif type vi &> /dev/null; then
     export EDITOR="vi"
 elif type nano &> /dev/null; then
     export EDITOR="nano"
-else
-    echo "What's wrong with your machine?"
 fi
 export VISUAL="$EDITOR"
+export SYSTEMD_EDITOR="$EDITOR"
+
+# If not running interactively, skip rest of file
+[[ $- != *i* ]] && return
+
+# Source host specific config file
+[[ -f ~/.bash_local ]] && . ~/.bash_local || true
+
+# Load aliases
+[[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
+
+# git info in prompt
+[[ -f ~/dotfiles/git-prompt.sh ]] && . ~/dotfiles/git-prompt.sh
+
+# set rust source for racer
+if type rustc &> /dev/null; then
+    _rust_src_path="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+fi
+[[ -d "$_rust_src_path" ]] && export RUST_SRC_PATH="$_rust_src_path"
+
+# Set vi bindings
+set -o vi
+
+# Run command as root
+bind '",r":"\eIsudo \eA"'
+
+# Dir colors
+if [[ -f "$HOME/.dir_colors" ]]; then
+    eval $(dircolors -b "$HOME/.dir_colors")
+fi
 
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file

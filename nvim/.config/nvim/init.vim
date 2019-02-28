@@ -83,11 +83,15 @@ endif
 
 let g:deoplete#enable_at_startup = 1
 
-let s:pyls = system('which pyls')
-if !v:shell_error
-    let g:LanguageClient_serverCommands = {
-        \ 'python': [systemlist('which pyls')[0]],
-        \ }
+" Language servers
+let g:LanguageClient_useVirtualText = 0
+let g:LanguageClient_serverCommands = {}
+
+let s:pyls = trim(system('which pyls')) | if !v:shell_error
+    let g:LanguageClient_serverCommands['python'] = [s:pyls]
+endif
+let s:rls = trim(system('which rls')) | if !v:shell_error
+    let g:LanguageClient_serverCommands['rust'] = [s:rls]
 endif
 
 " ========== general ========== {{{1

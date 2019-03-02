@@ -1,0 +1,6 @@
+import sys
+
+sys.ps1 = '>>>\x1b[0m '
+sys.ps2 = '...\x1b[0m '
+del sys
+

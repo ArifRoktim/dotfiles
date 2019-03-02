@@ -37,6 +37,8 @@ export SYSTEMD_EDITOR="$EDITOR"
 # git info in prompt
 [[ -f ~/dotfiles/git-prompt.sh ]] && . ~/dotfiles/git-prompt.sh
 
+[[ -f ~/.config/pyrc ]] && export PYTHONSTARTUP="${HOME}/.config/pyrc"
+
 # set rust source for racer
 if type rustc &> /dev/null; then
     _rust_src_path="$(rustc --print sysroot)/lib/rustlib/src/rust/src"

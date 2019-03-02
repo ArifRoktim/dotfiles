@@ -2,6 +2,8 @@
 # ~/.bashrc
 #
 
+[[ -f /etc/profile ]] && . /etc/profile
+
 # First export some env vars
 
 # Add some directories to PATH

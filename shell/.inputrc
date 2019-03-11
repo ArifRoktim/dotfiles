@@ -6,6 +6,8 @@ set show-all-if-ambiguous on
 set show-all-if-unmodified on
 # Colored autocompletion
 set colored-stats on
+# Suffix file completions like using `ls -F`
+set visible-stats on
 # Color common prefix
 set colored-completion-prefix on
 # Enable bracketed paste

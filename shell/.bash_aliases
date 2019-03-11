@@ -5,6 +5,9 @@
 # ========== ALIASES ==========
 
 alias :q='exit'
+alias :qa='exit'
+alias :q!='exit'
+alias :qa!='exit'
 
 # Colored aliases
 alias ls='ls --color=auto'

@@ -121,6 +121,8 @@ set autowrite
 " split new window below or to the right of current window
 set splitright
 set splitbelow
+" dont resize when closing a split
+set noequalalways
 
 " Flash matching parens for 2/10 seconds
 set showmatch

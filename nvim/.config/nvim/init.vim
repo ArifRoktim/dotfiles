@@ -11,6 +11,7 @@
 "    => colorscheme
 "    => mappings
 "       => tabs_windows_buffers
+"       => coc.nvim_mappings
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -38,10 +39,9 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
 
         " dein_plugins:{{{2
         " Autocomplete
-        call dein#add('Shougo/deoplete.nvim')
-        call dein#add('autozimu/LanguageClient-neovim', {
-                    \ 'rev': 'next',
-                    \ 'build': 'bash install.sh',
+        call dein#add('neoclide/coc.nvim', {
+                    \ 'rev': '*',
+                    \ 'build': 'yarnpkg install',
                     \ })
 
         " Pairs
@@ -77,19 +77,6 @@ if !exists("g:syntax_on")
 endif
 
 " ========== plugin_settings ========== {{{1
-
-let g:deoplete#enable_at_startup = 1
-
-" Language servers
-let g:LanguageClient_useVirtualText = 0
-let g:LanguageClient_serverCommands = {}
-
-let s:pyls = trim(system('which pyls')) | if !v:shell_error
-    let g:LanguageClient_serverCommands['python'] = [s:pyls]
-endif
-let s:rls = trim(system('which rls')) | if !v:shell_error
-    let g:LanguageClient_serverCommands['rust'] = [s:rls]
-endif
 
 " ========== general ========== {{{1
 
@@ -273,6 +260,9 @@ nnoremap <leader>bd :bp \| bd #<cr>
 
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
+
+" coc.nvim_mappings {{{2
+inoremap <silent><expr> <c-space> coc#refresh()
 
 "}}}2
 " Easy escape

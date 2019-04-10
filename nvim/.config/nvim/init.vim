@@ -57,9 +57,6 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('tpope/vim-commentary')
 
         " Colorscheme
-        if has('termguicolors') && $COLORTERM ==# 'truecolor'
-            set termguicolors
-        endif
         call dein#add('ArifRoktim/nord-vim')
 
         "}}}2
@@ -241,6 +238,10 @@ augroup END
 " ========== colorscheme ========== {{{1
 
 colorscheme nord
+
+if has('termguicolors') && $COLORTERM ==# 'truecolor'
+    set termguicolors
+endif
 
 " ========== mappings ========== {{{1
 

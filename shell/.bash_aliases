@@ -5,9 +5,7 @@
 # ========== ALIASES ==========
 
 alias :q='exit'
-alias :qa='exit'
 alias :q!='exit'
-alias :qa!='exit'
 
 # Colored aliases
 alias ls='ls --color=auto'
@@ -47,3 +45,18 @@ function ns {
     nohup "$@" &> /dev/null &
 }
 
+function :qa {
+    if [[ -n $NVIM_LISTEN_ADDRESS ]] && type nvr &> /dev/null; then
+        nvr -c qa
+    else
+        exit
+    fi
+}
+
+function :qa! {
+    if [[ -n $NVIM_LISTEN_ADDRESS ]] && type nvr &> /dev/null; then
+        nvr -c qa!
+    else
+        exit
+    fi
+}

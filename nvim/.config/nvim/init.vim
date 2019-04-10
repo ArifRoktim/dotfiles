@@ -210,21 +210,22 @@ augroup terminal_autocommands
     autocmd!
 
     if has('nvim')
-        " make sure terminal buffers don't have line numbers
-        autocmd TermOpen * setlocal nonumber norelativenumber cursorline
+        autocmd TermOpen * setlocal nonumber norelativenumber cursorline signcolumn=no
         " Automatically enter terminal-mode after opening
         autocmd TermOpen * startinsert
         " Regexp representing my shell prompt
-        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$ '
+        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$'
         " Search for the shell prompt and then clear the last search
         " pattern since text highlighted in a term buffer is illegible
         " TODO: Instead, make a hl group for searching in term buffers
         autocmd TermOpen * nnoremap <buffer> <silent> [g 
                     \ :silent! ?<C-r>=shell_prompt<cr><cr>
                     \ :let @/=""<cr>
+                    \ :normal zt<cr>
         autocmd TermOpen * nnoremap <buffer> <silent> ]g
                     \ :silent! /<C-r>=shell_prompt<cr><cr>
                     \ :let @/=""<cr>
+                    \ :normal zt<cr>
         autocmd TermOpen * nmap <buffer> [G 1G]g
         autocmd TermOpen * nmap <buffer> ]G GG[g
     endif
@@ -255,6 +256,8 @@ if has('nvim')
     tnoremap <leader>w <C-\><C-n><C-W>k
     tnoremap <leader>a <C-\><C-n><C-W>h
     tnoremap <leader>d <C-\><C-n><C-W>l
+    nnoremap <leader>tv :vs +term<cr>
+    nnoremap <leader>ts :sp +term<cr>
 endif
 
 " Make, close, and move tabs

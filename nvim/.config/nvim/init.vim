@@ -56,15 +56,12 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('tpope/vim-fugitive')
         call dein#add('tpope/vim-commentary')
 
-        " Misc
-        call dein#add('arcticicestudio/nord-vim', {
-                    \ 'hook_add': "
-                    \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
-                    \     set termguicolors\n
-                    \     let g:nord_comment_brightness = 20\n
-                    \ endif
-                    \ "
-                    \ })
+        " Colorscheme
+        if has('termguicolors') && $COLORTERM ==# 'truecolor'
+            set termguicolors
+        endif
+        call dein#add('ArifRoktim/nord-vim')
+
         "}}}2
         " Required:
         call dein#end()

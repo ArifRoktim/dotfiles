@@ -88,19 +88,26 @@ set history=1000
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
 set scrolloff=7
-set cmdheight=1
+set cmdheight=2
 set wrap
-set lazyredraw
-set timeoutlen=1000
-set mouse=a
-set foldmethod=indent
 set hidden
+set lazyredraw
+set foldmethod=indent
 
 set number
 set relativenumber
 
 set autoread
 set autowrite
+
+" always show signcolumn
+set signcolumn=yes
+" don't give ins-completion-menu messages
+set shortmess+=c
+" time in ms to wait for mapped sequence to complete
+set timeoutlen=1000
+" enable mouse support most everything
+set mouse=a
 
 " split new window below or to the right of current window
 set splitright
@@ -127,6 +134,8 @@ set wildmenu
 " then complete next full match
 set wildmode=list:longest,full
 set wildignore=*.o,*.pyc,*.class
+" enable tab completion from cnoremap
+set wildcharm=<tab>
 
 " Search/replace settings
 set incsearch
@@ -274,6 +283,10 @@ if has('nvim')
     tnoremap JK <C-\><C-n>
     tnoremap KJ <C-\><C-n>
 endif
+
+" Edit a file with the directory of current file pre-populated
+nnoremap <leader>e :e <C-r>=expand('%:h')<CR>/
+cnoremap <leader>e <C-r>=expand('%:h')<CR>/
 
 " Center when searching
 noremap N Nzz

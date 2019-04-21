@@ -11,6 +11,7 @@
 "    => colorscheme
 "    => mappings
 "       => tabs_windows_buffers
+"       => coc.nvim_mappings
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -38,10 +39,9 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
 
         " dein_plugins:{{{2
         " Autocomplete
-        call dein#add('Shougo/deoplete.nvim')
-        call dein#add('autozimu/LanguageClient-neovim', {
-                    \ 'rev': 'next',
-                    \ 'build': 'bash install.sh',
+        call dein#add('neoclide/coc.nvim', {
+                    \ 'rev': '*',
+                    \ 'build': 'yarnpkg install',
                     \ })
 
         " Pairs
@@ -56,15 +56,9 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('tpope/vim-fugitive')
         call dein#add('tpope/vim-commentary')
 
-        " Misc
-        call dein#add('arcticicestudio/nord-vim', {
-                    \ 'hook_add': "
-                    \ if has('termguicolors') && $COLORTERM ==# 'truecolor'\n
-                    \     set termguicolors\n
-                    \     let g:nord_comment_brightness = 20\n
-                    \ endif
-                    \ "
-                    \ })
+        " Colorscheme
+        call dein#add('ArifRoktim/nord-vim')
+
         "}}}2
         " Required:
         call dein#end()
@@ -81,19 +75,6 @@ endif
 
 " ========== plugin_settings ========== {{{1
 
-let g:deoplete#enable_at_startup = 1
-
-" Language servers
-let g:LanguageClient_useVirtualText = 0
-let g:LanguageClient_serverCommands = {}
-
-let s:pyls = trim(system('which pyls')) | if !v:shell_error
-    let g:LanguageClient_serverCommands['python'] = [s:pyls]
-endif
-let s:rls = trim(system('which rls')) | if !v:shell_error
-    let g:LanguageClient_serverCommands['rust'] = [s:rls]
-endif
-
 " ========== general ========== {{{1
 
 let mapleader = ","
@@ -104,19 +85,26 @@ set history=1000
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
 set scrolloff=7
-set cmdheight=1
+set cmdheight=2
 set wrap
-set lazyredraw
-set timeoutlen=1000
-set mouse=a
-set foldmethod=indent
 set hidden
+set lazyredraw
+set foldmethod=indent
 
 set number
 set relativenumber
 
 set autoread
 set autowrite
+
+" always show signcolumn
+set signcolumn=yes
+" don't give ins-completion-menu messages
+set shortmess+=c
+" time in ms to wait for mapped sequence to complete
+set timeoutlen=1000
+" enable mouse support most everything
+set mouse=a
 
 " split new window below or to the right of current window
 set splitright
@@ -143,6 +131,8 @@ set wildmenu
 " then complete next full match
 set wildmode=list:longest,full
 set wildignore=*.o,*.pyc,*.class
+" enable tab completion from cnoremap
+set wildcharm=<tab>
 
 " Search/replace settings
 set incsearch
@@ -217,21 +207,22 @@ augroup terminal_autocommands
     autocmd!
 
     if has('nvim')
-        " make sure terminal buffers don't have line numbers
-        autocmd TermOpen * setlocal nonumber norelativenumber cursorline
+        autocmd TermOpen * setlocal nonumber norelativenumber cursorline signcolumn=no
         " Automatically enter terminal-mode after opening
         autocmd TermOpen * startinsert
         " Regexp representing my shell prompt
-        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$ '
+        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$'
         " Search for the shell prompt and then clear the last search
         " pattern since text highlighted in a term buffer is illegible
         " TODO: Instead, make a hl group for searching in term buffers
         autocmd TermOpen * nnoremap <buffer> <silent> [g 
                     \ :silent! ?<C-r>=shell_prompt<cr><cr>
                     \ :let @/=""<cr>
+                    \ :normal zt<cr>
         autocmd TermOpen * nnoremap <buffer> <silent> ]g
                     \ :silent! /<C-r>=shell_prompt<cr><cr>
                     \ :let @/=""<cr>
+                    \ :normal zt<cr>
         autocmd TermOpen * nmap <buffer> [G 1G]g
         autocmd TermOpen * nmap <buffer> ]G GG[g
     endif
@@ -248,6 +239,10 @@ augroup END
 
 colorscheme nord
 
+if has('termguicolors') && $COLORTERM ==# 'truecolor'
+    set termguicolors
+endif
+
 " ========== mappings ========== {{{1
 
 " tabs_windows_buffers {{{2
@@ -262,6 +257,8 @@ if has('nvim')
     tnoremap <leader>w <C-\><C-n><C-W>k
     tnoremap <leader>a <C-\><C-n><C-W>h
     tnoremap <leader>d <C-\><C-n><C-W>l
+    nnoremap <leader>tv :vs +term<cr>
+    nnoremap <leader>ts :sp +term<cr>
 endif
 
 " Make, close, and move tabs
@@ -277,6 +274,9 @@ nnoremap <leader>bd :bp \| bd #<cr>
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
 
+" coc.nvim_mappings {{{2
+inoremap <silent><expr> <c-space> coc#refresh()
+
 "}}}2
 " Easy escape
 inoremap kj <Esc>
@@ -287,6 +287,10 @@ if has('nvim')
     tnoremap JK <C-\><C-n>
     tnoremap KJ <C-\><C-n>
 endif
+
+" Edit a file with the directory of current file pre-populated
+nnoremap <leader>e :e <C-r>=expand('%:h')<CR>/
+cnoremap <leader>e <C-r>=expand('%:h')<CR>/
 
 " Center when searching
 noremap N Nzz

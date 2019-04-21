@@ -7,11 +7,11 @@ set $scrollclick button2
 set $leftclick button1
 set $rightclick button3
 # For setting volume
-set $sink "alsa_output.pci-0000_25_00.3.analog-stereo"
+set $sink "alsa_output.pci-0000_1e_00.3.analog-stereo"
 
 # multiple monitor setup
-set $output-0 "DP-3"
-set $output-1 "HDMI-0"
+set $output-0 "HDMI-0"
+set $output-1 "DP-2"
 workspace 2  output $output-0
 workspace 4  output $output-0
 workspace 6  output $output-0
@@ -194,6 +194,10 @@ bindsym Print exec --no-startup-id scrot -e 'mv $f ~/Pictures/screenshots/'
 bindsym --release Shift+Print exec --no-startup-id scrot -se 'mv $f ~/Pictures/screenshots/'
 
 ## Startup applications
+# load icc profile
+exec --no-startup-id xcalib -d :0 ~/dotfiles/ACER-XF240H-JT3-6500K-22.icc
+# load nvidia settings
+exec --no-startup-id nvidia-settings --load-config-only
 # set bg
 exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png
 # auto mounter

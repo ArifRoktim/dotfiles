@@ -34,11 +34,19 @@ bindsym $super+h focus left
 bindsym $super+j focus down
 bindsym $super+k focus up
 bindsym $super+l focus right
+bindsym $super+Left focus left
+bindsym $super+Down focus down
+bindsym $super+Up focus up
+bindsym $super+Right focus right
 # move focused window
 bindsym $super+Shift+h move left
 bindsym $super+Shift+j move down
 bindsym $super+Shift+k move up
 bindsym $super+Shift+l move right
+bindsym $super+Shift+Left move left
+bindsym $super+Shift+Down move down
+bindsym $super+Shift+Up move up
+bindsym $super+Shift+Right move right
 
 # change focus between tiling / floating windows
 bindsym $super+space focus mode_toggle
@@ -96,6 +104,42 @@ bindsym $super+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $super+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+# Pulse Audio controls
+# Increase volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +1%
+# Decrease volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $sink -1%
+# Toggle volume mute
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $sink toggle
+
+# Window resizing/moving
+# Pressing left will shrink the window’s width.
+# Pressing right will grow the window’s width.
+# Pressing up will shrink the window’s height.
+# Pressing down will grow the window’s height.
+bindsym KP_Begin resize grow height 5 px
+bindsym KP_Down resize shrink height 5 px
+bindsym KP_End resize shrink width 5 px
+bindsym KP_Next resize grow width 5 px
+
+# Larger size step
+bindsym Shift+KP_5 resize grow height 50 px
+bindsym Shift+KP_2 resize shrink height 50 px
+bindsym Shift+KP_1 resize shrink width 50 px
+bindsym Shift+KP_3 resize grow width 50 px
+
+# Move floating windows around
+bindsym KP_Divide move up 5px
+bindsym KP_Up move down 5px
+bindsym KP_Home move left 5px
+bindsym KP_Prior move right 5px
+
+# Larger size step
+bindsym Shift+KP_Divide move up 50px
+bindsym Shift+KP_8 move down 50px
+bindsym Shift+KP_7 move left 50px
+bindsym Shift+KP_9 move right 50px
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
@@ -111,54 +155,6 @@ bar {
     # limit tray items to primary monitor
     tray_output primary
 }
-
-## Modes
-mode "resize" {
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 5 px or 5 ppt
-        bindsym j resize grow height 5 px or 5 ppt
-        bindsym k resize shrink height 5 px or 5 ppt
-        bindsym l resize grow width 5 px or 5 ppt
-
-        # Larger size step
-        bindsym Shift+h resize shrink width 50 px or 50 ppt
-        bindsym Shift+j resize grow height 50 px or 50 ppt
-        bindsym Shift+k resize shrink height 50 px or 50 ppt
-        bindsym Shift+l resize grow width 50 px or 50 ppt
-
-        # Move floating windows around
-        bindsym Up move up 5px
-        bindsym Down move down 5px
-        bindsym Left move left 5px
-        bindsym Right move right 5px
-
-        bindsym Shift+Up move up 50px
-        bindsym Shift+Down move down 50px
-        bindsym Shift+Left move left 50px
-        bindsym Shift+Right move right 50px
-
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-bindsym $super+r mode "resize"
-mode "volume" {
-        # Pulse Audio controls
-        # Increase volume
-        bindsym F8 exec --no-startup-id pactl set-sink-volume $sink +1%
-        # Decrease volume
-        bindsym F7 exec --no-startup-id pactl set-sink-volume $sink -1%
-        # Toggle volume mute
-        bindsym F6 exec --no-startup-id pactl set-sink-mute $sink toggle
-
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-bindsym $super+F6 mode "volume"
 
 ## Application specific settings
 # Steam: https://github.com/ValveSoftware/steam-for-linux/issues/1040

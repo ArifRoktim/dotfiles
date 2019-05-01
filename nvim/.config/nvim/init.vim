@@ -225,6 +225,7 @@ augroup terminal_autocommands
                     \ :normal zt<cr>
         autocmd TermOpen * nmap <buffer> [G 1G]g
         autocmd TermOpen * nmap <buffer> ]G GG[g
+        autocmd TermOpen * nmap <buffer> <C-c> a<C-c>
     endif
 
 augroup END

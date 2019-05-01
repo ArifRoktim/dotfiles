@@ -15,9 +15,14 @@ alias grep='grep --color=auto'
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -F'
+alias l.='ls -ld'
 
 # More detailed jobs
 alias jobs='jobs -l'
+
+if type nvim &> /dev/null; then
+    alias nterm='nvim -c term'
+fi
 #==================================== FUNCTIONS ====================================
 
 # ls after cd

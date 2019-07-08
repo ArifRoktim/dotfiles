@@ -47,16 +47,17 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         " Pairs
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
+        call dein#add('junegunn/rainbow_parentheses.vim')
 
         " Language specific
         call dein#add('rust-lang/rust.vim')
+        call dein#add('pest-parser/pest.vim')
 
         " tpope
         call dein#add('tpope/vim-unimpaired')
         call dein#add('tpope/vim-fugitive')
-        call dein#add('tpope/vim-commentary')
 
-        " Colorscheme
+        " misc
         call dein#add('ArifRoktim/nord-vim')
 
         "}}}2
@@ -75,12 +76,32 @@ endif
 
 " ========== plugin_settings ========== {{{1
 
-" ========== general ========== {{{1
-
 let mapleader = ","
 
+" coc.nvim_mappings
+if dein#check_install("coc.nvim") == 0
+    " trigger completion
+    inoremap <silent><expr> <c-space> coc#refresh()
+
+    " Use `[c` and `]c` to navigate diagnostics
+    nmap <silent> [c <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+    " Keys for gotos
+    nmap <silent> <leader>ld <Plug>(coc-definition)
+    nmap <silent> <leader>ly <Plug>(coc-type-definition)
+    nmap <silent> <leader>li <Plug>(coc-implementation)
+    nmap <silent> <leader>lr <Plug>(coc-references)
+
+    " Rename current word
+    nmap <leader>ln <Plug>(coc-rename)
+
+    nnoremap <silent> <leader>lk :call CocAction('doHover')<cr>
+endif
+
+" ========== general ========== {{{1
+
 " general_settings {{{2
-" misc
 set history=1000
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
@@ -215,6 +236,7 @@ augroup terminal_autocommands
         " Search for the shell prompt and then clear the last search
         " pattern since text highlighted in a term buffer is illegible
         " TODO: Instead, make a hl group for searching in term buffers
+        " TODO: Make this work in visual mode too
         autocmd TermOpen * nnoremap <buffer> <silent> [g 
                     \ :silent! ?<C-r>=shell_prompt<cr><cr>
                     \ :let @/=""<cr>
@@ -238,7 +260,9 @@ augroup END
 
 " ========== colorscheme ========== {{{1
 
-colorscheme nord
+if dein#check_install("nord-vim") == 0
+    colorscheme nord
+endif
 
 if has('termguicolors') && $COLORTERM ==# 'truecolor'
     set termguicolors
@@ -274,9 +298,6 @@ nnoremap <leader>bd :bp \| bd #<cr>
 
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
-
-" coc.nvim_mappings {{{2
-inoremap <silent><expr> <c-space> coc#refresh()
 
 "}}}2
 " Easy escape

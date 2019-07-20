@@ -58,7 +58,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
         call dein#add('tpope/vim-fugitive')
 
         " misc
-        call dein#add('ArifRoktim/nord-vim')
+        call dein#add('arcticicestudio/nord-vim')
 
         "}}}2
         " Required:
@@ -259,6 +259,14 @@ augroup fugitive_autocommands
 augroup END
 
 " ========== colorscheme ========== {{{1
+
+" Fix the absurdly low constrast of nord-vim
+augroup nord-overrides
+  autocmd!
+  autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
+  autocmd ColorScheme nord highlight Folded guifg=#7b88a1
+  autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
+augroup END
 
 if dein#check_install("nord-vim") == 0
     colorscheme nord

@@ -1,4 +1,5 @@
 {
+    "rust.unstable_features": true,
     "rust.clippy_preference": "on",
     "rust.show_hover_context": true
 }

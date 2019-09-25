@@ -15,9 +15,18 @@ alias grep='grep --color=auto'
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -F'
+alias l.='ls -ld'
 
 # More detailed jobs
 alias jobs='jobs -l'
+
+alias nterm='nvim -c term'
+
+# rust tool aliases
+alias rcheck="cargo check"
+alias rfmt="cargo +nightly fmt"
+alias rgo="cargo run"
+alias run="cargo run --release"
 #==================================== FUNCTIONS ====================================
 
 # ls after cd
@@ -28,16 +37,20 @@ function cd {
     fi
 }
 
-# Start/attach to tmux session
-function tnew {
-    if [ -z "$1" ]; then
-        tmux ls
-    else
-        (
-        command cd;
-        COLORTERM=truecolor tmux new-session -As "$1"
-        )
-    fi
+# cargo test
+function rtest {
+    local tests=""
+    local quiet=""
+    while [[ $# -gt 0 ]]; do
+        if [[ "$1" = '-v' ]]; then
+            quiet="-- --nocapture"
+        else
+            tests="${tests} $1"
+        fi
+        shift
+    done
+    local cmd="cargo test ${tests} ${quiet}"
+    echo $cmd
 }
 
 # Run in background

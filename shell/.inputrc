@@ -1,5 +1,6 @@
 $include /etc/inputrc
 set bell-style none
+set convert-meta on
 
 # Tab complete immediately
 set show-all-if-ambiguous on
@@ -31,6 +32,7 @@ Control-l: clear-screen
 "\e[B": history-search-forward
 "kj": vi-movement-mode
 "jk": vi-movement-mode
+"\M-,": yank-last-arg
 
 set keymap vi-command
 "k": history-search-backward

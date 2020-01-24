@@ -11,7 +11,6 @@
 "    => colorscheme
 "    => mappings
 "       => tabs_windows_buffers
-"       => coc.nvim_mappings
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -87,16 +86,39 @@ if dein#check_install("coc.nvim") == 0
     nmap <silent> [c <Plug>(coc-diagnostic-prev)
     nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
-    " Keys for gotos
-    nmap <silent> <leader>ld <Plug>(coc-definition)
-    nmap <silent> <leader>ly <Plug>(coc-type-definition)
-    nmap <silent> <leader>li <Plug>(coc-implementation)
-    nmap <silent> <leader>lr <Plug>(coc-references)
-
     " Rename current word
-    nmap <leader>ln <Plug>(coc-rename)
+    nmap <leader>rn <Plug>(coc-rename)
 
-    nnoremap <silent> <leader>lk :call CocAction('doHover')<cr>
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+
+    function! s:show_documentation()
+        if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+        else
+            call CocAction('doHover')
+        endif
+    endfunction
+
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    " Go to definition
+    nmap <silent> <space>g <Plug>(coc-definition)
+
+    " Using CocList
+    " Show all diagnostics
+    nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+    " Find symbol of current document
+    nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+    " Search workspace symbols
+    nnoremap <silent> <space>s  :<C-u>CocList symbols<cr>
+    " Do default action for next item.
+    nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+    " Do default action for previous item.
+    nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+    " Resume latest coc list
+    nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 endif
 
 " ========== general ========== {{{1
@@ -124,6 +146,8 @@ set signcolumn=yes
 set shortmess+=c
 " time in ms to wait for mapped sequence to complete
 set timeoutlen=1000
+" time to wait before saving file to disk
+set updatetime=400
 " enable mouse support most everything
 set mouse=a
 
@@ -266,6 +290,7 @@ augroup nord-overrides
   autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
   autocmd ColorScheme nord highlight Folded guifg=#7b88a1
   autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
+  autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
 augroup END
 
 if dein#check_install("nord-vim") == 0
@@ -302,7 +327,9 @@ nnoremap <leader>tm :+tabmove<cr>
 nnoremap <leader>tM :-tabmove<cr>
 
 " Close the current buffer but not the current window
-nnoremap <leader>bd :bp \| bd #<cr>
+nnoremap <silent> <leader>bd :bp \| bd #<cr>
+" Switch to alternate file
+nnoremap <silent> <leader>bp :b #<cr>
 
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>

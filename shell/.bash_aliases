@@ -4,8 +4,10 @@
 
 # ========== ALIASES ==========
 
+# Common typos
 alias :q='exit'
 alias :q!='exit'
+alias qgit='git'
 
 # Colored aliases
 alias ls='ls --color=auto'
@@ -17,16 +19,15 @@ alias la='ls -A'
 alias l='ls -F'
 alias l.='ls -ld'
 
-# More detailed jobs
-alias jobs='jobs -l'
-
 alias nterm='nvim -c term'
 
 # rust tool aliases
-alias rcheck="cargo check"
-alias rfmt="cargo +nightly fmt"
-alias rgo="cargo run"
-alias run="cargo run --release"
+alias rcheck='cargo check'
+alias rtest='cargo test'
+alias rdoc='cargo doc --no-deps'
+alias rfmt='cargo fmt'
+alias rgo='cargo run'
+alias run='cargo run --release'
 #==================================== FUNCTIONS ====================================
 
 # ls after cd
@@ -35,22 +36,6 @@ function cd {
     if [ $? -eq 0 ]; then
         command ls --color=auto
     fi
-}
-
-# cargo test
-function rtest {
-    local tests=""
-    local quiet=""
-    while [[ $# -gt 0 ]]; do
-        if [[ "$1" = '-v' ]]; then
-            quiet="-- --nocapture"
-        else
-            tests="${tests} $1"
-        fi
-        shift
-    done
-    local cmd="cargo test ${tests} ${quiet}"
-    echo $cmd
 }
 
 # Run in background

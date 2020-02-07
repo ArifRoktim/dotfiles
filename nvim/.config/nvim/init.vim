@@ -24,7 +24,18 @@ endif
 
 " ========== dein_scripts ========== {{{1
 
-if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
+function! Dein_supported()
+    return (v:version >= 800 || has('nvim')) && isdirectory(expand('$HOME/.config/nvim/deind'))
+endfunction
+
+if Dein_supported()
+    let g:dein#enable_notification = 1
+    let g:dein#notification_time = 10
+    let g:dein#notification_icon = "/usr/share/pixmaps/nvim.png"
+
+    command! DeinInstall call dein#install()
+    command! DeinUpdate call dein#update()
+
     " Required:
     set runtimepath+=$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim
 
@@ -38,9 +49,10 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
 
         " dein_plugins:{{{2
         " Autocomplete
+        let g:coc_global_extensions = ['coc-json', 'coc-python', 'coc-rust-analyzer']
         call dein#add('neoclide/coc.nvim', {
-                    \ 'rev': '*',
-                    \ 'build': 'yarnpkg install',
+                    \ 'merged': 0,
+                    \ 'rev': 'release',
                     \ })
 
         " Pairs
@@ -58,6 +70,7 @@ if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
 
         " misc
         call dein#add('arcticicestudio/nord-vim')
+        call dein#add('chrisbra/Colorizer')
 
         "}}}2
         " Required:
@@ -77,8 +90,8 @@ endif
 
 let mapleader = ","
 
-" coc.nvim_mappings
-if dein#check_install("coc.nvim") == 0
+" coc.nvim_mappings {{{2
+if Dein_supported() && dein#check_install("coc.nvim") == 0
     " trigger completion
     inoremap <silent><expr> <c-space> coc#refresh()
 
@@ -119,6 +132,12 @@ if dein#check_install("coc.nvim") == 0
     nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+endif
+
+" colorizer mappings {{{2
+if Dein_supported() && dein#check_install("Colorizer") == 0
+    nmap <Leader>cc <Plug>Colorizer
+    xmap <Leader>cc <Plug>Colorizer
 endif
 
 " ========== general ========== {{{1
@@ -234,10 +253,14 @@ augroup general_autocommands
     autocmd FocusGained,BufEnter * :silent! checktime
 augroup END
 
-augroup terminal_autocommands
-    autocmd!
+if has('nvim')
+    augroup terminal_autocommands
+        autocmd!
 
-    if has('nvim')
+        " Deal with glitchy terminal after clearing full screen
+        autocmd TermEnter * setlocal scrolloff=0
+        autocmd TermLeave * setlocal scrolloff=10
+
         autocmd TermOpen * setlocal nonumber norelativenumber cursorline signcolumn=no
         " Automatically enter terminal-mode after opening
         autocmd TermOpen * startinsert
@@ -258,9 +281,9 @@ augroup terminal_autocommands
         autocmd TermOpen * nmap <buffer> [G 1G]g
         autocmd TermOpen * nmap <buffer> ]G GG[g
         autocmd TermOpen * nmap <buffer> <C-c> a<C-c>
-    endif
 
-augroup END
+    augroup END
+endif
 
 augroup fugitive_autocommands
     autocmd!
@@ -270,22 +293,36 @@ augroup END
 
 " ========== colorscheme ========== {{{1
 
-" Fix the absurdly low constrast of nord-vim
-augroup nord-overrides
-  autocmd!
-  autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
-  autocmd ColorScheme nord highlight Folded guifg=#7b88a1
-  autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
-  autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
+augroup gerneral-overrides
+    autocmd!
+
+    " Highlight trailing whitespaces
+    autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 guibg=#BF616A
+
+    " In insert mode, don't highlight trailing whitespace when typing at the
+    " end of a line.
+    autocmd InsertEnter,VimEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 augroup END
 
-if dein#check_install("nord-vim") == 0
+" Fix the absurdly low constrast of nord-vim
+augroup nord-overrides
+    autocmd!
+    autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
+    autocmd ColorScheme nord highlight Folded guifg=#7b88a1
+    autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
+    autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
+augroup END
+
+if Dein_supported() && dein#check_install("nord-vim") == 0
+            \ && has('termguicolors') && $COLORTERM ==# 'truecolor'
     colorscheme nord
+    set termguicolors
+else
+    colorscheme desert
 endif
 
-if has('termguicolors') && $COLORTERM ==# 'truecolor'
-    set termguicolors
-endif
+"match ExtraWhitespace /\s\+\%#\@<!$/
 
 " ========== mappings ========== {{{1
 

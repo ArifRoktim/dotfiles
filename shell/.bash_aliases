@@ -38,6 +38,24 @@ function cd {
     fi
 }
 
+# Run `tree -a` while using .gitignore
+function gtree {
+    # locate .gitignore file
+    ignore="$(git rev-parse --show-toplevel 2> /dev/null)/.gitignore"
+
+    if [[ $? -ne 0 ]]; then
+        echo "Not a git repo" 1>&2
+        return 1
+    fi
+
+    pattern=".git"
+    while read line; do
+        pattern="${pattern}|${line}"
+    done < "$ignore"
+
+    tree -aI "$pattern"
+}
+
 # Run in background
 function ns {
     nohup "$@" &> /dev/null &

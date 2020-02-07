@@ -4,13 +4,11 @@
 
 [[ -f /etc/profile ]] && . /etc/profile
 
-# First export some env vars
-
 # Add some directories to PATH
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# Use nvim for sudoedit
+# Use nvim for editor
 if type nvr &> /dev/null; then
     export EDITOR="nvr --remote-wait-silent"
 elif type nvim &> /dev/null; then
@@ -37,13 +35,8 @@ export SYSTEMD_EDITOR="$EDITOR"
 # git info in prompt
 [[ -f ~/dotfiles/git-prompt.sh ]] && . ~/dotfiles/git-prompt.sh
 
+# set python repl prompt
 [[ -f ~/.config/pyrc ]] && export PYTHONSTARTUP="${HOME}/.config/pyrc"
-
-# set rust source for racer
-if type rustc &> /dev/null; then
-    _rust_src_path="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
-fi
-[[ -d "$_rust_src_path" ]] && export RUST_SRC_PATH="$_rust_src_path"
 
 # Set vi bindings
 set -o vi
@@ -56,6 +49,7 @@ fi
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file
 shopt -s histverify                         # Allow editing of history expansion
+shopt -s dotglob                            # Include hidden files for globs
 export HISTCONTROL=ignoreboth:erasedups     # Don't add commands that are duplicated or start with a space
 export HISTTIMEFORMAT='%F %T '
 

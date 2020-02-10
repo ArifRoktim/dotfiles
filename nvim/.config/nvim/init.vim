@@ -146,7 +146,7 @@ endif
 set history=1000
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
-set scrolloff=7
+set scrolloff=4
 set cmdheight=2
 set wrap
 set hidden
@@ -257,27 +257,35 @@ if has('nvim')
     augroup terminal_autocommands
         autocmd!
 
-        " Deal with glitchy terminal after clearing full screen
-        autocmd TermEnter * setlocal scrolloff=0
-        autocmd TermLeave * setlocal scrolloff=10
+        " Terminal behaves weird with scrolloff. Disable it for terminals
+        autocmd TermEnter * let g:default_scrolloff=&scrolloff
+                    \ | :set scrolloff=0
+        autocmd TermLeave * let &scrolloff=g:default_scrolloff
 
         autocmd TermOpen * setlocal nonumber norelativenumber cursorline signcolumn=no
+
         " Automatically enter terminal-mode after opening
         autocmd TermOpen * startinsert
-        " Regexp representing my shell prompt
-        let shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$'
-        " Search for the shell prompt and then clear the last search
-        " pattern since text highlighted in a term buffer is illegible
-        " TODO: Instead, make a hl group for searching in term buffers
-        " TODO: Make this work in visual mode too
-        autocmd TermOpen * nnoremap <buffer> <silent> [g 
-                    \ :silent! ?<C-r>=shell_prompt<cr><cr>
-                    \ :let @/=""<cr>
-                    \ :normal zt<cr>
-        autocmd TermOpen * nnoremap <buffer> <silent> ]g
-                    \ :silent! /<C-r>=shell_prompt<cr><cr>
-                    \ :let @/=""<cr>
-                    \ :normal zt<cr>
+
+        " Search for the shell prompt
+        function! GoToPrompt(flags) abort
+            " Regexp representing my shell prompt
+            let l:shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$'
+            call search(shell_prompt, a:flags)
+        endfunction
+        function! GoToH()
+            echo "hi!"
+        endfunction
+
+        " Jump to the shell prompt
+        autocmd TermOpen * noremap <buffer> <silent> [g
+                    \ :call GoToPrompt('eb')<cr>
+        autocmd TermOpen * noremap <buffer> <silent> ]g
+                    \ :call GoToPrompt('e')<cr>
+        " Doesn't work in visual mode
+        autocmd TermOpen * vunmap <buffer> [g
+        autocmd TermOpen * vunmap <buffer> ]g
+
         autocmd TermOpen * nmap <buffer> [G 1G]g
         autocmd TermOpen * nmap <buffer> ]G GG[g
         autocmd TermOpen * nmap <buffer> <C-c> a<C-c>
@@ -299,8 +307,7 @@ augroup gerneral-overrides
     " Highlight trailing whitespaces
     autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 guibg=#BF616A
 
-    " In insert mode, don't highlight trailing whitespace when typing at the
-    " end of a line.
+    " don't highlight trailing whitespace when typing at the end of a line.
     autocmd InsertEnter,VimEnter * match ExtraWhitespace /\s\+\%#\@<!$/
     autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 augroup END
@@ -340,6 +347,8 @@ if has('nvim')
     tnoremap <leader>d <C-\><C-n><C-W>l
     nnoremap <leader>tv :vs +term<cr>
     nnoremap <leader>ts :sp +term<cr>
+    " i_CTRL-R in term mode
+    tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
 " Make, close, and move tabs

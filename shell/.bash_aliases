@@ -20,6 +20,7 @@ alias l='ls -F'
 alias l.='ls -ld'
 
 alias nterm='nvim -c term'
+alias waste='du -sh * | sort -h'
 
 # rust tool aliases
 alias rcheck='cargo check'

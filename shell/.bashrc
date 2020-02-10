@@ -29,7 +29,6 @@ export SYSTEMD_EDITOR="$EDITOR"
 # Source host specific config file
 [[ -f ~/.bash_local ]] && . ~/.bash_local || true
 
-# Load aliases
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 
 # git info in prompt
@@ -37,6 +36,10 @@ export SYSTEMD_EDITOR="$EDITOR"
 
 # set python repl prompt
 [[ -f ~/.config/pyrc ]] && export PYTHONSTARTUP="${HOME}/.config/pyrc"
+
+if [[ -f /usr/share/doc/pkgfile/command-not-found.bash ]]; then
+    . /usr/share/doc/pkgfile/command-not-found.bash
+fi
 
 # Set vi bindings
 set -o vi

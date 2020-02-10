@@ -87,7 +87,7 @@ function! StripGit() abort "{{{2
     " and   [Git:0123456(master)]   into    0123456(master
     " Don't show git info if fugitive isn't loaded, if we're not in a git repo
     " or if we're not editing a file
-    if !exists("g:loaded_fugitive") || !exists("b:git_dir") || 
+    if !exists("g:loaded_fugitive") || !exists("b:git_dir") ||
                 \ expand('%') == "" || &buftype == "nofile"
         return ""
     endif
@@ -100,12 +100,13 @@ function! StripGit() abort "{{{2
     endif
 endfunction
 
+" TODO: Remove this. Replace with fnamemodify()
 function! ReplaceHome(input) abort "{{{2
     return substitute(a:input, $HOME, '~', '')
 endfunction
 
 function! GetCwd() abort "{{{2
-    " Displays cwd of current tab iff we're viewing a file on the fs that's 
+    " Displays cwd of current tab iff we're viewing a file on the fs that's
     " been specified with a relative path
     " All names have $HOME replaced by ~
     let l:file = expand('%')
@@ -132,7 +133,7 @@ function! GetFile() abort "{{{2
     if exists("g:loaded_fugitive") && l:file =~# '^fugitive://'
         " File is a fugitive object so return just the file path
         " Remove the sha because it's too long.
-        let l:nohash = substitute(l:shortfile, 
+        let l:nohash = substitute(l:shortfile,
                     \ '^fugitive://\(.\{-\}\).git//\w\{40}', 'fugitive://\1', "")
         let l:short = "f:" . pathshorten(split(l:nohash, 'fugitive:')[0])
         return l:bufnr . l:short
@@ -162,7 +163,7 @@ function! ActiveStatusLine() abort "{{{2
     let l:mode = mode()
 
     let l:statusline .= ModeColor(l:mode)
-    let l:statusline .= ModeText(l:mode) 
+    let l:statusline .= ModeText(l:mode)
     let l:statusline .= '%<'
     let l:statusline .= '%#StatusLineNC#'
     let l:statusline .= '%{len(GetCwd())?" ".GetCwd():""}'
@@ -179,15 +180,13 @@ function! s:StatusLine(mode) abort "{{{2
     if a:mode == "not-current"
         setlocal statusline=
         setl statusline+=%2*
-        setl statusline+=\ 
-        setl statusline+=%{len(GetCwd())?GetCwd().'\ ':''}
+        setl statusline+=\ %{len(GetCwd())?GetCwd().'\ ':''}
         setl statusline+=%{StripGit()}
         setl statusline+=%*
         setl statusline+=\ %{GetFile()}
         setl statusline+=%{&readonly?'!':''}
         setl statusline+=%{&modified?'*':''}
-        setl statusline+=\ 
-        setl statusline+=%=                     " seperation point
+        setl statusline+=\ %=                   " seperation point
         setl statusline+=[%02.l,%02.c]          " line and column number
         setl statusline+=[%02.p%%]              " percent through file
     elseif a:mode == "command"

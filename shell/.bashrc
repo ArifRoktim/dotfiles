@@ -122,7 +122,7 @@ if [ "$TERM" = "linux" ]; then
     # black
     echo -en "\e]P0073642" # make background blue
     # red
-    echo -en "\e]P9FF0000" 
+    echo -en "\e]P9FF0000"
     # green
     # yellow
     echo -en "\e]P3FFFF00"

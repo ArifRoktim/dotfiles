@@ -122,6 +122,7 @@ function! GetCwd() abort "{{{2
 endfunction
 
 function! GetFile() abort "{{{2
+    " TODO: Make buf# always vis
     " Returns file name modified for easier viewing along with buffer #
     " All names have $HOME replaced by ~
     " Changes fugitive file paths by removing the 40 character sha id

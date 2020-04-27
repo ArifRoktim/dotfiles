@@ -32,7 +32,12 @@ Control-l: clear-screen
 "\e[B": history-search-forward
 "kj": vi-movement-mode
 "jk": vi-movement-mode
+
+# expansions
 "\M-,": yank-last-arg
+$if Bash
+"\M-.": shell-expand-line
+$endif
 
 set keymap vi-command
 "k": history-search-backward

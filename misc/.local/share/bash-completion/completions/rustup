@@ -19,8 +19,8 @@ _rustup() {
             add)
                 cmd+="__add"
                 ;;
-            analyze)
-                cmd+="__analyze"
+            check)
+                cmd+="__check"
                 ;;
             completions)
                 cmd+="__completions"
@@ -34,23 +34,26 @@ _rustup() {
             default-host)
                 cmd+="__default__host"
                 ;;
-            disable)
-                cmd+="__disable"
-                ;;
             doc)
                 cmd+="__doc"
                 ;;
             docs)
                 cmd+="__docs"
                 ;;
-            enable)
-                cmd+="__enable"
+            dump-testament)
+                cmd+="__dump__testament"
                 ;;
             help)
                 cmd+="__help"
                 ;;
+            home)
+                cmd+="__home"
+                ;;
             install)
                 cmd+="__install"
+                ;;
+            keys)
+                cmd+="__keys"
                 ;;
             link)
                 cmd+="__link"
@@ -63,6 +66,9 @@ _rustup() {
                 ;;
             override)
                 cmd+="__override"
+                ;;
+            profile)
+                cmd+="__profile"
                 ;;
             remove)
                 cmd+="__remove"
@@ -81,9 +87,6 @@ _rustup() {
                 ;;
             target)
                 cmd+="__target"
-                ;;
-            telemetry)
-                cmd+="__telemetry"
                 ;;
             toolchain)
                 cmd+="__toolchain"
@@ -110,7 +113,7 @@ _rustup() {
 
     case "${cmd}" in
         rustup)
-            opts=" -v -h -V  --verbose --help --version   show install uninstall update default toolchain target component override run which doc man self set self telemetry set completions help  docs"
+            opts=" -v -q -h -V  --verbose --quiet --help --version  <+toolchain>  dump-testament show install uninstall update check default toolchain target component override run which doc man self set completions help  docs"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -125,6 +128,21 @@ _rustup() {
             return 0
             ;;
         
+        rustup__check)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
         rustup__completions)
             opts=" -h -V  --help --version  <shell> <command> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
@@ -251,7 +269,7 @@ _rustup() {
             return 0
             ;;
         rustup__doc)
-            opts=" -h -V  --path --alloc --book --cargo --core --edition-guide --nomicon --proc_macro --reference --rust-by-example --rustc --rustdoc --std --test --unstable-book --embedded-book --help --version --toolchain  "
+            opts=" -h -V  --path --alloc --book --cargo --core --edition-guide --nomicon --proc_macro --reference --rust-by-example --rustc --rustdoc --std --test --unstable-book --embedded-book --help --version --toolchain  <topic> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -270,7 +288,7 @@ _rustup() {
             return 0
             ;;
         rustup__docs)
-            opts=" -h -V  --path --alloc --book --cargo --core --edition-guide --nomicon --proc_macro --reference --rust-by-example --rustc --rustdoc --std --test --unstable-book --embedded-book --help --version --toolchain  "
+            opts=" -h -V  --path --alloc --book --cargo --core --edition-guide --nomicon --proc_macro --reference --rust-by-example --rustc --rustdoc --std --test --unstable-book --embedded-book --help --version --toolchain  <topic> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -281,6 +299,21 @@ _rustup() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        rustup__dump__testament)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
                 *)
                     COMPREPLY=()
                     ;;
@@ -304,13 +337,17 @@ _rustup() {
             return 0
             ;;
         rustup__install)
-            opts=" -h -V  --no-self-update --force --help --version  <toolchain>... "
+            opts=" -h -V  --no-self-update --force --help --version --profile  <toolchain>... "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --profile)
+                    COMPREPLY=($(compgen -W "minimal default complete" -- "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -549,7 +586,7 @@ _rustup() {
             return 0
             ;;
         rustup__set)
-            opts=" -h -V  --help --version   default-host help"
+            opts=" -h -V  --help --version   default-host profile help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -593,8 +630,23 @@ _rustup() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
+        rustup__set__profile)
+            opts=" -h -V  --help --version  <profile-name> "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
         rustup__show)
-            opts=" -h -V  --help --version   active-toolchain help"
+            opts=" -h -V  --help --version   active-toolchain home profile keys help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -624,6 +676,51 @@ _rustup() {
             return 0
             ;;
         rustup__show__help)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        rustup__show__home)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        rustup__show__keys)
+            opts=" -h -V  --help --version  "
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        rustup__show__profile)
             opts=" -h -V  --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -707,7 +804,7 @@ _rustup() {
             return 0
             ;;
         rustup__target__list)
-            opts=" -h -V  --help --version --toolchain  "
+            opts=" -h -V  --installed --help --version --toolchain  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -763,81 +860,6 @@ _rustup() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        rustup__telemetry)
-            opts=" -h -V  --help --version   enable disable analyze help"
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        rustup__telemetry__analyze)
-            opts=" -h -V  --help --version  "
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        rustup__telemetry__disable)
-            opts=" -h -V  --help --version  "
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        rustup__telemetry__enable)
-            opts=" -h -V  --help --version  "
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
-        rustup__telemetry__help)
-            opts=" -h -V  --help --version  "
-            if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-                return 0
-            fi
-            case "${prev}" in
-                
-                *)
-                    COMPREPLY=()
-                    ;;
-            esac
-            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-            return 0
-            ;;
         rustup__toolchain)
             opts=" -h -V  --help --version   list install uninstall link help  update add  remove"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
@@ -854,13 +876,33 @@ _rustup() {
             return 0
             ;;
         rustup__toolchain__add)
-            opts=" -h -V  --no-self-update --help --version  <toolchain>... "
+            opts=" -h -V -c -t  --no-self-update --force --allow-downgrade --help --version --profile --component --target  <toolchain>... "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --profile)
+                    COMPREPLY=($(compgen -W "minimal default complete" -- "${cur}"))
+                    return 0
+                    ;;
+                --component)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --target)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -t)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -884,13 +926,33 @@ _rustup() {
             return 0
             ;;
         rustup__toolchain__install)
-            opts=" -h -V  --no-self-update --help --version  <toolchain>... "
+            opts=" -h -V -c -t  --no-self-update --force --allow-downgrade --help --version --profile --component --target  <toolchain>... "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --profile)
+                    COMPREPLY=($(compgen -W "minimal default complete" -- "${cur}"))
+                    return 0
+                    ;;
+                --component)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --target)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -t)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -914,7 +976,7 @@ _rustup() {
             return 0
             ;;
         rustup__toolchain__list)
-            opts=" -h -V  --help --version  "
+            opts=" -v -h -V  --verbose --help --version  "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -959,13 +1021,33 @@ _rustup() {
             return 0
             ;;
         rustup__toolchain__update)
-            opts=" -h -V  --no-self-update --help --version  <toolchain>... "
+            opts=" -h -V -c -t  --no-self-update --force --allow-downgrade --help --version --profile --component --target  <toolchain>... "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 3 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --profile)
+                    COMPREPLY=($(compgen -W "minimal default complete" -- "${cur}"))
+                    return 0
+                    ;;
+                --component)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --target)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                    -t)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;
@@ -1004,13 +1086,17 @@ _rustup() {
             return 0
             ;;
         rustup__which)
-            opts=" -h -V  --help --version  <command> "
+            opts=" -h -V  --help --version --toolchain  <command> "
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
                 
+                --toolchain)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 *)
                     COMPREPLY=()
                     ;;

@@ -5,9 +5,7 @@
 	algorithm = histogram
 [alias]
 	stat = status
-	statu = status
 	ch = checkout
-	che = checkout
 	pf = push --force-with-lease
 	new = add --intent-to-add
 	df = diff

@@ -7,6 +7,8 @@
 # Common typos
 alias :q='exit'
 alias :q!='exit'
+alias :qa='exit'
+alias :qa!='exit'
 alias qgit='git'
 
 # Colored aliases
@@ -19,8 +21,34 @@ alias la='ls -AF'
 alias l='ls -F'
 alias l.='ls -ld'
 
-alias nterm='nvim -c term'
+alias nterm='nvim +term'
+alias fugitive='nvim +Git +only'
+alias view='nvim +view'
+# Modify behavior of some commands when inside vim's terminal
+if [[ -n $NVIM_LISTEN_ADDRESS ]] && type nvr &> /dev/null; then
+    # Don't run vim within vim
+    alias nvim='nvr --remote-wait-silent'
+    # Quit vim from within its terminal emulator
+    alias :qa='nvr -c qa'
+    alias :qa!='nvr -c qa!'
+    # Open new split for man page
+    function sman {
+        nvr -c Man\ "$@"
+    }
+    function vman {
+        nvr -c vertical\ Man\ "$@"
+    }
+fi
+
+# Misc
 alias waste='du -sh * | sort -h'
+alias hdmesg='dmesg --human'
+alias fdmesg='dmesg --follow'
+alias sctl='systemctl'
+alias cpr='rsync --archive --delete -hh --partial --info=stats1 --info=progress2'
+alias listpaths='for dir in ${PATH//:/ }; do echo "$dir"; done'
+# Be safer
+alias rm='rm --one-file-system -I'
 
 # rust tool aliases
 alias rcheck='cargo check'
@@ -29,6 +57,7 @@ alias rdoc='cargo doc --no-deps'
 alias rfmt='cargo fmt'
 alias rgo='cargo run'
 alias run='cargo run --release'
+
 #==================================== FUNCTIONS ====================================
 
 # ls after cd
@@ -36,6 +65,18 @@ function cd {
     builtin cd "$@"
     if [ $? -eq 0 ]; then
         command ls --color=auto
+    fi
+}
+
+# cd to top level of repo
+function gcd {
+    directory="$(git rev-parse --show-toplevel 2> /dev/null)"
+
+    if [[ $? -ne 0 ]]; then
+        echo "Not a git repo" 1>&2
+        return 1
+    else
+        cd "$directory"
     fi
 }
 
@@ -55,25 +96,4 @@ function gtree {
     done < "$ignore"
 
     tree -aI "$pattern"
-}
-
-# Run in background
-function ns {
-    nohup "$@" &> /dev/null &
-}
-
-function :qa {
-    if [[ -n $NVIM_LISTEN_ADDRESS ]] && type nvr &> /dev/null; then
-        nvr -c qa
-    else
-        exit
-    fi
-}
-
-function :qa! {
-    if [[ -n $NVIM_LISTEN_ADDRESS ]] && type nvr &> /dev/null; then
-        nvr -c qa!
-    else
-        exit
-    fi
 }

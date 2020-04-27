@@ -2,16 +2,23 @@
 # ~/.bashrc
 #
 
-[[ -f /etc/profile ]] && . /etc/profile
+# Append paths
+insertpath () {
+    case ":$PATH:" in
+        *:"$1":*)
+            ;;
+        *)
+            PATH="$1:${PATH:+$PATH}"
+    esac
+}
 
-# Add some directories to PATH
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
+insertpath "$HOME/.local/bin"
+insertpath "$HOME/.cargo/bin"
+unset insertpath
+export PATH
 
 # Use nvim for editor
-if type nvr &> /dev/null; then
-    export EDITOR="nvr --remote-wait-silent"
-elif type nvim &> /dev/null; then
+if type nvim &> /dev/null; then
     export EDITOR="nvim"
 elif type vim &> /dev/null; then
     export EDITOR="vim"
@@ -20,8 +27,6 @@ elif type vi &> /dev/null; then
 elif type nano &> /dev/null; then
     export EDITOR="nano"
 fi
-export VISUAL="$EDITOR"
-export SYSTEMD_EDITOR="$EDITOR"
 
 # If not running interactively, skip rest of file
 [[ $- != *i* ]] && return
@@ -49,6 +54,8 @@ if [[ -f "$HOME/.dir_colors" ]]; then
     eval $(dircolors -b "$HOME/.dir_colors")
 fi
 
+# Disable Ctrl-s and Ctrl-Q control flow
+stty -ixon
 shopt -s checkwinsize                       # Check the window size after each command and update the values of LINES and COLUMNS.
 shopt -s histappend                         # append to the history file
 shopt -s histverify                         # Allow editing of history expansion

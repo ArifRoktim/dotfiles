@@ -1,6 +1,8 @@
 import sys
 
-sys.ps1 = '>>>\x1b[0m '
-sys.ps2 = '...\x1b[0m '
+# \x01 and \x02 are the readline escape sequences that specify non-printing characters
+# See readline(3)
+sys.ps1 = '>>>\x01\x1b[0m\x02 '
+sys.ps2 = '...\x01\x1b[0m\x02 '
 del sys
 

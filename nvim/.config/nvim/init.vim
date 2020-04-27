@@ -24,11 +24,12 @@ endif
 
 " ========== dein_scripts ========== {{{1
 
-function! Dein_supported()
-    return (v:version >= 800 || has('nvim')) && isdirectory(expand('$HOME/.config/nvim/deind'))
-endfunction
+if (v:version >= 800 || has('nvim')) && isdirectory(expand('$HOME/.config/nvim/deind'))
+    let g:dein_supported=1
+endif
 
-if Dein_supported()
+
+if g:dein_supported
     let g:dein#enable_notification = 1
     let g:dein#notification_time = 10
     let g:dein#notification_icon = "/usr/share/pixmaps/nvim.png"
@@ -49,7 +50,7 @@ if Dein_supported()
 
         " dein_plugins:{{{2
         " Autocomplete
-        let g:coc_global_extensions = ['coc-json', 'coc-python', 'coc-rust-analyzer']
+        let g:coc_global_extensions = ['coc-json', 'coc-rust-analyzer']
         call dein#add('neoclide/coc.nvim', {
                     \ 'merged': 0,
                     \ 'rev': 'release',
@@ -67,10 +68,14 @@ if Dein_supported()
         " tpope
         call dein#add('tpope/vim-unimpaired')
         call dein#add('tpope/vim-fugitive')
+        call dein#add('tpope/vim-commentary')
 
         " misc
         call dein#add('arcticicestudio/nord-vim')
         call dein#add('chrisbra/Colorizer')
+        call dein#add('andymass/vim-tradewinds')
+        call dein#add('airblade/vim-rooter')
+        call dein#add('moll/vim-bbye')
 
         "}}}2
         " Required:
@@ -90,8 +95,19 @@ endif
 
 let mapleader = ","
 
-" coc.nvim_mappings {{{2
-if Dein_supported() && dein#check_install("coc.nvim") == 0
+if g:dein_supported
+    " Colorizer
+    nmap <Leader>cc <Plug>Colorizer
+    xmap <Leader>cc <Plug>Colorizer
+
+    " vim-rooter
+    let g:rooter_manual_only = 1
+    let g:rooter_patterns= [".git", ".git/", "makefile", "Makefile", "Cargo.toml"]
+
+    " vim-bbye: Close the current buffer but not the current window
+    nnoremap <silent> <leader>bd :Bdelete<cr>
+
+    " coc.nvim_mappings {{{2
     " trigger completion
     inoremap <silent><expr> <c-space> coc#refresh()
 
@@ -102,8 +118,12 @@ if Dein_supported() && dein#check_install("coc.nvim") == 0
     " Rename current word
     nmap <leader>rn <Plug>(coc-rename)
 
-    " Highlight symbol under cursor on CursorHold
-    autocmd CursorHold * silent call CocActionAsync('highlight')
+    augroup CocConfig
+        autocmd!
+
+        " Highlight symbol under cursor on CursorHold
+        autocmd CursorHold * silent call CocActionAsync('highlight')
+    augroup END
 
     function! s:show_documentation()
         if (index(['vim','help'], &filetype) >= 0)
@@ -134,12 +154,6 @@ if Dein_supported() && dein#check_install("coc.nvim") == 0
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 endif
 
-" colorizer mappings {{{2
-if Dein_supported() && dein#check_install("Colorizer") == 0
-    nmap <Leader>cc <Plug>Colorizer
-    xmap <Leader>cc <Plug>Colorizer
-endif
-
 " ========== general ========== {{{1
 
 " general_settings {{{2
@@ -152,6 +166,7 @@ set wrap
 set hidden
 set lazyredraw
 set foldmethod=indent
+set foldcolumn=1
 
 set number
 set relativenumber
@@ -239,7 +254,22 @@ if !has('nvim')
 endif
 
 " Easily edit this file
-command! -bar E edit $MYVIMRC | tcd %:p:h | normal! zz
+command! -bar E edit $MYVIMRC
+" Taken from: https://stackoverflow.com/a/3879737
+function! SetupCommandAlias(from, to)
+    exec 'cnoreabbrev <expr> '.a:from
+          \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+          \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+
+call SetupCommandAlias('man', 'Man')
+call SetupCommandAlias('vman', 'vertical Man')
+call SetupCommandAlias('vMan', 'vertical Man')
+call SetupCommandAlias('tman', 'tab Man')
+call SetupCommandAlias('tMan', 'tab Man')
+call SetupCommandAlias('vh', 'vertical help')
+call SetupCommandAlias('sv', 'sview')
+call SetupCommandAlias('vv', 'vertical sview')
 
 " general_autocmds {{{2
 augroup general_autocommands
@@ -273,9 +303,6 @@ if has('nvim')
             let l:shell_prompt = '^\d\d\/\d\d|\d\d:\d\d\$'
             call search(shell_prompt, a:flags)
         endfunction
-        function! GoToH()
-            echo "hi!"
-        endfunction
 
         " Jump to the shell prompt
         autocmd TermOpen * noremap <buffer> <silent> [g
@@ -287,7 +314,7 @@ if has('nvim')
         autocmd TermOpen * vunmap <buffer> ]g
 
         autocmd TermOpen * nmap <buffer> [G 1G]g
-        autocmd TermOpen * nmap <buffer> ]G GG[g
+        autocmd TermOpen * nmap <buffer> ]G G[g
         autocmd TermOpen * nmap <buffer> <C-c> a<C-c>
 
     augroup END
@@ -301,15 +328,28 @@ augroup END
 
 " ========== colorscheme ========== {{{1
 
-augroup gerneral-overrides
+augroup general-overrides
     autocmd!
+
+    function! s:MatchTrailingWhitespace(isInsertMode)
+        " Don't mess with highlighting for diffs
+        if &filetype ==# 'fugitive'
+            echom "Stop!"
+            return
+        endif
+        if a:isInsertMode
+            match ExtraWhitespace /\s\+\%#\@<!$/
+        else
+            match ExtraWhitespace /\s\+$/
+        endif
+    endfunction
 
     " Highlight trailing whitespaces
     autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 guibg=#BF616A
 
     " don't highlight trailing whitespace when typing at the end of a line.
-    autocmd InsertEnter,VimEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+    autocmd InsertEnter,VimEnter * call s:MatchTrailingWhitespace(1)
+    autocmd InsertLeave * call s:MatchTrailingWhitespace(0)
 augroup END
 
 " Fix the absurdly low constrast of nord-vim
@@ -321,17 +361,21 @@ augroup nord-overrides
     autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
 augroup END
 
-if Dein_supported() && dein#check_install("nord-vim") == 0
-            \ && has('termguicolors') && $COLORTERM ==# 'truecolor'
-    colorscheme nord
+if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $TERM ==# 'xterm-kitty')
     set termguicolors
+endif
+
+if &termguicolors && g:dein_supported
+    colorscheme nord
 else
     colorscheme desert
 endif
 
-"match ExtraWhitespace /\s\+\%#\@<!$/
-
 " ========== mappings ========== {{{1
+
+" Move by wrapped lines unless a count is given
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " tabs_windows_buffers {{{2
 " Move between windows
@@ -347,8 +391,10 @@ if has('nvim')
     tnoremap <leader>d <C-\><C-n><C-W>l
     nnoremap <leader>tv :vs +term<cr>
     nnoremap <leader>ts :sp +term<cr>
-    " i_CTRL-R in term mode
-    tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
+    " Paste from a register
+    tnoremap <expr> <C-V> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
 endif
 
 " Make, close, and move tabs
@@ -357,11 +403,6 @@ nnoremap <leader>to :tabonly<cr>
 nnoremap <leader>tc :tabclose<cr>
 nnoremap <leader>tm :+tabmove<cr>
 nnoremap <leader>tM :-tabmove<cr>
-
-" Close the current buffer but not the current window
-nnoremap <silent> <leader>bd :bp \| bd #<cr>
-" Switch to alternate file
-nnoremap <silent> <leader>bp :b #<cr>
 
 " Switch CWD of current tab to the directory of the open buffer
 noremap <leader>cd :tcd %:p:h<cr>:pwd<cr>
@@ -382,11 +423,12 @@ nnoremap <leader>e :e <C-r>=expand('%:h')<CR>/
 cnoremap <leader>e <C-r>=expand('%:h')<CR>/
 
 " Center when searching
-noremap N Nzz
-noremap n nzz
+" FIXME: Find out why these break count message when searching
+"noremap N Nzz
+"noremap n nzz
 
 " Unhighlight
-nnoremap <leader><cr> :nohlsearch<cr>
+nnoremap <silent> <leader><cr> :nohlsearch<cr>
 
 " Make x go to blackhole buffer
 nnoremap x "_x
@@ -397,4 +439,4 @@ noremap Y y$
 " Remap VIM 0 to first non-blank character
 noremap 0 ^
 "}}}
-" vim:foldmethod=marker
+" vim:foldmethod=marker:foldlevel=1:

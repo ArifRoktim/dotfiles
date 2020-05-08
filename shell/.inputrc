@@ -38,6 +38,10 @@ Control-l: clear-screen
 $if Bash
 "\M-.": shell-expand-line
 $endif
+"\e[1;7D": beginning-of-line
+"\e[1;7C": end-of-line
+#"\C-\M-D": beginning-of-line
+#"\C-\M-C": end-of-line
 
 set keymap vi-command
 "k": history-search-backward

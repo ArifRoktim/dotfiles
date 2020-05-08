@@ -1,19 +1,16 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sections:
+"   => Attribution
 "   => Nord_vim
 "   => modes_dictionary
 "   => statusline_functions
-"       => ModeColor
-"       => ModeText
-"       => StripGit
-"       => ReplaceHome
-"       => GetCwd
-"       => GetFile
-"       => UserColors
-"       => ActiveStatusline
-"       => s:StatusLine
-"       => augroup
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Attribution {{{1
+" Inspired by: bluz71/vim-moonfly-statusline
+" URL:          github.com/bluz71/vim-moonfly-statusline
+" License:      MIT (https://opensource.org/licenses/MIT)
+" }}}1
 
 if exists("g:loaded_statusline")
     finish
@@ -59,30 +56,28 @@ let s:nord4_term = "NONE"
 
 " modes_dictionary {{{1
 let s:modes={
-            \ 'n'  : ["%2*", ' Normal '],
-            \ 'c'  : ["%2*", ' Command '],
-            \ 'r'  : ["%2*", ' Command '],
-            \ 'i'  : ["%3*", ' Insert '],
-            \ 'R'  : ["%3*", ' Replace '],
-            \ 't'  : ["%4*", ' Terminal '],
-            \ 'v'  : ["%5*", ' Visual '],
-            \ 'V'  : ["%5*", ' Visual '],
-            \ '' : ["%5*", ' Visual '],
-            \ 's'  : ["%5*", ' Visual '],
-            \ 'S'  : ["%5*", ' Visual '],
-            \ '' : ["%5*", ' Visual '],
+            \ 'n'  : ["%1*", ' Normal '],
+            \ 'c'  : ["%1*", ' Command '],
+            \ 'r'  : ["%1*", ' Command '],
+            \ 'i'  : ["%2*", ' Insert '],
+            \ 'R'  : ["%2*", ' Replace '],
+            \ 't'  : ["%3*", ' Terminal '],
+            \ 'v'  : ["%4*", ' Visual '],
+            \ 'V'  : ["%4*", ' Visual '],
+            \ '' : ["%4*", ' Visual '],
+            \ 's'  : ["%4*", ' Visual '],
+            \ 'S'  : ["%4*", ' Visual '],
+            \ '' : ["%4*", ' Visual '],
             \ }
 
 " statusline_functions {{{1
-function! ModeColor(mode) abort "{{{2
-    return get(s:modes, a:mode, ["%*1"])[0]
+function! ModeText(mode) abort
+    let l:ret = get(s:modes, a:mode, ["%*1"])[0]
+    let l:ret .= get(s:modes, a:mode, ["", " Normal "])[1]
+    return l:ret
 endfunction
 
-function! ModeText(mode) abort "{{{2
-    return get(s:modes, a:mode, ["", " Normal "])[1]
-endfunction
-
-function! StripGit() abort "{{{2
+function! GetGit() abort
     " Turns [Git(master)]           into    (master
     " and   [Git:0123456(master)]   into    0123456(master
     " Don't show git info if fugitive isn't loaded, if we're not in a git repo
@@ -100,15 +95,9 @@ function! StripGit() abort "{{{2
     endif
 endfunction
 
-" TODO: Remove this. Replace with fnamemodify()
-function! ReplaceHome(input) abort "{{{2
-    return substitute(a:input, $HOME, '~', '')
-endfunction
-
-function! GetCwd() abort "{{{2
+function! GetCwd() abort
     " Displays cwd of current tab iff we're viewing a file on the fs that's
     " been specified with a relative path
-    " All names have $HOME replaced by ~
     let l:file = expand('%')
 
     " !~# '^\w\+://'    => File is on filesystem. Ex: Won't match fugitive://...
@@ -116,94 +105,100 @@ function! GetCwd() abort "{{{2
     " != "" && != "nofile"   => Buffer has a file
     if l:file !~# '^\w\+://' && l:file !~# '^/' &&
                 \ l:file != "" && &buftype != "nofile"
-        return pathshorten(ReplaceHome(getcwd(-1, 0)))
+        return pathshorten(fnamemodify(getcwd(0, 0), ":~"))
     endif
     return ''
 endfunction
 
-function! GetFile() abort "{{{2
-    " TODO: Make buf# always vis
-    " Returns file name modified for easier viewing along with buffer #
-    " All names have $HOME replaced by ~
-    " Changes fugitive file paths by removing the 40 character sha id
-    " All file names are pathshorten()'d
-    let l:file = expand('%')
-    let l:shortfile = ReplaceHome(l:file)
-    let l:bufnr = bufnr('%') . ':'
+" Returns pathshorten()'d filename and removes sha id from fugitive files
+function! GetFile() abort
+    let l:file = substitute(expand('%'), $HOME, '~', '')
+    "let l:bufnr = bufnr('%') . ':'
 
     if exists("g:loaded_fugitive") && l:file =~# '^fugitive://'
         " File is a fugitive object so return just the file path
-        " Remove the sha because it's too long.
-        let l:nohash = substitute(l:shortfile,
+        " Remove the sha id
+        let l:nohash = substitute(l:file,
                     \ '^fugitive://\(.\{-\}\).git//\w\{40}', 'fugitive://\1', "")
         let l:short = "f:" . pathshorten(split(l:nohash, 'fugitive:')[0])
-        return l:bufnr . l:short
+        return l:short
     elseif l:file == ""
         return '[No Name]'
     else
-        return l:bufnr . pathshorten(l:shortfile)
+        return pathshorten(l:file)
     endif
 endfunction
 
-function! s:UserColors() abort "{{{2
-    " Highlight groups:
-    " User1 -> I don't know why I skipped this but I don't want to change it
-    " User2 -> Normal, Command
-    " User3 -> Insert, Replace
-    " User4 -> Terminal
-    " User5 -> Visual (and select LOL)
-    exec "highlight User2 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
-    exec "highlight User3 guifg=" . s:nord8_gui  . " ctermfg=" . s:nord8_term
-    exec "highlight User4 guifg=" . s:nord14_gui . " ctermfg=" . s:nord14_term
-    exec "highlight User5 guifg=" . s:nord15_gui . " ctermfg=" . s:nord15_term
+function! GetBufnr() abort
+    let l:bufnr = bufnr('%') . ":"
+    return l:bufnr
 endfunction
 
-function! ActiveStatusLine() abort "{{{2
-    " Statusline for active window
-    let l:statusline = ''
-    let l:mode = mode()
+function! s:UserColors() abort
+    " Highlight groups:
+    " User1 -> Normal, Command
+    " User2 -> Insert, Replace
+    " User3 -> Terminal
+    " User4 -> Visual (and select LOL)
+    exec "highlight User1 guifg=" . s:nord4_gui  . " ctermfg=" . s:nord4_term
+    exec "highlight User2 guifg=" . s:nord8_gui  . " ctermfg=" . s:nord8_term
+    exec "highlight User3 guifg=" . s:nord14_gui . " ctermfg=" . s:nord14_term
+    exec "highlight User4 guifg=" . s:nord15_gui . " ctermfg=" . s:nord15_term
+endfunction
 
-    let l:statusline .= ModeColor(l:mode)
-    let l:statusline .= ModeText(l:mode)
-    let l:statusline .= '%<'
-    let l:statusline .= '%#StatusLineNC#'
-    let l:statusline .= '%{len(GetCwd())?" ".GetCwd():""}'
-    let l:statusline .= ' %{StripGit()}'
-    let l:statusline .= '%*'
-    let l:statusline .= ' %{GetFile()}'
-    let l:statusline .= '%{&readonly?"!":""}%{&modified?"*":""} '
-    let l:statusline .= '%=[%02.l,%02.c][%02.p%%]'
+function! ActiveStatusLine() abort
+    return s:MyStatusLine("current")
+endfunction
+
+function NotCurrentStatusLine() abort
+    return s:MyStatusLine("not-current")
+endfunction
+
+function! s:MyStatusLine(mode) abort
+    let l:statusline = ''
+
+    if a:mode == "current"
+        let l:statusline .= ModeText(mode())
+        let l:statusline .= "%#StatusLineNC#"
+        let l:statusline .= "%{len(GetCwd())?' '.GetCwd():''}"
+    else
+        let l:statusline .= "%1*"
+        " FIXME: Bug? 1st space will be ignored in not-current windows.
+        " 2 spaces are treated as 1, 3 spaces as 2, etc.
+        let l:statusline .= "%{len(GetCwd())?'  '.GetCwd():''}"
+    endif
+
+    let l:statusline .= " %{GetGit()}"
+    let l:statusline .= "%*"
+    let l:statusline .= " %{bufnr('%')}"
+    let l:statusline .= "%<:"
+    let l:statusline .= "%{GetFile()}"
+    let l:statusline .= "%{&readonly?'!':''}"
+    let l:statusline .= "%{&modified?'*':''}"
+    let l:statusline .= " %="
+    let l:statusline .= "[%02.l,%02.c]"
+    let l:statusline .= "[%02.p%%]"
 
     return l:statusline
 endfunction
 
-function! s:StatusLine(mode) abort "{{{2
-    if a:mode == "not-current"
-        setlocal statusline=
-        setl statusline+=%2*
-        setl statusline+=\ %{len(GetCwd())?GetCwd().'\ ':''}
-        setl statusline+=%{StripGit()}
-        setl statusline+=%*
-        setl statusline+=\ %{GetFile()}
-        setl statusline+=%{&readonly?'!':''}
-        setl statusline+=%{&modified?'*':''}
-        setl statusline+=\ %=                   " seperation point
-        setl statusline+=[%02.l,%02.c]          " line and column number
-        setl statusline+=[%02.p%%]              " percent through file
-    elseif a:mode == "command"
+function! s:StatusLine(mode) abort
+    if a:mode == "command"
         " Use default statusline for cmd line window
         return
-    else
+    elseif a:mode == "current"
         setlocal statusline=%!ActiveStatusLine()
+    else
+        setlocal statusline=%!NotCurrentStatusLine()
     endif
 endfunction
 
-augroup MyStatusline "{{{2
+augroup MyStatusline
     autocmd!
-    autocmd VimEnter,WinEnter,BufWinEnter   * call s:StatusLine("normal")
-    autocmd WinLeave,FilterWritePost        * call s:StatusLine("not-current")
+    autocmd VimEnter,WinEnter,BufWinEnter   * call s:StatusLine("current")
+    autocmd WinLeave                        * call s:StatusLine("not-current")
     autocmd CmdwinEnter,CmdlineEnter        * call s:StatusLine("command") | redraw
-    autocmd SourcePre                       * call s:UserColors()
+    autocmd ColorScheme,SourcePre           * call s:UserColors()
 augroup END
 
 " }}}1

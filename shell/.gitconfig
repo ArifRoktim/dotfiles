@@ -6,12 +6,13 @@
 [alias]
 	stat = status
 	ch = checkout
-	pf = push --force-with-lease
+	pf = push --verbose --force-with-lease
 	new = add --intent-to-add
 	df = diff
 	dc = diff --cached
 	can = commit --amend --no-edit
 	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
 	tags = tag -n
+	rc = rebase --continue
 [push]
 	followTags = true

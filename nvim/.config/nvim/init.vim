@@ -24,10 +24,11 @@ endif
 
 " ========== dein_scripts ========== {{{1
 
-if (v:version >= 800 || has('nvim')) && isdirectory(expand('$HOME/.config/nvim/deind'))
+if has('nvim') && isdirectory(expand('$HOME/.config/nvim/deind'))
     let g:dein_supported=1
+else
+    let g:dein_supported=0
 endif
-
 
 if g:dein_supported
     let g:dein#enable_notification = 1
@@ -72,10 +73,14 @@ if g:dein_supported
 
         " misc
         call dein#add('arcticicestudio/nord-vim')
-        call dein#add('chrisbra/Colorizer')
+        " Replace with 'norcalli/nvim-colorizer.lua'
+        "call dein#add('chrisbra/Colorizer')
+        call dein#add('norcalli/nvim-colorizer.lua')
         call dein#add('andymass/vim-tradewinds')
         call dein#add('airblade/vim-rooter')
         call dein#add('moll/vim-bbye')
+        call dein#add('aymericbeaumet/vim-symlink')
+        call dein#add('lambdalisue/suda.vim')
 
         "}}}2
         " Required:
@@ -96,9 +101,12 @@ endif
 let mapleader = ","
 
 if g:dein_supported
-    " Colorizer
-    nmap <Leader>cc <Plug>Colorizer
-    xmap <Leader>cc <Plug>Colorizer
+    " nvim-colorizer.lua
+    if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $TERM ==# 'xterm-kitty')
+        set termguicolors
+        lua require 'colorizer'.setup(nil, { css = true; } )
+        nnoremap <silent> <Leader>cc :ColorizerToggle<cr>
+    endif
 
     " vim-rooter
     let g:rooter_manual_only = 1
@@ -106,6 +114,10 @@ if g:dein_supported
 
     " vim-bbye: Close the current buffer but not the current window
     nnoremap <silent> <leader>bd :Bdelete<cr>
+
+    " suda.vim
+    let g:suda#prefix = "sudo://"
+    let g:suda#prompt = "[sudo] password for " . expand('$USER') . ": "
 
     " coc.nvim_mappings {{{2
     " trigger completion
@@ -157,7 +169,6 @@ endif
 " ========== general ========== {{{1
 
 " general_settings {{{2
-set history=1000
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
 set scrolloff=4
@@ -167,11 +178,11 @@ set hidden
 set lazyredraw
 set foldmethod=indent
 set foldcolumn=1
+set virtualedit=block
 
 set number
 set relativenumber
 
-set autoread
 set autowrite
 
 " always show signcolumn
@@ -197,7 +208,6 @@ set matchtime=2
 
 " Always show the tab and status line
 set showtabline=2
-set laststatus=2
 set noshowmode
 
 " No annoying bells on errors
@@ -205,7 +215,6 @@ set noerrorbells
 set vb t_vb=
 
 " wildmenu settings
-set wildmenu
 " complete till longest common string and list all matches,
 " then complete next full match
 set wildmode=list:longest,full
@@ -214,9 +223,9 @@ set wildignore=*.o,*.pyc,*.class
 set wildcharm=<tab>
 
 " Search/replace settings
-set incsearch
-set inccommand=nosplit
-set hlsearch
+if has('nvim')
+    set inccommand=nosplit
+endif
 set nowrapscan
 set ignorecase
 set smartcase
@@ -225,7 +234,6 @@ set smartcase
 " Use spaces instead of tabs
 " 1 tab == 4 spaces
 set expandtab
-set smarttab
 set shiftwidth=4
 set softtabstop=4
 
@@ -236,14 +244,19 @@ endif
 
 " Persistent undo
 if has("persistent_undo")
-    set undodir=~/.config/nvim/_undo
+    " Vim doesn't have stdpath()
+    if has('nvim')
+        let s:data = $HOME."/.local/share/nvim"
+    else
+        let s:data = $HOME."/.local/share/vim"
+    endif
+    let &undodir = s:data."/undo"
+    let &backupdir = s:data."/backup"
+    if !isdirectory(&backupdir)
+        silent! call mkdir( &backupdir, "p")
+    endif
     set undofile
     set backup
-    set backupdir=~/.config/nvim/_tmp
-    set dir=~/.config/nvim/_swap
-    if !isdirectory("~/.config/nvim/_tmp")
-        silent! call mkdir( $HOME.'/.config/nvim/_tmp', "p")
-    endif
 endif
 
 " general_commands {{{2
@@ -276,8 +289,12 @@ augroup general_autocommands
     " clear all autocmds
     autocmd!
 
-    " Return to last edit position when opening files
-    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    " Return to last edit position when opening files and open folds on cursor
+    autocmd BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$")
+      \ |   exe "normal! g`\""
+      \ | endif
+    autocmd BufWinEnter * normal! zv
 
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
@@ -334,7 +351,6 @@ augroup general-overrides
     function! s:MatchTrailingWhitespace(isInsertMode)
         " Don't mess with highlighting for diffs
         if &filetype ==# 'fugitive'
-            echom "Stop!"
             return
         endif
         if a:isInsertMode
@@ -349,7 +365,7 @@ augroup general-overrides
 
     " don't highlight trailing whitespace when typing at the end of a line.
     autocmd InsertEnter,VimEnter * call s:MatchTrailingWhitespace(1)
-    autocmd InsertLeave * call s:MatchTrailingWhitespace(0)
+    autocmd InsertLeave,BufWinEnter * call s:MatchTrailingWhitespace(0)
 augroup END
 
 " Fix the absurdly low constrast of nord-vim
@@ -361,13 +377,10 @@ augroup nord-overrides
     autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
 augroup END
 
-if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $TERM ==# 'xterm-kitty')
-    set termguicolors
-endif
-
 if &termguicolors && g:dein_supported
     colorscheme nord
 else
+    set notermguicolors
     colorscheme desert
 endif
 

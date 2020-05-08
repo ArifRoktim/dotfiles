@@ -47,6 +47,8 @@ alias fdmesg='dmesg --follow'
 alias sctl='systemctl'
 alias cpr='rsync --archive --delete -hh --partial --info=stats1 --info=progress2'
 alias listpaths='for dir in ${PATH//:/ }; do echo "$dir"; done'
+alias hist-update='history -a'
+alias hist-get='history -n'
 # Be safer
 alias rm='rm --one-file-system -I'
 
@@ -88,6 +90,11 @@ function gtree {
     if [[ $? -ne 0 ]]; then
         echo "Not a git repo" 1>&2
         return 1
+    fi
+
+    # Check for existence of .gitignore file
+    if [[ ! -e "$ignore" ]]; then
+        return 0
     fi
 
     pattern=".git"

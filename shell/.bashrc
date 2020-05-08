@@ -50,8 +50,8 @@ fi
 set -o vi
 
 # Dir colors
-if [[ -f "$HOME/.dir_colors" ]]; then
-    eval $(dircolors -b "$HOME/.dir_colors")
+if [[ -f "$HOME/dotfiles/dir_colors" ]]; then
+    eval $(dircolors -b "$HOME/dotfiles/dir_colors")
 fi
 
 # Disable Ctrl-s and Ctrl-Q control flow

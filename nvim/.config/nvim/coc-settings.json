@@ -1,6 +1,7 @@
 {
     "suggest.maxPreviewWidth": 90,
     "coc.preferences.useQuickfixForLocations": true,
+    "coc.preferences.jumpCommand": "drop",
     "list.source.diagnostics.defaultOptions": ["--normal"],
     "list.source.outline.defaultOptions": ["--normal"]
 }

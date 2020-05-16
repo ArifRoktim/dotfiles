@@ -4,11 +4,8 @@
 "    => dein_scripts
 "       => dein_plugins
 "    => plugin_settings
-"    => general
-"       => general_settings
-"       => general_commands
-"       => general_autocmds
-"    => colorscheme
+"       => colorscheme_settings
+"    => general_settings
 "    => mappings
 "       => tabs_windows_buffers
 "
@@ -49,7 +46,7 @@ if g:dein_supported
         " Required:
         call dein#add('$HOME/.config/nvim/deind/repos/github.com/Shougo/dein.vim')
 
-        " dein_plugins:{{{2
+        " dein_plugins {{{2
         " Autocomplete
         let g:coc_global_extensions = ['coc-json', 'coc-rust-analyzer']
         call dein#add('neoclide/coc.nvim', {
@@ -60,7 +57,6 @@ if g:dein_supported
         " Pairs
         call dein#add('jiangmiao/auto-pairs')
         call dein#add('machakann/vim-sandwich')
-        call dein#add('junegunn/rainbow_parentheses.vim')
 
         " Language specific
         call dein#add('rust-lang/rust.vim')
@@ -73,14 +69,12 @@ if g:dein_supported
 
         " misc
         call dein#add('arcticicestudio/nord-vim')
-        " Replace with 'norcalli/nvim-colorizer.lua'
-        "call dein#add('chrisbra/Colorizer')
-        call dein#add('norcalli/nvim-colorizer.lua')
         call dein#add('andymass/vim-tradewinds')
-        call dein#add('airblade/vim-rooter')
         call dein#add('moll/vim-bbye')
         call dein#add('aymericbeaumet/vim-symlink')
         call dein#add('lambdalisue/suda.vim')
+        call dein#add('norcalli/nvim-colorizer.lua')
+        call dein#add('Yggdroot/indentLine')
 
         "}}}2
         " Required:
@@ -99,6 +93,8 @@ endif
 " ========== plugin_settings ========== {{{1
 
 let mapleader = ","
+" Use ,, as ,
+nnoremap <leader><leader> <leader>
 
 if g:dein_supported
     " nvim-colorizer.lua
@@ -110,6 +106,7 @@ if g:dein_supported
 
     " vim-rooter
     let g:rooter_manual_only = 1
+    let g:rooter_resolve_links = 1
     let g:rooter_patterns= [".git", ".git/", "makefile", "Makefile", "Cargo.toml"]
 
     " vim-bbye: Close the current buffer but not the current window
@@ -119,24 +116,20 @@ if g:dein_supported
     let g:suda#prefix = "sudo://"
     let g:suda#prompt = "[sudo] password for " . expand('$USER') . ": "
 
+    " indentLine
+    let g:indentLine_setConceal = 0
+    set conceallevel=1
+    let g:indentLine_setColors = 0
+    let g:indentLine_char = "¦"
+
     " coc.nvim_mappings {{{2
-    " trigger completion
-    inoremap <silent><expr> <c-space> coc#refresh()
-
-    " Use `[c` and `]c` to navigate diagnostics
-    nmap <silent> [c <Plug>(coc-diagnostic-prev)
-    nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-    " Rename current word
-    nmap <leader>rn <Plug>(coc-rename)
-
     augroup CocConfig
         autocmd!
-
         " Highlight symbol under cursor on CursorHold
         autocmd CursorHold * silent call CocActionAsync('highlight')
     augroup END
 
+    " Use K to show documentation in preview window
     function! s:show_documentation()
         if (index(['vim','help'], &filetype) >= 0)
             execute 'h '.expand('<cword>')
@@ -144,31 +137,118 @@ if g:dein_supported
             call CocAction('doHover')
         endif
     endfunction
-
-    " Use K to show documentation in preview window
     nnoremap <silent> K :call <SID>show_documentation()<CR>
 
+    " Insert mode floating window scrolling {{{
+    " From: https://github.com/neoclide/coc.nvim/issues/1405#issuecomment-569984736
+    function! s:coc_float_scroll(forward) abort
+        let float = coc#util#get_float()
+        if !float | return '' | endif
+        let buf = nvim_win_get_buf(float)
+        let buf_height = nvim_buf_line_count(buf)
+        let win_height = nvim_win_get_height(float)
+        if buf_height < win_height | return '' | endif
+        let pos = nvim_win_get_cursor(float)
+        if a:forward
+            if pos[0] == 1
+                let pos[0] += 3 * win_height / 4
+            elseif pos[0] + win_height / 3 + 1 < buf_height
+                let pos[0] += win_height / 3 + 1
+            else
+                let pos[0] = buf_height
+            endif
+        else
+            if pos[0] == buf_height
+                let pos[0] -= 3 * win_height / 4
+            elseif pos[0] - (win_height / 3 + 1) > 1
+                let pos[0] -= win_height / 3 + 1
+            else
+                let pos[0] = 1
+            endif
+        endif
+        call nvim_win_set_cursor(float, pos)
+        return ''
+    endfunction
+    " }}}
+    inoremap <silent><expr> <down> coc#util#has_float() ? <SID>coc_float_scroll(1) : "\<down>"
+    inoremap <silent><expr> <up> coc#util#has_float() ? <SID>coc_float_scroll(0) : "\<up>"
+
+    " trigger completion
+    inoremap <silent><expr> <C-space> coc#refresh()
+
+    " Rename current word
+    nmap <M-r> <Plug>(coc-rename)
+
     " Go to definition
-    nmap <silent> <space>g <Plug>(coc-definition)
+    nmap <silent> <M-d> <Plug>(coc-definition)
+    nmap <silent> <M-i> <Plug>(coc-implementation)
 
     " Using CocList
     " Show all diagnostics
-    nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+    nnoremap <silent> <M-w> :<C-u>CocList diagnostics<cr>
+    " Navigate diagnostics
+    nmap <silent> [w <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]w <Plug>(coc-diagnostic-next)
     " Find symbol of current document
-    nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+    nnoremap <silent> <M-o> :<C-u>CocList outline<cr>
     " Search workspace symbols
-    nnoremap <silent> <space>s  :<C-u>CocList symbols<cr>
+    nnoremap <silent> <M-s> :<C-u>CocList symbols<cr>
     " Do default action for next item.
-    nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+    nnoremap <silent> <M-j> :<C-u>CocNext<CR>
     " Do default action for previous item.
-    nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+    nnoremap <silent> <M-k> :<C-u>CocPrev<CR>
     " Resume latest coc list
-    nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+    nnoremap <silent> <M-l> :<C-u>CocListResume<CR>
+
+    " colorscheme_settings {{{2
+
+    augroup trailing_whitespace
+        autocmd!
+        function! s:MatchTrailingWhitespace(isInsertMode)
+            " Don't mess with highlighting for fugitive
+            if &filetype =~# 'git'
+                return
+            endif
+            if a:isInsertMode
+                match ExtraWhitespace /\s\+\%#\@<!$/
+            else
+                match ExtraWhitespace /\s\+$/
+            endif
+        endfunction
+
+        " Highlight trailing whitespaces
+        autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 gui=undercurl guisp=#BF616A
+
+        " don't highlight trailing whitespace when typing at the end of a line.
+        autocmd InsertEnter * call s:MatchTrailingWhitespace(1)
+        autocmd InsertLeave,VimEnter * call s:MatchTrailingWhitespace(0)
+    augroup END
+
+    augroup nord-overrides
+        autocmd!
+        " Fix the absurdly low constrast of nord-vim
+        autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
+        autocmd ColorScheme nord highlight Folded guifg=#7b88a1
+        autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
+        autocmd ColorScheme nord highlight Conceal guifg=#7b88a1 guibg=bg
+        autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
+    augroup END
+
+    if &termguicolors
+        " Make diffs readable
+        let g:nord_uniform_diff_background = 1
+        let g:nord_italic = 1
+        let g:nord_underline = 1
+        colorscheme nord
+    endif
+
+else
+    set notermguicolors
+    colorscheme desert
 endif
 
-" ========== general ========== {{{1
+" ========== general_settings ========== {{{1
 
-" general_settings {{{2
 set fileformats=unix,dos,mac
 set nrformats=bin,hex,alpha
 set scrolloff=4
@@ -259,15 +339,16 @@ if has("persistent_undo")
     set backup
 endif
 
-" general_commands {{{2
+" Commands
+" Easily edit this file
+command! -bar E edit $MYVIMRC
+
 " :W sudo saves the file
 " Bugged in neovim
 if !has('nvim')
     command! W w !sudo tee % > /dev/null
 endif
 
-" Easily edit this file
-command! -bar E edit $MYVIMRC
 " Taken from: https://stackoverflow.com/a/3879737
 function! SetupCommandAlias(from, to)
     exec 'cnoreabbrev <expr> '.a:from
@@ -284,17 +365,18 @@ call SetupCommandAlias('vh', 'vertical help')
 call SetupCommandAlias('sv', 'sview')
 call SetupCommandAlias('vv', 'vertical sview')
 
-" general_autocmds {{{2
 augroup general_autocommands
     " clear all autocmds
     autocmd!
 
-    " Return to last edit position when opening files and open folds on cursor
+    " Return to last edit position when opening files
     autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$")
       \ |   exe "normal! g`\""
       \ | endif
+    " Open folds on cursor and center cursor
     autocmd BufWinEnter * normal! zv
+    autocmd BufWinEnter * normal! zz
 
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
@@ -343,47 +425,6 @@ augroup fugitive_autocommands
     autocmd BufReadPost fugitive://* normal zR
 augroup END
 
-" ========== colorscheme ========== {{{1
-
-augroup general-overrides
-    autocmd!
-
-    function! s:MatchTrailingWhitespace(isInsertMode)
-        " Don't mess with highlighting for diffs
-        if &filetype ==# 'fugitive'
-            return
-        endif
-        if a:isInsertMode
-            match ExtraWhitespace /\s\+\%#\@<!$/
-        else
-            match ExtraWhitespace /\s\+$/
-        endif
-    endfunction
-
-    " Highlight trailing whitespaces
-    autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 guibg=#BF616A
-
-    " don't highlight trailing whitespace when typing at the end of a line.
-    autocmd InsertEnter,VimEnter * call s:MatchTrailingWhitespace(1)
-    autocmd InsertLeave,BufWinEnter * call s:MatchTrailingWhitespace(0)
-augroup END
-
-" Fix the absurdly low constrast of nord-vim
-augroup nord-overrides
-    autocmd!
-    autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
-    autocmd ColorScheme nord highlight Folded guifg=#7b88a1
-    autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
-    autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
-augroup END
-
-if &termguicolors && g:dein_supported
-    colorscheme nord
-else
-    set notermguicolors
-    colorscheme desert
-endif
-
 " ========== mappings ========== {{{1
 
 " Move by wrapped lines unless a count is given
@@ -407,7 +448,6 @@ if has('nvim')
 
     " Paste from a register
     tnoremap <expr> <C-V> '<C-\><C-N>"'.nr2char(getchar()).'pi'
-
 endif
 
 " Make, close, and move tabs

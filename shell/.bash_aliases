@@ -21,7 +21,7 @@ alias la='ls -AF'
 alias l='ls -F'
 alias l.='ls -ld'
 
-alias nterm='nvim +term'
+alias nterm='history -a; nvim +term'
 alias fugitive='nvim +Git +only'
 alias view='nvim +view'
 # Modify behavior of some commands when inside vim's terminal

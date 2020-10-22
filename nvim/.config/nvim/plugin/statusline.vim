@@ -103,8 +103,14 @@ function! GetCwd() abort
     " !~# '^\w\+://'    => File is on filesystem. Ex: Won't match fugitive://...
     " !~# '^/'          => File name isn't an absolute path
     " != "" && != "nofile"   => Buffer has a file
-    if l:file !~# '^\w\+://' && l:file !~# '^/' &&
-                \ l:file != "" && &buftype != "nofile"
+    if l:file !~# '^\w\+://' &&
+    \  l:file !~# '^/' &&
+    \  l:file != "" && &buftype != "nofile"
+        return pathshorten(fnamemodify(getcwd(0, 0), ":~"))
+    endif
+
+    " Display cwd for netrw buffers
+    if &filetype ==# 'netrw'
         return pathshorten(fnamemodify(getcwd(0, 0), ":~"))
     endif
     return ''

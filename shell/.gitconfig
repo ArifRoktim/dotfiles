@@ -1,18 +1,25 @@
 [user]
-	email = arifrroktim@gmail.com
-	name = Arif Roktim
+    email = arifrroktim@gmail.com
+    name = Arif Roktim
 [diff]
-	algorithm = histogram
-[alias]
-	stat = status
-	ch = checkout
-	pf = push --verbose --force-with-lease
-	new = add --intent-to-add
-	df = diff
-	dc = diff --cached
-	can = commit --amend --no-edit
-	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-	tags = tag -n
-	rc = rebase --continue
+    algorithm = histogram
 [push]
-	followTags = true
+    followTags = true
+[pull]
+    ff = only
+[merge]
+    ff = only
+[log]
+    date = local
+[alias]
+    stat = status
+    ch = checkout
+    pf = push --verbose --force-with-lease
+    new = add --intent-to-add
+    df = diff
+    dc = diff --cached
+    ce = commit --amend --no-edit
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+    tags = tag -n
+    rc = rebase --continue
+    ref = reflog HEAD@{0} --date=format:'%F %R' --format='%C(yellow)%h %gD%C(auto) %C(green)%cd (%cr)%C(auto) %w(50, 0, 8)%D%w(0)%n%C(cyan) Reflog%C(auto) %gs%n%C(cyan) Commit%C(auto) %s'

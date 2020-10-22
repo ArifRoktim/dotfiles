@@ -28,11 +28,13 @@ elif type nano &> /dev/null; then
     export EDITOR="nano"
 fi
 
+# Source host specific config file
+if [[ -f ~/.bash_local ]]; then
+    source ~/.bash_local
+fi
+
 # If not running interactively, skip rest of file
 [[ $- != *i* ]] && return
-
-# Source host specific config file
-[[ -f ~/.bash_local ]] && . ~/.bash_local || true
 
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 
@@ -45,6 +47,9 @@ fi
 if [[ -f /usr/share/doc/pkgfile/command-not-found.bash ]]; then
     . /usr/share/doc/pkgfile/command-not-found.bash
 fi
+
+# Some man page coloring
+export LESS_TERMCAP_md=$'\e[1;34m'
 
 # Set vi bindings
 set -o vi

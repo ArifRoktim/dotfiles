@@ -72,7 +72,7 @@ if g:dein_supported
         call dein#add('andymass/vim-tradewinds')
         call dein#add('moll/vim-bbye')
         call dein#add('aymericbeaumet/vim-symlink')
-        call dein#add('lambdalisue/suda.vim')
+        call dein#add('airblade/vim-rooter')
         call dein#add('norcalli/nvim-colorizer.lua')
         call dein#add('Yggdroot/indentLine')
 
@@ -106,15 +106,16 @@ if g:dein_supported
 
     " vim-rooter
     let g:rooter_manual_only = 1
-    let g:rooter_resolve_links = 1
-    let g:rooter_patterns= [".git", ".git/", "makefile", "Makefile", "Cargo.toml"]
+    let g:rooter_cd_cmd = 'tcd'
+    let g:rooter_patterns= [".git", "makefile", "Makefile", "Cargo.lock"]
 
     " vim-bbye: Close the current buffer but not the current window
     nnoremap <silent> <leader>bd :Bdelete<cr>
 
-    " suda.vim
-    let g:suda#prefix = "sudo://"
-    let g:suda#prompt = "[sudo] password for " . expand('$USER') . ": "
+    " Disable some autopair bindings
+    let g:AutoPairsShortcutToggle = ""
+    let g:AutoPairsShortcutJump = ""
+    let g:AutoPairsShortcutBackInsert = ""
 
     " indentLine
     let g:indentLine_setConceal = 0
@@ -133,11 +134,14 @@ if g:dein_supported
     function! s:show_documentation()
         if (index(['vim','help'], &filetype) >= 0)
             execute 'h '.expand('<cword>')
+        elseif (coc#rpc#ready())
+            call CocActionAsync('doHover')
         else
-            call CocAction('doHover')
+            execute '!' . &keywordprg . " " . expand('<cword>')
         endif
     endfunction
     nnoremap <silent> K :call <SID>show_documentation()<CR>
+    nnoremap <silent> <C-k> :<C-U>CocCommand rust-analyzer.openDocs<CR>
 
     " Insert mode floating window scrolling {{{
     " From: https://github.com/neoclide/coc.nvim/issues/1405#issuecomment-569984736
@@ -183,13 +187,18 @@ if g:dein_supported
     nmap <silent> <M-d> <Plug>(coc-definition)
     nmap <silent> <M-i> <Plug>(coc-implementation)
 
+    " CocAction
+    nmap <silent> <M-a> <Plug>(coc-codeaction-selected)
+    vmap <silent> <M-a> <Plug>(coc-codeaction-selected)
+    nmap <silent> <M-q> <Plug>(coc-codelens-action)
+
     " Using CocList
     " Show all diagnostics
     nnoremap <silent> <M-w> :<C-u>CocList diagnostics<cr>
     " Navigate diagnostics
     nmap <silent> [w <Plug>(coc-diagnostic-prev)
     nmap <silent> ]w <Plug>(coc-diagnostic-next)
-    " Find symbol of current document
+    " Find symbol of current file
     nnoremap <silent> <M-o> :<C-u>CocList outline<cr>
     " Search workspace symbols
     nnoremap <silent> <M-s> :<C-u>CocList symbols<cr>
@@ -224,7 +233,7 @@ if g:dein_supported
         autocmd InsertLeave,VimEnter * call s:MatchTrailingWhitespace(0)
     augroup END
 
-    augroup nord-overrides
+    augroup color_overrides
         autocmd!
         " Fix the absurdly low constrast of nord-vim
         autocmd ColorScheme nord highlight Comment guifg=#7b88a1 gui=bold
@@ -232,11 +241,15 @@ if g:dein_supported
         autocmd ColorScheme nord highlight FoldColumn guifg=#7b88a1
         autocmd ColorScheme nord highlight Conceal guifg=#7b88a1 guibg=bg
         autocmd ColorScheme nord highlight CocHighlightText guibg=#434C5E
+
+        " Replace undercurl/line with italics
+        autocmd ColorScheme * highlight CocWarningHighlight gui=italic,undercurl
+            \ guifg=NONE guisp=#EBCB8B
+        autocmd ColorScheme * highlight CocErrorHighlight gui=italic,undercurl
+            \ guifg=NONE guisp=#BF616A
     augroup END
 
     if &termguicolors
-        " Make diffs readable
-        let g:nord_uniform_diff_background = 1
         let g:nord_italic = 1
         let g:nord_underline = 1
         colorscheme nord
@@ -258,6 +271,7 @@ set hidden
 set lazyredraw
 set foldmethod=indent
 set foldcolumn=1
+set foldopen-=block
 set virtualedit=block
 
 set number
@@ -380,6 +394,10 @@ augroup general_autocommands
 
     " Autoread is bugged. Force it to update buffer
     autocmd FocusGained,BufEnter * :silent! checktime
+
+    " Turn off relative numbers in insert mode
+    autocmd InsertEnter * :set norelativenumber | :set cursorline
+    autocmd InsertLeave * :set relativenumber | :set nocursorline
 augroup END
 
 if has('nvim')
@@ -404,6 +422,7 @@ if has('nvim')
         endfunction
 
         " Jump to the shell prompt
+        " TODO: Make it work in visual mode too
         autocmd TermOpen * noremap <buffer> <silent> [g
                     \ :call GoToPrompt('eb')<cr>
         autocmd TermOpen * noremap <buffer> <silent> ]g
@@ -432,6 +451,10 @@ nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " tabs_windows_buffers {{{2
+
+" TODO: Make this a command:
+" echo execute("tab :split " . escape("+term top", ' '))
+
 " Move between windows
 nnoremap <leader>s <C-W>j
 nnoremap <leader>w <C-W>k
@@ -445,9 +468,6 @@ if has('nvim')
     tnoremap <leader>d <C-\><C-n><C-W>l
     nnoremap <leader>tv :vs +term<cr>
     nnoremap <leader>ts :sp +term<cr>
-
-    " Paste from a register
-    tnoremap <expr> <C-V> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 endif
 
 " Make, close, and move tabs
@@ -476,15 +496,48 @@ nnoremap <leader>e :e <C-r>=expand('%:h')<CR>/
 cnoremap <leader>e <C-r>=expand('%:h')<CR>/
 
 " Center when searching
-" FIXME: Find out why these break count message when searching
-"noremap N Nzz
-"noremap n nzz
+" TODO: Don't center if no match found.
+" All this complicated stuff is needed so that the search count isn't erased
+function! s:SearchAndCenter(forward, count) abort
+    " Set `nolazyredraw` to make `:normal! n` show search count asap
+    let l:lazy = &lazyredraw
+    set nolazyredraw
+    " Print the error ourselves so that vim doesnt output the usual
+    " garbage about "Error detected while processing function"
+    echohl ErrorMsg
+    try
+        if a:count == 0
+            let l:count = 1
+        else
+            let l:count = a:count
+        endif
+        if a:forward
+            execute "normal! " . l:count . "n"
+        else
+            execute "normal! " . l:count . "N"
+        endif
+    catch /^Vim\%((\a\+)\)\=:E384
+        echom "E384: search hit TOP without match for: " . @/
+    catch /^Vim\%((\a\+)\)\=:E385
+        echom "E385: search hit BOTTOM without match for: " . @/
+    endtry
+    " Go back to defaults
+    echohl None
+    let &lazyredraw = l:lazy
+    " All *that* ^ just so we can center the page and keep the search count
+    normal! zz
+endfunction
+" Highlighting has to be set HERE because vim saves the highlighting state
+" before USER FUNCTIONS and then RESTORES THEM AFTERWARDS.
+noremap <silent> N :<C-u>set hlsearch \| :call <SID>SearchAndCenter(0, v:count)<cr>
+noremap <silent> n :<C-u>set hlsearch \| :call <SID>SearchAndCenter(1, v:count)<cr>
 
 " Unhighlight
 nnoremap <silent> <leader><cr> :nohlsearch<cr>
 
-" Make x go to blackhole buffer
+" Make these go into blackhole buffer
 nnoremap x "_x
+nnoremap S "_S
 
 " More consistent with d
 noremap Y y$

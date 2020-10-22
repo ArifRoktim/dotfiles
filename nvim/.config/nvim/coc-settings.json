@@ -1,7 +1,10 @@
 {
     "suggest.maxPreviewWidth": 90,
-    "coc.preferences.useQuickfixForLocations": true,
-    "coc.preferences.jumpCommand": "drop",
+    "diagnostic.maxWindowWidth": 90,
+    "signature.preferShownAbove": false,
     "list.source.diagnostics.defaultOptions": ["--normal"],
-    "list.source.outline.defaultOptions": ["--normal"]
+    "codeLens.enable": true,
+    "codeLens.subseparator": "/",
+    "rust-analyzer.diagnostics.disabled": ["unresolved-import"],
+    "rust-analyzer.lens.methodReferences": true
 }

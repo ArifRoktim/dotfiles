@@ -42,23 +42,13 @@ fi
 
 # Misc
 alias waste='du -sh * | sort -h'
-alias hdmesg='dmesg --human'
-alias fdmesg='dmesg --follow'
-alias sctl='systemctl'
-alias cpr='rsync --archive --delete -hh --partial --info=stats1 --info=progress2'
+alias hdmesg='dmesg --human --ctime'
+alias cpr='rsync --archive -hh --partial --info=progress2'
 alias listpaths='for dir in ${PATH//:/ }; do echo "$dir"; done'
 alias hist-update='history -a'
 alias hist-get='history -n'
 # Be safer
 alias rm='rm --one-file-system -I'
-
-# rust tool aliases
-alias rcheck='cargo check'
-alias rtest='cargo test'
-alias rdoc='cargo doc --no-deps'
-alias rfmt='cargo fmt'
-alias rgo='cargo run'
-alias run='cargo run --release'
 
 #==================================== FUNCTIONS ====================================
 
@@ -68,6 +58,17 @@ function cd {
     if [ $? -eq 0 ]; then
         command ls --color=auto
     fi
+}
+
+# cd to real directory that contains the symbolic link
+function contains {
+    if [[ $# -lt 1 ]]; then
+        realdir="$(realpath -e .)"
+    else
+        realfile="$(realpath -e $1)"
+        realdir="${realfile%/*}"
+    fi
+    cd -Pe "$realdir"
 }
 
 # cd to top level of repo
@@ -87,18 +88,17 @@ function gtree {
     # locate .gitignore file
     ignore="$(git rev-parse --show-toplevel 2> /dev/null)/.gitignore"
 
-    if [[ $? -ne 0 ]]; then
-        echo "Not a git repo" 1>&2
-        return 1
-    fi
-
     # Check for existence of .gitignore file
     if [[ ! -e "$ignore" ]]; then
-        return 0
+        tree -aI ".git"
+        return
     fi
 
     pattern=".git"
     while read line; do
+        # Remove leading and trailing `/`
+        line="${line#/}"
+        line="${line%/}"
         pattern="${pattern}|${line}"
     done < "$ignore"
 

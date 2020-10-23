@@ -43,7 +43,6 @@ fi
 # Misc
 alias waste='du -sh * | sort -h'
 alias hdmesg='dmesg --human --ctime'
-alias cpr='rsync --archive -hh --partial --info=progress2'
 alias listpaths='for dir in ${PATH//:/ }; do echo "$dir"; done'
 alias hist-update='history -a'
 alias hist-get='history -n'
